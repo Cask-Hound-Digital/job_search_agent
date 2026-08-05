@@ -1,0 +1,31 @@
+{
+  "user_profile": {
+    "name": "{{YOUR_FULL_NAME}}",
+    "email": "{{YOUR_EMAIL_ADDRESS}}",
+    "phone": "{{YOUR_PHONE_NUMBER}}",
+    "location": "{{YOUR_CITY_STATE}}",
+    "linkedin": "{{YOUR_LINKEDIN_PROFILE_URL}}",
+    "target_roles": [
+      "{{TARGET_ROLE_TITLE_1}}",
+      "{{TARGET_ROLE_TITLE_2}}",
+      "{{TARGET_ROLE_TITLE_3}}"
+    ],
+    "target_compensation_min": "{{TARGET_COMPENSATION_MIN_NUMERIC}}",
+    "target_locations": [
+      "100% Remote (US)",
+      "{{YOUR_PREFERRED_CITY_HYBRID}}"
+    ],
+    "preferred_job_boards": [
+      "LinkedIn",
+      "Indeed",
+      "Greenhouse",
+      "Lever",
+      "BuiltIn"
+    ],
+    "search_schedule_ct": "7:00 AM - 5:00 PM CT (Business Hours)"
+  },
+  "policy": {
+    "auto_submit": false,
+    "user_approval_required": true
+  }
+}
