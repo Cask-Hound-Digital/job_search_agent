@@ -1,6 +1,6 @@
 # Autonomous AI Career Advancement Agent Template
 
-This project provides an end-to-end autonomous job search, resume tailoring, cover letter generation, and application tracking system using proven executive career advancement and resume strategies.
+This project provides an end-to-end autonomous job search, resume tailoring, cover letter generation, and application tracking system.
 
 ---
 
@@ -34,5 +34,5 @@ python build_documents.py
 
 ## 📜 Key Principles & Protocols
 1. **Zero Unapproved Submissions**: Applications are evaluated and presented with Live Job URLs for your review. Applications are only submitted after explicit user confirmation.
-2. **Badass Resume & Hybrid Cover Letter Strategy**: All materials use quantified 3-part bullet points (*Action Verb + Specific Detail + Measurable Result*) and ATS single-column formatting.
+2. **Resume & Hybrid Cover Letter Strategy**: All materials use quantified 3-part bullet points (*Action Verb + Specific Detail + Measurable Result*) and ATS single-column formatting.
 3. **Structured Tracking**: Application statuses and history are automatically maintained in `state.json` and `PROJECT_GOALS_AND_REVISIONS.md`.
