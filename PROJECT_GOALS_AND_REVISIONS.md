@@ -1,6 +1,6 @@
 # PROJECT GOAL & REVISION TRACKER
-**Candidate**: Mark Jaggers  
-**Role Scope**: Director, Senior Director, Head of, VP, Senior Manager, and Lead roles across Web Marketing, Digital Experience, Website Growth, PLG, Web Strategy, SEO, Web & AI, and Web Development  
+**Candidate**: {{YOUR_FULL_NAME}}  
+**Role Scope**: Director, Senior Director, Head of, VP, Senior Manager, and Lead roles across Web {{YOUR_NAME}}eting, Digital Experience, Website Growth, PLG, Web Strategy, SEO, Web & AI, and Web Development  
 **Target Compensation**: $225,000+ USD / Year  
 **Location Preferences**: 100% Remote (Primary) | Hybrid ONLY in Dallas–Fort Worth (DFW area near Grand Prairie, TX)  
 **Search Hours Schedule**: **7:00 AM – 5:00 PM CT** (Business Hours Only | Every 4 Hours: 7am, 11am, 3pm CT)  
@@ -15,14 +15,14 @@
 
 1. **Automated Job Board & 4-Channel Gmail Alert Monitoring**:
    * Run search cycles **strictly between 7:00 AM and 5:00 PM Central Time** (7:00 AM, 11:00 AM, 3:00 PM CT).
-   * Automatically connect to `roadrashtx@gmail.com` via IMAP script [`fetch_gmail_alerts.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_gmail_alerts.py) across **LinkedIn, Indeed, Lensa, and BuiltIn**.
+   * Automatically connect to `{{YOUR_GMAIL_ADDRESS}}` via IMAP script [`fetch_gmail_alerts.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_gmail_alerts.py) across **LinkedIn, Indeed, Lensa, and BuiltIn**.
 
 2. **Expanded Target Title Matrix**:
-   * **Head Level**: *Head of Web*, *Head of Digital*, *Head of Web Operations*, *Head of Web Marketing*, *Head of Web Development*, *Head of Website Growth*.
-   * **Founding Level**: *Founding Web Director*, *Founding Growth Leader*, *Founding Marketer*.
-   * **Director / Sr. Director**: *Director/Sr. Director of Web Marketing*, *Digital Experience*, *Website Growth*, *Growth Marketing*, *Web Strategy*, *Web Development*, *PLG*, *AI & Web*, *Analytics & Web*, *Web Operations*.
+   * **Head Level**: *Head of Web*, *Head of Digital*, *Head of Web Operations*, *Head of Web {{YOUR_NAME}}eting*, *Head of Web Development*, *Head of Website Growth*.
+   * **Founding Level**: *Founding Web Director*, *Founding Growth Leader*, *Founding {{YOUR_NAME}}eter*.
+   * **Director / Sr. Director**: *Director/Sr. Director of Web {{YOUR_NAME}}eting*, *Digital Experience*, *Website Growth*, *Growth {{YOUR_NAME}}eting*, *Web Strategy*, *Web Development*, *PLG*, *AI & Web*, *Analytics & Web*, *Web Operations*.
    * **VP Level**: *VP of Digital Experience*, *VP of SEO & Web Strategy*, *VP of Web*.
-   * **Sr. Manager & Lead**: *Sr. Web Marketing Manager*, *Sr. Manager Web Development*, *Web & AI Lead/Director*.
+   * **Sr. Manager & Lead**: *Sr. Web {{YOUR_NAME}}eting Manager*, *Sr. Manager Web Development*, *Web & AI Lead/Director*.
 
 3. **Strict Candidate Criteria Verification Engine**:
    * **Location Check**: Must be **100% Remote (US)** or **Hybrid in DFW Metroplex** (Grand Prairie/Dallas/Fort Worth area). Automatically discards non-DFW hybrid/onsite roles (e.g. CA, PA, NY hybrid).
@@ -52,16 +52,16 @@
 ### **Revision 1.25** | *2026-08-06 15:25:00*
 * **Changelog**:
   * **Expanded Target Title Matrix**: Parsed candidate's spreadsheet image and updated [`fetch_gmail_alerts.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_gmail_alerts.py), [`state.json`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/state.json), and system rules with 26 exact title variations:
-    * *Head of Web / Digital / Web Ops / Web Marketing / Web Dev / Website Growth*
-    * *Founding Web / Founding Growth / Founding Marketer*
-    * *Director / Sr. Director (Web Marketing, Digital Experience, Website Growth, PLG, AI & Web, Web Operations, Web Strategy, Analytics & Web)*
+    * *Head of Web / Digital / Web Ops / Web {{YOUR_NAME}}eting / Web Dev / Website Growth*
+    * *Founding Web / Founding Growth / Founding {{YOUR_NAME}}eter*
+    * *Director / Sr. Director (Web {{YOUR_NAME}}eting, Digital Experience, Website Growth, PLG, AI & Web, Web Operations, Web Strategy, Analytics & Web)*
     * *VP (Digital Experience, SEO & Web Strategy, Web)*
     * *Sr. Web Manager / Sr. Manager Web Dev / Web & AI Lead*
 
 ### **Revision 1.24** | *2026-08-06 15:00:30*
 * **Changelog**:
   * **3:00 PM CT Business Hours Search Cycle Completed**: Executed scheduled afternoon monitoring (`task-204`).
-  * **Automated Audit Results**: Scanned `roadrashtx@gmail.com` across LinkedIn, Indeed, Lensa, and BuiltIn emails.
+  * **Automated Audit Results**: Scanned `{{YOUR_GMAIL_ADDRESS}}` across LinkedIn, Indeed, Lensa, and BuiltIn emails.
   * **Enforced Architecture Filter**: Automatically detected and rejected 10 non-matching software architecture links (*Sr. Director, Architecture and AI*).
 
 ### **Revision 1.23** | *2026-08-06 14:13:00*
@@ -78,7 +78,7 @@
 
 ### **Revision 1.20** | *2026-08-06 12:47:00*
 * **Changelog**:
-  * **Gmail IMAP Connection Verified & Functional**: Authenticated with `roadrashtx@gmail.com` via App Password and extracted direct LinkedIn job URLs from incoming job alert emails.
+  * **Gmail IMAP Connection Verified & Functional**: Authenticated with `{{YOUR_GMAIL_ADDRESS}}` via App Password and extracted direct LinkedIn job URLs from incoming job alert emails.
 
 ### **Revision 1.19** | *2026-08-06 11:24:30*
 * **Changelog**:
@@ -134,7 +134,7 @@
 
 ### **Revision 1.6** | *2026-08-05 16:38:15*
 * **Changelog**:
-  * **Application Submission Logged**: Logged candidate's submission to **Rubrik** (*Director, Web & Digital Marketing*).
+  * **Application Submission Logged**: Logged candidate's submission to **Rubrik** (*Director, Web & Digital {{YOUR_NAME}}eting*).
 
 ### **Revision 1.5** | *2026-08-05 16:30:55*
 * **Changelog**:
@@ -146,7 +146,7 @@
 
 ### **Revision 1.3** | *2026-08-05 16:20:25*
 * **Changelog**:
-  * **User Approval Execution**: Received explicit approval from Mark Jaggers to generate tailored application packages.
+  * **User Approval Execution**: Received explicit approval from {{YOUR_FULL_NAME}} to generate tailored application packages.
 
 ### **Revision 1.2** | *2026-08-05 16:04:35*
 * **Changelog**:
@@ -154,7 +154,7 @@
 
 ### **Revision 1.1** | *2026-08-05 15:42:07*
 * **Changelog**:
-  * **Digested Resume Portfolio**: Digitized and cataloged Mark Jaggers' 4 recent resume versions into markdown reference files in `resumes/`.
+  * **Digested Resume Portfolio**: Digitized and cataloged {{YOUR_FULL_NAME}}' 4 recent resume versions into markdown reference files in `resumes/`.
 
 ### **Revision 1.0** | *2026-08-05 15:33:28*
 * **Changelog**:
@@ -170,4 +170,4 @@
 | **`fetch_gmail_alerts.py`** | [`./fetch_gmail_alerts.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_gmail_alerts.py) | Python script with expanded 26-title target matrix across 4 channels. |
 | **`state.json`** | [`./state.json`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/state.json) | Central persistent state tracker for candidate profile, job listings, and application statuses. |
 | **`job_search_agent_template.zip`** | [`P:\Job Search\job_search_agent_template.zip`](file:///P:/Job%20Search/job_search_agent_template.zip) | Portable template package with clean placeholders for sharing. |
-| **Resume Registry** | [`./resumes/`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/resumes/) | Directory containing baseline resume versions in Markdown format. |
+| **Resume Registry** | [`./resumes/`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/resumes/) | Directory containing baseline resume versions in {{YOUR_NAME}}down format. |

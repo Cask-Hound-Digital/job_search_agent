@@ -16,7 +16,7 @@ Whenever discussing job searches, resume reviews, application strategies, cover 
 To land any given job, **3 things must happen**:
 
 ```
-1. Uncover Employer Requirements (Market Research / Job Posting Dissection)
+1. Uncover Employer Requirements ({{YOUR_NAME}}et Research / Job Posting Dissection)
                        ↓
 2. Prove You Meet or Exceed Requirements (Resume, Cover Letter, LinkedIn, Interview)
                        ↓
@@ -25,7 +25,7 @@ To land any given job, **3 things must happen**:
 
 ---
 
-## 2. Dissecting Job Postings (Market Research)
+## 2. Dissecting Job Postings ({{YOUR_NAME}}et Research)
 
 Before writing any resume or cover letter, dissect the target job posting into two categories using the **Dissecting Job Postings Matrix**:
 
