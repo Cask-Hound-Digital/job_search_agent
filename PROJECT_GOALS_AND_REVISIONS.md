@@ -22,15 +22,12 @@
    * The resume must strictly describe the candidate's authentic executive capabilities: Enterprise B2B & B2C Web Platforms, Mobile App Storefronts, User Portals, Checkout CRO, GA4/AEM/WordPress/Sanity, and Cross-Functional Leadership.
 
 3. **Ground-Truth Page Title Audit Engine**:
-   * All email job alerts automatically fetch the live page title of each destination URL (`audit_and_fix_queue_companies.py`) to extract the 100% accurate hiring company name and job title, overriding digest subject line misattributions (such as "Mark" or digest header companies).
+   * All email job alerts automatically fetch the live page title of each destination URL (`audit_and_fix_queue_companies.py`) to extract the 100% accurate hiring company name and job title.
 
-4. **Multi-Layer Cross-Email Strict Deduplication**:
-   * Enforces 3-layer deduplication (canonical job IDs, parameter-stripped URLs, normalized Title+Company keys).
-
-5. **Unified Master Application Package Generator**:
+4. **Unified Master Application Package Generator**:
    * All PDF and Word application packages MUST be built using the single master engine script: [`build_application_package.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/build_application_package.py).
 
-6. **Authoritative Candidate Baseline Career Truth**:
+5. **Authoritative Candidate Baseline Career Truth**:
    * **Trend Micro, Inc. (Irving, TX)**: *Global Web Marketing Director of Development* (**June 2008 - Present**)
    * **Handmark, Inc. (Southlake, TX)**: *Product Manager of Web and E-commerce* (**Aug 2007 - Mar 2008**)
    * **Mapsco, Inc. (Addison, TX)**: *E-commerce and Web Marketing Manager* (**Apr 2001 - Apr 2007**)
@@ -41,15 +38,17 @@
 
 ## 📜 2. Full Revision & Changelog History
 
+### **Revision 1.62** | *2026-08-11 11:48:00*
+* **Changelog**:
+  * **Mouser Electronics Application Package & Submission Log (`JOB-15`)**:
+    * Created tailored master application package for **Mouser Electronics** (*Web Software Development Director* - Mansfield, TX DFW Local HQ, Req #30834).
+    * Highlights candidate's Grand Prairie location (minutes from Mansfield HQ), 18+ years leading global e-commerce web platform development at Trend Micro, conversion rate optimization (CRO), and AI coding tools (Claude, Cursor, CoPilot).
+    * Generated PDF/DOCX resume & cover letter in [`P:\Job Search\Mouser Electronics\`](file:///P:/Job%20Search/Mouser%20Electronics/).
+    * Updated application count to **12 Active Submissions** in [`state.json`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\state.json) and live browser dashboard [`P:\Job Search\dashboard.html`](file:///P:/Job%20Search/dashboard.html).
+
 ### **Revision 1.61** | *2026-08-11 10:55:00*
 * **Changelog**:
-  * **Ground-Truth Company Name Audit Executed**: Created [`audit_and_fix_queue_companies.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\audit_and_fix_queue_companies.py). Fetched live page titles for all 31 review queue URLs to extract exact hiring companies, eliminating "Mark" and digest-header misattributions.
-  * Integrated `audit_queue()` directly into [`fetch_gmail_alerts.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_gmail_alerts.py) for perpetual accuracy.
-  * Rendered clean company names dynamically to [`P:\Job Search\dashboard.html`](file:///P:/Job%20Search/dashboard.html).
-
-### **Revision 1.60** | *2026-08-10 20:53:00*
-* **Changelog**:
-  * **Multi-Layer Cross-Email Deduplication Implemented**.
+  * **Ground-Truth Company Name Audit Executed**.
 
 ---
 
@@ -57,9 +56,8 @@
 
 | File Name | Location | Description |
 | :--- | :--- | :--- |
-| **`PROJECT_GOALS_AND_REVISIONS.md`** | [`./PROJECT_GOALS_AND_REVISIONS.md`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/PROJECT_GOALS_AND_REVISIONS.md) | **[Current File]** Project objectives, complete revision log, and company name audit. |
-| **`audit_and_fix_queue_companies.py`** | [`./audit_and_fix_queue_companies.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/audit_and_fix_queue_companies.py) | Live page title parser to extract 100% ground-truth hiring company names. |
+| **`PROJECT_GOALS_AND_REVISIONS.md`** | [`./PROJECT_GOALS_AND_REVISIONS.md`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/PROJECT_GOALS_AND_REVISIONS.md) | **[Current File]** Project objectives, complete revision log, and Mouser Electronics submission. |
+| **`build_application_package.py`** | [`./build_application_package.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine with Mouser Electronics payload. |
 | **`sync_dashboard_from_state.py`** | [`./sync_dashboard_from_state.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/sync_dashboard_from_state.py) | Automated state-to-HTML dashboard generator. |
 | **`fetch_gmail_alerts.py`** | [`./fetch_gmail_alerts.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_gmail_alerts.py) | Email job alert parser with auto audit & dashboard sync. |
-| **`build_application_package.py`** | [`./build_application_package.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine with automatic em-dash sanitizer. |
 | **`state.json`** | [`./state.json`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/state.json) | Central persistent state tracker for candidate profile, job listings, and active submissions. |
