@@ -14,7 +14,7 @@ Open `config.json` and replace the placeholder values with your personal details
 - `target_locations`: Preferred locations (e.g., `["Remote", "Dallas, TX"]`).
 
 ### Step 2: Add Your Baseline Resumes
-Place your recent resume versions in {{YOUR_NAME}}down format inside the `resumes/` folder:
+Place your recent resume versions in Markdown format inside the `resumes/` folder:
 - `resumes/resume_version_1.md`
 - `resumes/resume_version_2.md`
 
