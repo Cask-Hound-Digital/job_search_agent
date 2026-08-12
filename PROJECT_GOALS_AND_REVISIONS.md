@@ -7,7 +7,7 @@
 **System Location**: [`c:\Users\mark\.gemini\antigravity\scratch\job-search-consultant`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant)  
 **Local Export Storage Directory**: `P:\Job Search\`  
 **Shareable Template ZIP**: [`P:\Job Search\job_search_agent_template.zip`](file:///P:/Job%20Search/job_search_agent_template.zip)  
-**Live GitHub Repository**: [github.com/RoadRashTX/job_search_agent](https://github.com/RoadRashTX/job_search_agent)  
+**Live GitHub Repository**: [github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent)  
 
 ---
 
