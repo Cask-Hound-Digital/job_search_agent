@@ -23,25 +23,28 @@
 3. **Ground-Truth Page Title Audit Engine**:
    * All job alerts automatically fetch the live page title of each destination URL (`audit_and_fix_queue_companies.py`) to extract the 100% accurate hiring company name and job title.
 
-4. **Authoritative Candidate Baseline Career Truth**:
-   * **{{PREVIOUS_COMPANY_1}}, Inc. (Irving, TX)**: *Global Web Marketing Director of Development* (**June 2008 - Present**) — Managing a **13+ person cross-functional team** (Development, DevOps, QA, BA, SEO); owning global web operations across 34 countries; integrating mPulse, Cludo, AEM 6.x, Marketo, Tealium, GA4; driving +15% demo conversion uplift & +42% self-serve digital conversion rate.
+4. **Zero-Permission Execution Rule for `build_application_package.py`**:
+   * The agent MUST NEVER prompt or ask for permission to run `build_application_package.py`. Whenever a new job parameter or payload is added, `build_application_package.py` executes automatically and immediately without any user confirmation prompt.
+
+5. **Authoritative Candidate Baseline Career Truth**:
+   * **{{PREVIOUS_COMPANY_1}}, Inc. (Irving, TX)**: *Global Web Marketing Director of Development* (**June 2008 - Present**) — Managing a **13+ person cross-functional team** (Development, DevOps, QA, BA, SEO); owning global web operations across 34 countries; **leading discovery, ROI evaluation, and decision-making for next-gen DXP to replace legacy AEM**; **organizing and executing the TrendAI site redesign & migration to Sanity CMS**; integrating mPulse, Cludo, AEM 6.x, Marketo, Tealium, GA4; driving +15% demo conversion uplift & +42% self-serve digital conversion rate.
    * **{{PREVIOUS_COMPANY_2}}, Inc. (Southlake, TX)**: *Product Manager of Web and E-commerce* (**Aug 2007 - Mar 2008**) — E-commerce storefronts for mobile apps & partner channels (Sprint), boosting checkout conversion by +34%.
    * **{{PREVIOUS_COMPANY_3}}, Inc. (Addison, TX)**: *E-commerce and Web Marketing Manager* (**Apr 2001 - Apr 2007**) — Sustaining 35%+ annual online sales growth via SEO/SEM/Email/Marketplaces.
    * **University of Texas at Arlington (Arlington, TX)**: *Bachelor of Arts (B.A.), E-Business Management & Internet Development* (Degree)
    * **Texas A&M University (College Station, TX)**: *Engineering Technology Coursework*
 
-5. **Zero-Permission Execution Rule for `build_application_package.py`**:
-   * The agent MUST NEVER prompt or ask for permission to run `build_application_package.py`. Whenever a new job parameter or payload is added, `build_application_package.py` executes automatically and immediately without any user confirmation prompt.
-
 ---
 
 ## 📜 2. Technical System Revision History
 
+### **Revision 1.69** | *2026-08-12*
+* **Candidate Baseline Experience Expansion (DXP Replacement & TrendAI Sanity CMS Migration)**:
+  * Integrated **Next-Gen DXP Discovery & Decision-Making**: Added leadership of discovery, architectural evaluation, ROI analysis, and C-suite decision-making to replace legacy Adobe Experience Manager (AEM) with a modern DXP.
+  * Integrated **TrendAI Redesign & Sanity CMS Platform Migration**: Added leadership of end-to-end redesign and migration of the TrendAI web property onto Sanity CMS.
+  * Updated [`build_application_package.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\build_application_package.py), [`state.json`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\state.json), and [`PROJECT_GOALS_AND_REVISIONS.md`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\PROJECT_GOALS_AND_REVISIONS.md). Rebuilt Spinutech master application package in `P:\Job Search\Spinutech\`.
+
 ### **Revision 1.68** | *2026-08-12*
-* **Spinutech Application Package & Submission Log (`JOB-16`)**:
-  * Created tailored master application package for **Spinutech** (*Vice President of Digital Strategy* - 100% Remote USA).
-  * Generated PDF/DOCX resume & cover letter in [`P:\Job Search\Spinutech\`](file:///P:/Job%20Search/Spinutech/).
-  * Logged as **Submitted 8/12/2026** (`JOB-16`), updating total active submitted applications to **13 Submissions** in [`state.json`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\state.json) and live browser dashboard [`P:\Job Search\dashboard.html`](file:///P:/Job%20Search/dashboard.html).
+* **Spinutech Application Package & Submission Log (`JOB-16`)**.
 
 ### **Revision 1.67** | *2026-08-12*
 * **Candidate Career Baseline Refinement (First Horizon Excluded)**.
@@ -77,7 +80,7 @@
 | File Name | Location | Description |
 | :--- | :--- | :--- |
 | **`PROJECT_GOALS_AND_REVISIONS.md`** | [`./PROJECT_GOALS_AND_REVISIONS.md`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/PROJECT_GOALS_AND_REVISIONS.md) | **[Current File]** System technical revision history and candidate baseline. |
-| **`build_application_package.py`** | [`./build_application_package.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine (Includes Spinutech VP Digital Strategy payload). |
+| **`build_application_package.py`** | [`./build_application_package.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine (Includes DXP Replacement & TrendAI Sanity migration achievements). |
 | **`fetch_jobspy_roles.py`** | [`./fetch_jobspy_roles.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_jobspy_roles.py) | Open-source Python multi-board live scraper engine. |
 | **`fetch_gmail_alerts.py`** | [`./fetch_gmail_alerts.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_gmail_alerts.py) | Email job alert parser with auto JobSpy scraper execution & dashboard sync. |
 | **`audit_and_fix_queue_companies.py`** | [`./audit_and_fix_queue_companies.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/audit_and_fix_queue_companies.py) | Live page title metadata scraper for 100% ground-truth company titles. |
