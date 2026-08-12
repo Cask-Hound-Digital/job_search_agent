@@ -26,7 +26,6 @@
 4. **Authoritative Candidate Baseline Career Truth**:
    * **{{PREVIOUS_COMPANY_1}}, Inc. (Irving, TX)**: *Global Web Marketing Director of Development* (**June 2008 - Present**) — Managing a **13+ person cross-functional team** (Development, DevOps, QA, BA, SEO); owning global web operations across 34 countries; integrating mPulse, Cludo, AEM 6.x, Marketo, Tealium, GA4; driving +15% demo conversion uplift & +42% self-serve digital conversion rate.
    * **{{PREVIOUS_COMPANY_2}}, Inc. (Southlake, TX)**: *Product Manager of Web and E-commerce* (**Aug 2007 - Mar 2008**) — E-commerce storefronts for mobile apps & partner channels (Sprint), boosting checkout conversion by +34%.
-   * **First Horizon Bank (Irving, TX)**: *Enterprise Internet Project & Program Manager (Contract)* (**Apr 2007 - Aug 2007**) — Daily site operations, web development, and digital financial marketing.
    * **{{PREVIOUS_COMPANY_3}}, Inc. (Addison, TX)**: *E-commerce and Web Marketing Manager* (**Apr 2001 - Apr 2007**) — Sustaining 35%+ annual online sales growth via SEO/SEM/Email/Marketplaces.
    * **University of Texas at Arlington (Arlington, TX)**: *Bachelor of Arts (B.A.), E-Business Management & Internet Development* (Degree)
    * **Texas A&M University (College Station, TX)**: *Engineering Technology Coursework*
@@ -35,14 +34,13 @@
 
 ## 📜 2. Technical System Revision History
 
+### **Revision 1.67** | *2026-08-12*
+* **Candidate Career Baseline Refinement**:
+  * Permanently excluded short contract role (First Horizon Bank) per candidate instruction.
+  * Preserved all core metrics, 13+ team scale, mPulse/Cludo tech additions, and UT Arlington / Texas A&M degree details across [`build_application_package.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\build_application_package.py), [`state.json`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\state.json), and [`PROJECT_GOALS_AND_REVISIONS.md`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\PROJECT_GOALS_AND_REVISIONS.md).
+
 ### **Revision 1.66** | *2026-08-12*
-* **Candidate Baseline Resume Enhancement (Historical PDF Audit)**:
-  * Audited candidate's past resume documents and extracted high-impact specific details:
-    * Added **First Horizon Bank** (*Enterprise Internet Project & Program Manager - Contract*, Irving, TX, Apr 2007 - Aug 2007).
-    * Integrated **13+ person cross-functional team management scale** (Development, DevOps, QA, BA, SEO) at {{PREVIOUS_COMPANY_1}}.
-    * Added specific MarTech tool stack entries: **mPulse** (Real-user monitoring) and **Cludo Custom Search** (Enterprise site search).
-    * Added specific quantified conversion metrics: **+15% uplift in organic demo/trial conversions** (via AI/AEO/GEO), **+10% landing page conversion boost** (via product marketing alignment), and **+10% global organic session growth**.
-    * Updated [`build_application_package.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\build_application_package.py), [`state.json`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\state.json), and [`PROJECT_GOALS_AND_REVISIONS.md`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\PROJECT_GOALS_AND_REVISIONS.md).
+* **Candidate Baseline Resume Enhancement (Historical PDF Audit)**.
 
 ### **Revision 1.65** | *2026-08-12*
 * **Open-Source JobSpy Multi-Board Engine Integrated**.
@@ -71,8 +69,8 @@
 
 | File Name | Location | Description |
 | :--- | :--- | :--- |
-| **`PROJECT_GOALS_AND_REVISIONS.md`** | [`./PROJECT_GOALS_AND_REVISIONS.md`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/PROJECT_GOALS_AND_REVISIONS.md) | **[Current File]** System technical revision history and updated baseline capabilities. |
-| **`build_application_package.py`** | [`./build_application_package.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine with 13+ team size, mPulse/Cludo, and First Horizon Bank history. |
+| **`PROJECT_GOALS_AND_REVISIONS.md`** | [`./PROJECT_GOALS_AND_REVISIONS.md`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/PROJECT_GOALS_AND_REVISIONS.md) | **[Current File]** System technical revision history and candidate baseline. |
+| **`build_application_package.py`** | [`./build_application_package.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine (First Horizon Bank excluded). |
 | **`fetch_jobspy_roles.py`** | [`./fetch_jobspy_roles.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_jobspy_roles.py) | Open-source Python multi-board live scraper engine. |
 | **`fetch_gmail_alerts.py`** | [`./fetch_gmail_alerts.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_gmail_alerts.py) | Email job alert parser with auto JobSpy scraper execution & dashboard sync. |
 | **`audit_and_fix_queue_companies.py`** | [`./audit_and_fix_queue_companies.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/audit_and_fix_queue_companies.py) | Live page title metadata scraper for 100% ground-truth company titles. |
