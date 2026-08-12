@@ -30,6 +30,9 @@
    * **University of Texas at Arlington (Arlington, TX)**: *Bachelor of Arts (B.A.), E-Business Management & Internet Development* (Degree)
    * **Texas A&M University (College Station, TX)**: *Engineering Technology Coursework*
 
+5. **Zero-Permission Execution Rule for `build_application_package.py`**:
+   * The agent MUST NEVER prompt or ask for permission to run `build_application_package.py`. Whenever a new job parameter or payload is added, `build_application_package.py` executes automatically and immediately without any user confirmation prompt.
+
 ---
 
 ## 📜 2. Technical System Revision History
