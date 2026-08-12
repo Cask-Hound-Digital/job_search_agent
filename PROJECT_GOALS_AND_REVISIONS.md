@@ -37,11 +37,14 @@
 
 ## 📜 2. Technical System Revision History
 
+### **Revision 1.70** | *2026-08-12*
+* **Jobgether / FourLeaf Application Package & Submission Log (`JOB-17`)**:
+  * Created tailored master application package for **Jobgether / FourLeaf Federal Credit Union** (*FVP Digital Transformation Office* - 100% Remote / Nassau County, NY, LinkedIn ID: 4449323011).
+  * Generated PDF/DOCX resume & cover letter in [`P:\Job Search\Jobgether\`](file:///P:/Job%20Search/Jobgether/).
+  * Logged as **Submitted 8/12/2026** (`JOB-17`), updating total active submitted applications to **14 Submissions** in [`state.json`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\state.json) and live browser dashboard [`P:\Job Search\dashboard.html`](file:///P:/Job%20Search/dashboard.html).
+
 ### **Revision 1.69** | *2026-08-12*
-* **Candidate Baseline Experience Expansion (DXP Replacement & TrendAI Sanity CMS Migration)**:
-  * Integrated **Next-Gen DXP Discovery & Decision-Making**: Added leadership of discovery, architectural evaluation, ROI analysis, and C-suite decision-making to replace legacy Adobe Experience Manager (AEM) with a modern DXP.
-  * Integrated **TrendAI Redesign & Sanity CMS Platform Migration**: Added leadership of end-to-end redesign and migration of the TrendAI web property onto Sanity CMS.
-  * Updated [`build_application_package.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\build_application_package.py), [`state.json`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\state.json), and [`PROJECT_GOALS_AND_REVISIONS.md`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\PROJECT_GOALS_AND_REVISIONS.md). Rebuilt Spinutech master application package in `P:\Job Search\Spinutech\`.
+* **Candidate Baseline Experience Expansion (DXP Replacement & TrendAI Sanity CMS Migration)**.
 
 ### **Revision 1.68** | *2026-08-12*
 * **Spinutech Application Package & Submission Log (`JOB-16`)**.
@@ -80,7 +83,7 @@
 | File Name | Location | Description |
 | :--- | :--- | :--- |
 | **`PROJECT_GOALS_AND_REVISIONS.md`** | [`./PROJECT_GOALS_AND_REVISIONS.md`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/PROJECT_GOALS_AND_REVISIONS.md) | **[Current File]** System technical revision history and candidate baseline. |
-| **`build_application_package.py`** | [`./build_application_package.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine (Includes DXP Replacement & TrendAI Sanity migration achievements). |
+| **`build_application_package.py`** | [`./build_application_package.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine (Includes Jobgether FVP payload). |
 | **`fetch_jobspy_roles.py`** | [`./fetch_jobspy_roles.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_jobspy_roles.py) | Open-source Python multi-board live scraper engine. |
 | **`fetch_gmail_alerts.py`** | [`./fetch_gmail_alerts.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_gmail_alerts.py) | Email job alert parser with auto JobSpy scraper execution & dashboard sync. |
 | **`audit_and_fix_queue_companies.py`** | [`./audit_and_fix_queue_companies.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/audit_and_fix_queue_companies.py) | Live page title metadata scraper for 100% ground-truth company titles. |
