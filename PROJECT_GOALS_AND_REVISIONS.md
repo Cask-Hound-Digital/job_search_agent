@@ -20,13 +20,17 @@
 2. **Open-Source Multi-Board JobSpy Integration**:
    * Integrated `python-jobspy` open-source scraper engine ([`fetch_jobspy_roles.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_jobspy_roles.py)) querying **LinkedIn and Indeed** for live $0-cost job extraction.
 
-3. **Ground-Truth Page Title Audit Engine**:
+3. **Strict Location Filtering Engine (Remote & DFW Local Only)**:
+   * Enforced `is_remote=True` flags and strict location validation (`is_valid_location()`) in [`fetch_jobspy_roles.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_jobspy_roles.py).
+   * Automatically rejects non-remote/non-DFW onsite & hybrid roles outside your geographic criteria (e.g. Austin, Houston, New York, Boston, Seattle, Chicago, London, Toronto).
+
+4. **Ground-Truth Page Title Audit Engine**:
    * All job alerts automatically fetch the live page title of each destination URL (`audit_and_fix_queue_companies.py`) to extract the 100% accurate hiring company name and job title.
 
-4. **Zero-Permission Execution Rule for `build_application_package.py`**:
+5. **Zero-Permission Execution Rule for `build_application_package.py`**:
    * The agent MUST NEVER prompt or ask for permission to run `build_application_package.py`. Whenever a new job parameter or payload is added, `build_application_package.py` executes automatically and immediately without any user confirmation prompt.
 
-5. **Authoritative Candidate Baseline Career Truth**:
+6. **Authoritative Candidate Baseline Career Truth**:
    * **{{PREVIOUS_COMPANY_1}}, Inc. (Irving, TX)**: *Global Web Marketing Director of Development* (**June 2008 - Present**) — Managing a **13+ person cross-functional team** (Development, DevOps, QA, BA, SEO); owning global web operations across 34 countries; **leading discovery, ROI evaluation, and decision-making for next-gen DXP to replace legacy AEM**; **organizing and executing the TrendAI site redesign & migration to Sanity CMS**; integrating mPulse, Cludo, AEM 6.x, Marketo, Tealium, GA4; driving +15% demo conversion uplift & +42% self-serve digital conversion rate.
    * **{{PREVIOUS_COMPANY_2}}, Inc. (Southlake, TX)**: *Product Manager of Web and E-commerce* (**Aug 2007 - Mar 2008**) — E-commerce storefronts for mobile apps & partner channels (Sprint), boosting checkout conversion by +34%.
    * **{{PREVIOUS_COMPANY_3}}, Inc. (Addison, TX)**: *E-commerce and Web Marketing Manager* (**Apr 2001 - Apr 2007**) — Sustaining 35%+ annual online sales growth via SEO/SEM/Email/Marketplaces.
@@ -37,11 +41,14 @@
 
 ## 📜 2. Technical System Revision History
 
+### **Revision 1.72** | *2026-08-12*
+* **Strict Geographic & Location Safeguard Integration**:
+  * Implemented `is_valid_location()` in [`fetch_jobspy_roles.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_jobspy_roles.py) with native `is_remote=True` scraping parameters.
+  * Filtered out non-DFW onsite and hybrid roles outside Dallas-Fort Worth Metroplex.
+  * Executed 213-role page title ground-truth metadata audit and updated live browser dashboard [`P:\Job Search\dashboard.html`](file:///P:/Job%20Search/dashboard.html).
+
 ### **Revision 1.71** | *2026-08-12*
-* **FourLeaf Federal Credit Union Application Package & Submission Log (`JOB-18`)**:
-  * Created matching master application package for **FourLeaf Federal Credit Union** (*FVP Digital Transformation Office* - 100% Remote / Nassau County, NY, LinkedIn ID: 4449323011) matching the exact resume content as Jobgether for application consistency.
-  * Generated PDF/DOCX resume & cover letter in [`P:\Job Search\FourLeaf Federal Credit Union\`](file:///P:/Job%20Search/FourLeaf%20Federal%20Credit%20Union/).
-  * Logged as **Submitted 8/12/2026** (`JOB-18`), updating total active submitted applications to **15 Submissions** in [`state.json`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\state.json) and live browser dashboard [`P:\Job Search\dashboard.html`](file:///P:/Job%20Search/dashboard.html).
+* **FourLeaf Federal Credit Union Application Package & Submission Log (`JOB-18`)**.
 
 ### **Revision 1.70** | *2026-08-12*
 * **Jobgether / FourLeaf Application Package & Submission Log (`JOB-17`)**.
@@ -86,8 +93,8 @@
 | File Name | Location | Description |
 | :--- | :--- | :--- |
 | **`PROJECT_GOALS_AND_REVISIONS.md`** | [`./PROJECT_GOALS_AND_REVISIONS.md`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/PROJECT_GOALS_AND_REVISIONS.md) | **[Current File]** System technical revision history and candidate baseline. |
-| **`build_application_package.py`** | [`./build_application_package.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine (Includes FourLeaf & Jobgether payloads). |
-| **`fetch_jobspy_roles.py`** | [`./fetch_jobspy_roles.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_jobspy_roles.py) | Open-source Python multi-board live scraper engine. |
+| **`fetch_jobspy_roles.py`** | [`./fetch_jobspy_roles.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_jobspy_roles.py) | Open-source Python multi-board live scraper engine with strict DFW/Remote location guardrails. |
+| **`build_application_package.py`** | [`./build_application_package.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine. |
 | **`fetch_gmail_alerts.py`** | [`./fetch_gmail_alerts.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_gmail_alerts.py) | Email job alert parser with auto JobSpy scraper execution & dashboard sync. |
 | **`audit_and_fix_queue_companies.py`** | [`./audit_and_fix_queue_companies.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/audit_and_fix_queue_companies.py) | Live page title metadata scraper for 100% ground-truth company titles. |
 | **`sync_dashboard_from_state.py`** | [`./sync_dashboard_from_state.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/sync_dashboard_from_state.py) | Automated state-to-HTML dashboard generator. |
