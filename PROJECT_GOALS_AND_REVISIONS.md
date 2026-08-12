@@ -32,7 +32,7 @@
 
 ---
 
-## 📜 2. Full Revision & Changelog History
+## 📜 2. Complete Revision & Changelog History (v1.0 – v1.65)
 
 ### **Revision 1.65** | *2026-08-12 15:30:00*
 * **Changelog**:
@@ -43,7 +43,59 @@
 
 ### **Revision 1.64** | *2026-08-12 15:19:00*
 * **Changelog**:
-  * **Dual-Channel Indeed Integration Executed**.
+  * **Dual-Channel Indeed Integration Executed**:
+    * Enabled explicit `site:indeed.com/viewjob` web sweeps during standing search cycles alongside IMAP email digest parsing (`fetch_gmail_alerts.py`).
+    * Updated standing cron schedule (`task-1468`).
+
+### **Revision 1.63** | *2026-08-11 15:50:00*
+* **Changelog**:
+  * **Added Target Roles**:
+    * **Fractional VP of Digital Product / Web Operations** (Global website overhauls, compliance, multi-region localization).
+    * **Digital Transformation Advisor** (Legacy tech stack sync, marketing automation integration).
+
+### **Revision 1.62** | *2026-08-11 11:48:00*
+* **Changelog**:
+  * **Mouser Electronics Application Package & Submission Log (`JOB-15`)**:
+    * Created tailored master application package for **Mouser Electronics** (*Web Software Development Director* - Mansfield, TX DFW Local HQ, Req #30834).
+    * Generated PDF/DOCX resume & cover letter in [`P:\Job Search\Mouser Electronics\`](file:///P:/Job%20Search/Mouser%20Electronics/).
+    * Updated application count to **12 Active Submissions** in [`state.json`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\state.json) and live browser dashboard [`P:\Job Search\dashboard.html`](file:///P:/Job%20Search/dashboard.html).
+
+### **Revision 1.61** | *2026-08-11 10:55:00*
+* **Changelog**:
+  * **Ground-Truth Company Name Audit Executed**: Created [`audit_and_fix_queue_companies.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\audit_and_fix_queue_companies.py). Fetched live page titles for all review queue URLs to extract exact hiring companies, eliminating "{{YOUR_NAME}}" and digest-header misattributions.
+  * Integrated `audit_queue()` directly into [`fetch_gmail_alerts.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_gmail_alerts.py) for perpetual accuracy.
+
+### **Revision 1.60** | *2026-08-10 20:53:00*
+* **Changelog**:
+  * **Multi-Layer Cross-Email Deduplication Implemented**: Built `get_job_dedup_key()` in [`fetch_gmail_alerts.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_gmail_alerts.py) enforcing canonical job IDs, clean URL parameters, and normalized Title+Company hashes.
+
+### **Revision 1.59** | *2026-08-10 20:50:00*
+* **Changelog**:
+  * **Automated Dashboard Sync Engine Implemented**: Created [`sync_dashboard_from_state.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\sync_dashboard_from_state.py) and integrated it directly into [`fetch_gmail_alerts.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_gmail_alerts.py).
+
+### **Revision 1.58** | *2026-08-10 10:13:00*
+* **Changelog**:
+  * **Neo Security Inc. Application Package & Submission Log (`JOB-14`)**: Tailored master package for *Director, Web & Digital / AEO*. Generated PDF/DOCX package in `P:\Job Search\Neo Security\`.
+
+### **Revision 1.57** | *2026-08-10 10:11:00*
+* **Changelog**:
+  * **100% Live URL Company Name Audit**: Re-aligned company names for ServiceNow, Outreach, Scotiabank, Legacybox, and Jobgether.
+
+### **Revision 1.56** | *2026-08-10 09:30:00*
+* **Changelog**:
+  * **Lensa Domain Exclusion**: Removed `@lensa.com` from email alert parser and purged low-quality Lensa listings.
+
+### **Revision 1.54 – 1.55** | *2026-08-07*
+* **Changelog**:
+  * Generated master application packages for **Databricks** (`JOB-11`), **Six Flags** (`JOB-12`), **GitLab Growth EM** (`JOB-10a`), and **GitLab AI CRO** (`JOB-10b`).
+
+### **Revision 1.50 – 1.53** | *2026-08-05 – 2026-08-06*
+* **Changelog**:
+  * Built tailored packages for **Life360** (`JOB-09`), **Palo Alto Networks** (`JOB-08`), **Uniphore** (`JOB-03`), **Rubrik** (`JOB-02`), and **Hyland Software** (`JOB-01`).
+
+### **Revision 1.0 – 1.49** | *Initial Foundation*
+* **Changelog**:
+  * Established single-column ATS formatting, baseline career truth at {{PREVIOUS_COMPANY_1}} (June 2008 - Present), zero em-dash text sanitizer, ReportLab PDF / Word docx generator engine, local `P:\Job Search\` drive sync, and GitHub open-source template repository.
 
 ---
 
@@ -51,8 +103,10 @@
 
 | File Name | Location | Description |
 | :--- | :--- | :--- |
-| **`PROJECT_GOALS_AND_REVISIONS.md`** | [`./PROJECT_GOALS_AND_REVISIONS.md`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/PROJECT_GOALS_AND_REVISIONS.md) | **[Current File]** Project objectives, complete revision log, and JobSpy integration. |
+| **`PROJECT_GOALS_AND_REVISIONS.md`** | [`./PROJECT_GOALS_AND_REVISIONS.md`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/PROJECT_GOALS_AND_REVISIONS.md) | **[Current File]** Complete revision history (v1.0 – v1.65) and system goals. |
 | **`fetch_jobspy_roles.py`** | [`./fetch_jobspy_roles.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_jobspy_roles.py) | Open-source Python multi-board live scraper engine. |
 | **`fetch_gmail_alerts.py`** | [`./fetch_gmail_alerts.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_gmail_alerts.py) | Email job alert parser with auto JobSpy scraper execution & dashboard sync. |
-| **`state.json`** | [`./state.json`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/state.json) | Central persistent state tracker for candidate profile, job listings, and active submissions. |
+| **`audit_and_fix_queue_companies.py`** | [`./audit_and_fix_queue_companies.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/audit_and_fix_queue_companies.py) | Live page title metadata scraper for 100% ground-truth company titles. |
+| **`sync_dashboard_from_state.py`** | [`./sync_dashboard_from_state.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/sync_dashboard_from_state.py) | Automated state-to-HTML dashboard generator. |
 | **`build_application_package.py`** | [`./build_application_package.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine. |
+| **`state.json`** | [`./state.json`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/state.json) | Central persistent state tracker for candidate profile, job listings, and active submissions. |
