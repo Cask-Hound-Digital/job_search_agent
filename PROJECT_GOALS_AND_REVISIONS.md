@@ -34,10 +34,14 @@
 
 ## 📜 2. Technical System Revision History
 
+### **Revision 1.68** | *2026-08-12*
+* **Spinutech Application Package & Submission Log (`JOB-16`)**:
+  * Created tailored master application package for **Spinutech** (*Vice President of Digital Strategy* - 100% Remote USA).
+  * Generated PDF/DOCX resume & cover letter in [`P:\Job Search\Spinutech\`](file:///P:/Job%20Search/Spinutech/).
+  * Logged as **Submitted 8/12/2026** (`JOB-16`), updating total active submitted applications to **13 Submissions** in [`state.json`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\state.json) and live browser dashboard [`P:\Job Search\dashboard.html`](file:///P:/Job%20Search/dashboard.html).
+
 ### **Revision 1.67** | *2026-08-12*
-* **Candidate Career Baseline Refinement**:
-  * Permanently excluded short contract role (First Horizon Bank) per candidate instruction.
-  * Preserved all core metrics, 13+ team scale, mPulse/Cludo tech additions, and UT Arlington / Texas A&M degree details across [`build_application_package.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\build_application_package.py), [`state.json`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\state.json), and [`PROJECT_GOALS_AND_REVISIONS.md`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\PROJECT_GOALS_AND_REVISIONS.md).
+* **Candidate Career Baseline Refinement (First Horizon Excluded)**.
 
 ### **Revision 1.66** | *2026-08-12*
 * **Candidate Baseline Resume Enhancement (Historical PDF Audit)**.
@@ -70,7 +74,7 @@
 | File Name | Location | Description |
 | :--- | :--- | :--- |
 | **`PROJECT_GOALS_AND_REVISIONS.md`** | [`./PROJECT_GOALS_AND_REVISIONS.md`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/PROJECT_GOALS_AND_REVISIONS.md) | **[Current File]** System technical revision history and candidate baseline. |
-| **`build_application_package.py`** | [`./build_application_package.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine (First Horizon Bank excluded). |
+| **`build_application_package.py`** | [`./build_application_package.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine (Includes Spinutech VP Digital Strategy payload). |
 | **`fetch_jobspy_roles.py`** | [`./fetch_jobspy_roles.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_jobspy_roles.py) | Open-source Python multi-board live scraper engine. |
 | **`fetch_gmail_alerts.py`** | [`./fetch_gmail_alerts.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_gmail_alerts.py) | Email job alert parser with auto JobSpy scraper execution & dashboard sync. |
 | **`audit_and_fix_queue_companies.py`** | [`./audit_and_fix_queue_companies.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/audit_and_fix_queue_companies.py) | Live page title metadata scraper for 100% ground-truth company titles. |
