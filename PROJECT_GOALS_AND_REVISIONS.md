@@ -17,8 +17,9 @@
    * Em dashes are STRICTLY PROHIBITED across all resumes, cover letters, and system text outputs.
    * The generator script automatically runs a text sanitizer to convert any dashes to standard hyphens (` - `), pipes (` | `), or commas.
 
-2. **1-Click "⚡ Apply & Build Package" Dashboard Server**:
+2. **Automated Server Lifecycle & 1-Click "⚡ Apply & Build Package"**:
    * Standing local API background server ([`dashboard_server.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\dashboard_server.py)) running on `http://localhost:5000`.
+   * Automatically launched at the start of the **7:00 AM CT search cycle** via `ensure_dashboard_server_running()` in [`fetch_gmail_alerts.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_gmail_alerts.py).
    * Every job card on [`P:\Job Search\dashboard.html`](file:///P:/Job%20Search/dashboard.html) features a **"⚡ Apply & Build Package"** button that automatically generates PDF/DOCX resumes and cover letters in `P:\Job Search\<Company>\`, logs the application as Submitted, and refreshes the browser UI in real time.
 
 3. **Open-Source Multi-Board JobSpy Integration**:
@@ -45,11 +46,13 @@
 
 ## 📜 2. Technical System Revision History
 
+### **Revision 1.74** | *2026-08-13*
+* **Automated Cron Server Auto-Launch (`ensure_dashboard_server_running`)**:
+  * Integrated `ensure_dashboard_server_running()` in [`fetch_gmail_alerts.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_gmail_alerts.py).
+  * Automatically detects and launches [`dashboard_server.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\dashboard_server.py) on `http://localhost:5000` during morning search cycles (7:00 AM CT) so the 1-click **Apply** button on [`P:\Job Search\dashboard.html`](file:///P:/Job%20Search/dashboard.html) is always ready.
+
 ### **Revision 1.73** | *2026-08-12*
-* **1-Click "⚡ Apply & Build Package" Dashboard API Server & UI Integration**:
-  * Created [`dashboard_server.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\dashboard_server.py) background API listener (`http://localhost:5000/api/apply`).
-  * Added 1-click **"⚡ Apply & Build Package"** buttons to all review queue cards in [`sync_dashboard_from_state.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\sync_dashboard_from_state.py).
-  * Clicking the button generates PDF/DOCX packages in `P:\Job Search\<Company>\`, logs the application in `state.json`, and updates [`P:\Job Search\dashboard.html`](file:///P:/Job%20Search/dashboard.html).
+* **1-Click "⚡ Apply & Build Package" Dashboard API Server & UI Integration**.
 
 ### **Revision 1.72** | *2026-08-12*
 * **Strict Geographic & Location Safeguard Integration**.
@@ -100,9 +103,9 @@
 | File Name | Location | Description |
 | :--- | :--- | :--- |
 | **`PROJECT_GOALS_AND_REVISIONS.md`** | [`./PROJECT_GOALS_AND_REVISIONS.md`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/PROJECT_GOALS_AND_REVISIONS.md) | **[Current File]** System technical revision history and candidate baseline. |
+| **`fetch_gmail_alerts.py`** | [`./fetch_gmail_alerts.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_gmail_alerts.py) | Email job alert parser with auto-launch for dashboard server & dashboard sync. |
 | **`dashboard_server.py`** | [`./dashboard_server.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/dashboard_server.py) | **[Local API Server]** Background HTTP server listening on localhost:5000 for 1-click apply triggers. |
 | **`sync_dashboard_from_state.py`** | [`./sync_dashboard_from_state.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/sync_dashboard_from_state.py) | Automated state-to-HTML dashboard generator with 1-click apply button UI. |
 | **`fetch_jobspy_roles.py`** | [`./fetch_jobspy_roles.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_jobspy_roles.py) | Open-source Python multi-board live scraper engine with strict DFW/Remote location guardrails. |
 | **`build_application_package.py`** | [`./build_application_package.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine. |
-| **`fetch_gmail_alerts.py`** | [`./fetch_gmail_alerts.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_gmail_alerts.py) | Email job alert parser with auto JobSpy scraper execution & dashboard sync. |
 | **`state.json`** | [`./state.json`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/state.json) | Central persistent state tracker for candidate profile, job listings, and active submissions. |
