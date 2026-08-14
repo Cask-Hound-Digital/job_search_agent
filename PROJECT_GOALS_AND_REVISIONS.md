@@ -17,20 +17,24 @@
    * Em dashes are STRICTLY PROHIBITED across all resumes, cover letters, and system text outputs.
    * The generator script automatically runs a text sanitizer to convert any dashes to standard hyphens (` - `), pipes (` | `), or commas.
 
-2. **Director-Level Role Scope Negotiation Strategy**:
+2. **Additive Queue Protection Rule**:
+   * All search runs ([`fetch_gmail_alerts.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_gmail_alerts.py) & [`fetch_jobspy_roles.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_jobspy_roles.py)) MUST preserve all existing unreviewed/unapplied jobs in `state.json`.
+   * Newly discovered jobs are strictly **ADDED** to the queue using URL/ID deduplication. Roles are ONLY removed when explicitly applied for or dismissed by the user.
+
+3. **Director-Level Role Scope Negotiation Strategy**:
    * For senior manager / manager openings that match technical GEO/AEO and web strategy competencies (e.g., Sysdig), the system builds a tailored package positioning candidate as a Director-level executive to negotiate scope and compensation elevation ({{TARGET_COMPENSATION_MIN}}).
 
-3. **Automated Server Lifecycle & 1-Click "⚡ Apply & Build Package"**:
+4. **Automated Server Lifecycle & 1-Click "⚡ Apply & Build Package"**:
    * Standing local API background server ([`dashboard_server.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\dashboard_server.py)) running on `http://localhost:5000`.
-   * Automatically launched at the start of the **7:00 AM CT search cycle** via `ensure_dashboard_server_running()` in [`fetch_gmail_alerts.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_gmail_alerts.py).
+   * Automatically launched at the start of search cycles via `ensure_dashboard_server_running()`.
 
-4. **Open-Source Multi-Board JobSpy Integration**:
+5. **Open-Source Multi-Board JobSpy Integration**:
    * Integrated `python-jobspy` open-source scraper engine ([`fetch_jobspy_roles.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_jobspy_roles.py)) querying **LinkedIn and Indeed** for live $0-cost job extraction.
 
-5. **Strict Location Filtering Engine (Remote & DFW Local Only)**:
+6. **Strict Location Filtering Engine (Remote & DFW Local Only)**:
    * Enforced `is_remote=True` flags and strict location validation (`is_valid_location()`) in [`fetch_jobspy_roles.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_jobspy_roles.py).
 
-6. **Authoritative Candidate Baseline Career Truth**:
+7. **Authoritative Candidate Baseline Career Truth**:
    * **{{PREVIOUS_COMPANY_1}}, Inc. (Irving, TX)**: *Global Web Marketing Director of Development* (**June 2008 - Present**) — Managing a **13+ person cross-functional team** (Development, DevOps, QA, BA, SEO); owning global web operations across 34 countries; **leading discovery, ROI evaluation, and decision-making for next-gen DXP to replace legacy AEM**; **organizing and executing the TrendAI site redesign & migration to Sanity CMS**; integrating mPulse, Cludo, AEM 6.x, Marketo, Tealium, GA4; driving +15% demo conversion uplift & +42% self-serve digital conversion rate.
    * **{{PREVIOUS_COMPANY_2}}, Inc. (Southlake, TX)**: *Product Manager of Web and E-commerce* (**Aug 2007 - Mar 2008**) — E-commerce storefronts for mobile apps & partner channels (Sprint), boosting checkout conversion by +34%.
    * **{{PREVIOUS_COMPANY_3}}, Inc. (Addison, TX)**: *E-commerce and Web Marketing Manager* (**Apr 2001 - Apr 2007**) — Sustaining 35%+ annual online sales growth via SEO/SEM/Email/Marketplaces.
@@ -41,12 +45,13 @@
 
 ## 📜 2. Technical System Revision History
 
+### **Revision 1.76** | *2026-08-14*
+* **Additive Review Queue Preservation Engine**:
+  * Updated [`fetch_gmail_alerts.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_gmail_alerts.py) to perform strict additive merging for incoming email alert jobs rather than overwriting `state.json["review_queue"]`.
+  * Guarantees that unreviewed/unapplied jobs remain in your queue permanently until explicitly applied to or dismissed.
+
 ### **Revision 1.75** | *2026-08-13*
-* **Sysdig Application Package & Submission Log (`JOB-19`)**:
-  * Created tailored master application package for **Sysdig** (*Director of GEO & Web Strategy* - 100% Remote USA, Lever ID: 98756248-0b63-4660-88ee-ed2fd4e33bd4).
-  * Implemented Director-level positioning strategy referencing Sysdig's open invitation to explore role scope alignment.
-  * Generated PDF/DOCX resume & cover letter in [`P:\Job Search\Sysdig\`](file:///P:/Job%20Search/Sysdig/).
-  * Logged as **Submitted 8/13/2026** (`JOB-19`), updating total active submitted applications to **17 Submissions** in [`state.json`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\state.json) and live browser dashboard [`P:\Job Search\dashboard.html`](file:///P:/Job%20Search/dashboard.html).
+* **Sysdig Application Package & Submission Log (`JOB-19`)**.
 
 ### **Revision 1.74** | *2026-08-13*
 * **Automated Cron Server Auto-Launch (`ensure_dashboard_server_running`)**.
@@ -103,7 +108,7 @@
 | File Name | Location | Description |
 | :--- | :--- | :--- |
 | **`PROJECT_GOALS_AND_REVISIONS.md`** | [`./PROJECT_GOALS_AND_REVISIONS.md`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/PROJECT_GOALS_AND_REVISIONS.md) | **[Current File]** System technical revision history and candidate baseline. |
-| **`fetch_gmail_alerts.py`** | [`./fetch_gmail_alerts.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_gmail_alerts.py) | Email job alert parser with auto-launch for dashboard server & dashboard sync. |
+| **`fetch_gmail_alerts.py`** | [`./fetch_gmail_alerts.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_gmail_alerts.py) | Email job alert parser with additive queue merging & dashboard server auto-launch. |
 | **`dashboard_server.py`** | [`./dashboard_server.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/dashboard_server.py) | **[Local API Server]** Background HTTP server listening on localhost:5000 for 1-click apply triggers. |
 | **`sync_dashboard_from_state.py`** | [`./sync_dashboard_from_state.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/sync_dashboard_from_state.py) | Automated state-to-HTML dashboard generator with 1-click apply button UI. |
 | **`fetch_jobspy_roles.py`** | [`./fetch_jobspy_roles.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_jobspy_roles.py) | Open-source Python multi-board live scraper engine with strict DFW/Remote location guardrails. |
