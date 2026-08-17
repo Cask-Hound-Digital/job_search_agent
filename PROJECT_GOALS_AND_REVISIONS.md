@@ -17,16 +17,16 @@
    * Em dashes are STRICTLY PROHIBITED across all resumes, cover letters, and system text outputs.
    * The generator script automatically runs a text sanitizer to convert any dashes to standard hyphens (` - `), pipes (` | `), or commas.
 
-2. **Additive Queue Protection Rule**:
+2. **Silent Background Daemon Server Architecture**:
+   * Standing local API background server ([`dashboard_server.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\dashboard_server.py)) running on `http://localhost:5000`.
+   * Launched silently using `subprocess.CREATE_NO_WINDOW` via `ensure_dashboard_server_running()` in [`fetch_gmail_alerts.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_gmail_alerts.py) so no shell windows pop up or remain open on screen.
+
+3. **Additive Queue Protection Rule**:
    * All search runs ([`fetch_gmail_alerts.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_gmail_alerts.py) & [`fetch_jobspy_roles.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_jobspy_roles.py)) MUST preserve all existing unreviewed/unapplied jobs in `state.json`.
    * Newly discovered jobs are strictly **ADDED** to the queue using URL/ID deduplication. Roles are ONLY removed when explicitly applied for or dismissed by the user.
 
-3. **Director-Level Role Scope Negotiation Strategy**:
+4. **Director-Level Role Scope Negotiation Strategy**:
    * For senior manager / manager openings that match technical GEO/AEO and web strategy competencies (e.g., Sysdig), the system builds a tailored package positioning candidate as a Director-level executive to negotiate scope and compensation elevation ({{TARGET_COMPENSATION_MIN}}).
-
-4. **Automated Server Lifecycle & 1-Click "⚡ Apply & Build Package"**:
-   * Standing local API background server ([`dashboard_server.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\dashboard_server.py)) running on `http://localhost:5000`.
-   * Automatically launched at the start of search cycles via `ensure_dashboard_server_running()`.
 
 5. **Open-Source Multi-Board JobSpy Integration**:
    * Integrated `python-jobspy` open-source scraper engine ([`fetch_jobspy_roles.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_jobspy_roles.py)) querying **LinkedIn and Indeed** for live $0-cost job extraction.
@@ -45,10 +45,13 @@
 
 ## 📜 2. Technical System Revision History
 
+### **Revision 1.77** | *2026-08-17*
+* **Silent Background Server Launch (`subprocess.CREATE_NO_WINDOW`)**:
+  * Updated [`fetch_gmail_alerts.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_gmail_alerts.py) to launch `dashboard_server.py` silently in the background using `subprocess.CREATE_NO_WINDOW` and redirected I/O (`DEVNULL`).
+  * Eliminates open command prompt/shell windows on desktop while maintaining active API listener on `http://localhost:5000`.
+
 ### **Revision 1.76** | *2026-08-14*
-* **Additive Review Queue Preservation Engine**:
-  * Updated [`fetch_gmail_alerts.py`](file:///c:/Users/mark\.gemini\antigravity\scratch\job-search-consultant\fetch_gmail_alerts.py) to perform strict additive merging for incoming email alert jobs rather than overwriting `state.json["review_queue"]`.
-  * Guarantees that unreviewed/unapplied jobs remain in your queue permanently until explicitly applied to or dismissed.
+* **Additive Review Queue Preservation Engine**.
 
 ### **Revision 1.75** | *2026-08-13*
 * **Sysdig Application Package & Submission Log (`JOB-19`)**.
@@ -108,8 +111,8 @@
 | File Name | Location | Description |
 | :--- | :--- | :--- |
 | **`PROJECT_GOALS_AND_REVISIONS.md`** | [`./PROJECT_GOALS_AND_REVISIONS.md`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/PROJECT_GOALS_AND_REVISIONS.md) | **[Current File]** System technical revision history and candidate baseline. |
-| **`fetch_gmail_alerts.py`** | [`./fetch_gmail_alerts.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_gmail_alerts.py) | Email job alert parser with additive queue merging & dashboard server auto-launch. |
-| **`dashboard_server.py`** | [`./dashboard_server.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/dashboard_server.py) | **[Local API Server]** Background HTTP server listening on localhost:5000 for 1-click apply triggers. |
+| **`fetch_gmail_alerts.py`** | [`./fetch_gmail_alerts.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_gmail_alerts.py) | Email job alert parser with silent background server auto-launch & additive queue merging. |
+| **`dashboard_server.py`** | [`./dashboard_server.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/dashboard_server.py) | **[Local API Server]** Background HTTP server listening silently on localhost:5000 for 1-click apply triggers. |
 | **`sync_dashboard_from_state.py`** | [`./sync_dashboard_from_state.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/sync_dashboard_from_state.py) | Automated state-to-HTML dashboard generator with 1-click apply button UI. |
 | **`fetch_jobspy_roles.py`** | [`./fetch_jobspy_roles.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/fetch_jobspy_roles.py) | Open-source Python multi-board live scraper engine with strict DFW/Remote location guardrails. |
 | **`build_application_package.py`** | [`./build_application_package.py`](file:///c:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine. |
