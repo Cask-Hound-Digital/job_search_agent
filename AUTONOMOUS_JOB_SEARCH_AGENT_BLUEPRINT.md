@@ -175,7 +175,7 @@ import json
 
 IMAP_SERVER = "imap.gmail.com"
 GMAIL_USER = "your_email@gmail.com"
-GMAIL_APP_PASSWORD = "your_app_password"
+GMAIL_APP_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD")
 
 def clean_url(url):
     if "linkedin.com" in url:
