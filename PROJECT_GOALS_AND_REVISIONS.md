@@ -59,10 +59,13 @@
 
 ## 📜 2. Technical System Revision History
 
+### **Revision 1.82** | *2026-08-18*
+* **Production-Ready `README.md` & Repository Documentation Update**:
+  * Created [`README.md`](file:///P:/Projects/job-search-consultant/README.md) featuring end-to-end system workflow diagrams (Mermaid), production script component matrix, AppSec security standards, candidate target profiles, and execution guides.
+  * Pushed updated `README.md` to GitHub repository [github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent) (Commit `92a44ef`).
+
 ### **Revision 1.81** | *2026-08-18*
-* **Full Production Engine Repository Sync**:
-  * Updated [`create_template_zip.py`](file:///P:/Projects/job-search-consultant/create_template_zip.py) to automatically package all core production engine scripts (`dashboard_server.py`, `fetch_gmail_alerts.py`, `sync_dashboard_from_state.py`, `fetch_jobspy_roles.py`, `build_application_package.py`, `audit_and_fix_queue_companies.py`, `clean_non_dfw_queue_roles.py`, `agents.md`, `.env.example`, `.gitignore`, blueprint, goals, and resume templates).
-  * Pushed full codebase update to GitHub repository [github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent) (Commit `06bf149`).
+* **Full Production Engine Repository Sync**.
 
 ### **Revision 1.80** | *2026-08-18*
 * **AppSec Security Hardening Patch**.
@@ -136,7 +139,8 @@
 
 | File Name | Location | Description |
 | :--- | :--- | :--- |
-| **`PROJECT_GOALS_AND_REVISIONS.md`** | [`./PROJECT_GOALS_AND_REVISIONS.md`](file:///P:/Projects/job-search-consultant/PROJECT_GOALS_AND_REVISIONS.md) | **[Current File]** System technical revision history and candidate baseline. |
+| **`README.md`** | [`./README.md`](file:///P:/Projects/job-search-consultant/README.md) | **[Production System Overview]** Architecture diagram, component matrix, AppSec standards & execution guides. |
+| **`PROJECT_GOALS_AND_REVISIONS.md`** | [`./PROJECT_GOALS_AND_REVISIONS.md`](file:///P:/Projects/job-search-consultant/PROJECT_GOALS_AND_REVISIONS.md) | System technical revision history and candidate baseline. |
 | **`fetch_gmail_alerts.py`** | [`./fetch_gmail_alerts.py`](file:///P:/Projects/job-search-consultant/fetch_gmail_alerts.py) | Email job alert parser with dynamic pathing, secret environment loading, silent server auto-launch & additive queue merging. |
 | **`dashboard_server.py`** | [`./dashboard_server.py`](file:///P:/Projects/job-search-consultant/dashboard_server.py) | **[Local API Server]** Background HTTP server listening on localhost:5000 with origin-validated CORS security. |
 | **`sync_dashboard_from_state.py`** | [`./sync_dashboard_from_state.py`](file:///P:/Projects/job-search-consultant/sync_dashboard_from_state.py) | Automated state-to-HTML dashboard generator with 1-click apply button UI. |
