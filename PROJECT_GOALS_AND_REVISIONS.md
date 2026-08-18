@@ -17,34 +17,38 @@
    * Em dashes are STRICTLY PROHIBITED across all resumes, cover letters, and system text outputs.
    * The generator script automatically runs a text sanitizer to convert any dashes to standard hyphens (` - `), pipes (` | `), or commas.
 
-2. **AppSec & Secret Hygiene Policy**:
+2. **Full Engine GitHub Repository Mirroring**:
+   * The live GitHub repository ([github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent)) contains the complete, production-ready Python automation engine (`dashboard_server.py`, `fetch_gmail_alerts.py`, `sync_dashboard_from_state.py`, `fetch_jobspy_roles.py`, `build_application_package.py`, `audit_and_fix_queue_companies.py`, `clean_non_dfw_queue_roles.py`, `agents.md`, `.env.example`, `.gitignore`, blueprint, goals, and resume templates).
+   * All personal credentials/passwords are sanitized into environment variables (`.env`).
+
+3. **AppSec & Secret Hygiene Policy**:
    * All API keys, passwords, and sensitive credentials MUST be loaded via environment variables (`os.environ`) or untracked local `.env` files. Hardcoded secrets in source files are strictly forbidden.
    * Local API endpoints (`dashboard_server.py`) MUST enforce origin validation to disallow wildcard (`*`) cross-site requests from untrusted external web origins.
 
-3. **Unified Project Root (`P:\Projects\job-search-consultant`)**:
+4. **Unified Project Root (`P:\Projects\job-search-consultant`)**:
    * All codebase scripts, state trackers (`state.json`), master application exports (`Job Search/`), and HTML dashboards (`Job Search/dashboard.html`) are consolidated under `P:\Projects\job-search-consultant`.
 
-4. **{{PREVIOUS_COMPANY_1}} Date Range Requirement (June 2008 - August 2026)**:
+5. **{{PREVIOUS_COMPANY_1}} Date Range Requirement (June 2008 - August 2026)**:
    * All future resume and cover letter packages MUST set {{YOUR_FULL_NAME}}' {{PREVIOUS_COMPANY_1}} role date range to **June 2008 - August 2026** (replacing "Present").
 
-5. **Silent Background Daemon Server Architecture**:
+6. **Silent Background Daemon Server Architecture**:
    * Standing local API background server ([`dashboard_server.py`](file:///P:/Projects/job-search-consultant/dashboard_server.py)) running on `http://localhost:5000`.
    * Launched silently using `subprocess.CREATE_NO_WINDOW` via `ensure_dashboard_server_running()` in [`fetch_gmail_alerts.py`](file:///P:/Projects/job-search-consultant/fetch_gmail_alerts.py) so no shell windows pop up or remain open on screen.
 
-6. **Additive Queue Protection Rule**:
+7. **Additive Queue Protection Rule**:
    * All search runs ([`fetch_gmail_alerts.py`](file:///P:/Projects/job-search-consultant/fetch_gmail_alerts.py) & [`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py)) MUST preserve all existing unreviewed/unapplied jobs in `state.json`.
    * Newly discovered jobs are strictly **ADDED** to the queue using URL/ID deduplication. Roles are ONLY removed when explicitly applied for or dismissed by the user.
 
-7. **Director-Level Role Scope Negotiation Strategy**:
+8. **Director-Level Role Scope Negotiation Strategy**:
    * For senior manager / manager openings that match technical GEO/AEO and web strategy competencies (e.g., Sysdig), the system builds a tailored package positioning candidate as a Director-level executive to negotiate scope and compensation elevation ({{TARGET_COMPENSATION_MIN}}).
 
-8. **Open-Source Multi-Board JobSpy Integration**:
+9. **Open-Source Multi-Board JobSpy Integration**:
    * Integrated `python-jobspy` open-source scraper engine ([`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py)) querying **LinkedIn and Indeed** for live $0-cost job extraction.
 
-9. **Strict Location Filtering Engine (Remote & DFW Local Only)**:
+10. **Strict Location Filtering Engine (Remote & DFW Local Only)**:
    * Enforced `is_remote=True` flags and strict location validation (`is_valid_location()`) in [`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py).
 
-10. **Authoritative Candidate Baseline Career Truth**:
+11. **Authoritative Candidate Baseline Career Truth**:
    * **{{PREVIOUS_COMPANY_1}}, Inc. (Irving, TX)**: *Global Web Marketing Director of Development* (**June 2008 - August 2026**) — Managing a **13+ person cross-functional team** (Development, DevOps, QA, BA, SEO); owning global web operations across 34 countries; **leading discovery, ROI evaluation, and decision-making for next-gen DXP to replace legacy AEM**; **organizing and executing the TrendAI site redesign & migration to Sanity CMS**; integrating mPulse, Cludo, AEM 6.x, Marketo, Tealium, GA4; driving +15% demo conversion uplift & +42% self-serve digital conversion rate.
    * **{{PREVIOUS_COMPANY_2}}, Inc. (Southlake, TX)**: *Product Manager of Web and E-commerce* (**Aug 2007 - Mar 2008**) — E-commerce storefronts for mobile apps & partner channels (Sprint), boosting checkout conversion by +34%.
    * **{{PREVIOUS_COMPANY_3}}, Inc. (Addison, TX)**: *E-commerce and Web Marketing Manager* (**Apr 2001 - Apr 2007**) — Sustaining 35%+ annual online sales growth via SEO/SEM/Email/Marketplaces.
@@ -55,10 +59,13 @@
 
 ## 📜 2. Technical System Revision History
 
+### **Revision 1.81** | *2026-08-18*
+* **Full Production Engine Repository Sync**:
+  * Updated [`create_template_zip.py`](file:///P:/Projects/job-search-consultant/create_template_zip.py) to automatically package all core production engine scripts (`dashboard_server.py`, `fetch_gmail_alerts.py`, `sync_dashboard_from_state.py`, `fetch_jobspy_roles.py`, `build_application_package.py`, `audit_and_fix_queue_companies.py`, `clean_non_dfw_queue_roles.py`, `agents.md`, `.env.example`, `.gitignore`, blueprint, goals, and resume templates).
+  * Pushed full codebase update to GitHub repository [github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent) (Commit `06bf149`).
+
 ### **Revision 1.80** | *2026-08-18*
-* **AppSec Security Hardening Patch**:
-  * **Secrets Management**: Refactored [`fetch_gmail_alerts.py`](file:///P:/Projects/job-search-consultant/fetch_gmail_alerts.py) to remove hardcoded `GMAIL_APP_PASSWORD` and load credentials dynamically from environment variables / local untracked `.env` file. Created `.gitignore` to prevent secret leakage.
-  * **CORS Origin Protection**: Hardened [`dashboard_server.py`](file:///P:/Projects/job-search-consultant/dashboard_server.py) to validate request `Origin` headers against trusted local endpoints (`http://localhost`, `http://127.0.0.1`, `file://`, `null`), eliminating open wildcard (`*`) CORS vulnerabilities.
+* **AppSec Security Hardening Patch**.
 
 ### **Revision 1.79** | *2026-08-18*
 * **Full Migration to `P:\Projects\job-search-consultant`**.
