@@ -31,19 +31,19 @@ CANDIDATE = {
     "history": {
         "trend_micro": {
             "company": "{{PREVIOUS_COMPANY_1}}, Inc.",
-            "location": "Irving, TX",
-            "title": "Global Web Marketing Director of Development",
+            "location": "{{YOUR_CITY_STATE}}",
+            "title": "{{YOUR_CURRENT_TITLE}}",
             "dates": "June 2008 - August 2026"
         },
         "handmark": {
             "company": "{{PREVIOUS_COMPANY_2}}, Inc.",
-            "location": "Southlake, TX",
+            "location": "{{YOUR_CITY_STATE}}",
             "title": "Product Manager of Web and E-commerce",
             "dates": "Aug 2007 - Mar 2008"
         },
         "mapsco": {
             "company": "{{PREVIOUS_COMPANY_3}}, Inc.",
-            "location": "Addison, TX",
+            "location": "{{YOUR_CITY_STATE}}",
             "title": "E-commerce and Web Marketing Manager",
             "dates": "Apr 2001 - Apr 2007"
         },
@@ -468,7 +468,7 @@ DATABRICKS_PAYLOAD = {
         "recipient": "Hiring Team & VP of Marketing\nDatabricks Inc.\nRemote / Global (Req ID: MKTQ327R30)",
         "salutation": "Dear Databricks Hiring Team,",
         "paragraphs": [
-            "I am writing to express my strong candidacy for the Director, Web Marketing position at Databricks (Job ID: 8638642002). As Global Web Marketing Director of Development at {{PREVIOUS_COMPANY_1}} (June 2008 - August 2026), I have spent over 18 years leading enterprise web strategy, multi-national platform migrations across 34 countries, and AI-driven search transformation. Databricks’ vision to evolve its web properties to serve both human visitors and AI agents/assistants aligns perfectly with my background in structuring machine-readable web content, scaling Generative Engine Optimization (GEO), and operationalizing web development velocity.",
+            "I am writing to express my strong candidacy for the {{YOUR_TARGET_ROLE_3}} position at Databricks (Job ID: 8638642002). As {{YOUR_CURRENT_TITLE}} at {{PREVIOUS_COMPANY_1}} (June 2008 - August 2026), I have spent over 18 years leading enterprise web strategy, multi-national platform migrations across 34 countries, and AI-driven search transformation. Databricks’ vision to evolve its web properties to serve both human visitors and AI agents/assistants aligns perfectly with my background in structuring machine-readable web content, scaling Generative Engine Optimization (GEO), and operationalizing web development velocity.",
             "Throughout my tenure at {{PREVIOUS_COMPANY_1}}, I have owned the global web channel as a primary pipeline engine. Recognizing the shift toward AI-driven discovery, I pioneered our Generative Engine Optimization (GEO) and Answer Engine Optimization (AEO) strategies, increasing company presence across AI search engines by 40% while lifting organic demo/trial conversions by 15%. Additionally, I led a large-scale platform migration across 14 languages, integrating Marketo, Tealium, and Google Analytics, improving page load speed by 40% and driving 15% growth in web-sourced pipeline. To ensure operational excellence, I established a common collaboration framework uniting developers, marketers, editors, and external agencies to streamline project intake and speed execution.",
             "Reporting to the VP of Marketing, I am eager to bring my deep technical experience, web architecture vision, and team governance to Databricks. I thrive in scale-oriented environments and look forward to building a high-performing web product organization that turns Databricks’ global web presence into an unmatched commercial and AI-native growth engine.",
             "Thank you for your time and consideration. I welcome the opportunity to discuss how my experience in web strategy, machine readability, and digital leadership will drive immediate impact for Databricks."
@@ -496,11 +496,11 @@ SIXFLAGS_PAYLOAD = {
         ("Unified Cross-Functional Framework: ", "Established a common collaboration framework for Developers, Marketers, Product Editors, and External Agencies to streamline intake, improve delivery execution, and enhance operational efficiency across regional markets.")
     ],
     "handmark_bullets": [
-        ("Mobile App & Storefront Merchandising: ", "Managed product lifecycle and digital storefront operations for mobile app software distributor in Southlake, TX, aligning functional requirements, wireframes, and customer journeys to increase e-commerce checkout conversion rate by +34%."),
+        ("Mobile App & Storefront Merchandising: ", "Managed product lifecycle and digital storefront operations for mobile app software distributor in {{YOUR_CITY_STATE}}, aligning functional requirements, wireframes, and customer journeys to increase e-commerce checkout conversion rate by +34%."),
         ("Go-To-Market & UX Execution: ", "Executed product strategy across online and on-device stores for {{PREVIOUS_COMPANY_2}} and enterprise partners (Sprint), driving a 30% increase in product-led engagement and repeat transactions.")
     ],
     "mapsco_bullets": [
-        ("Multi-Channel E-Commerce Growth: ", "Directed corporate e-commerce and web marketing (SEO, SEM, email, marketplaces) at {{PREVIOUS_COMPANY_3}} in Addison, TX, testing UX offers and checkout flows to sustain 35%+ annual online sales growth and significantly elevate average order value (AOV).")
+        ("Multi-Channel E-Commerce Growth: ", "Directed corporate e-commerce and web marketing (SEO, SEM, email, marketplaces) at {{PREVIOUS_COMPANY_3}} in {{YOUR_CITY_STATE}}, testing UX offers and checkout flows to sustain 35%+ annual online sales growth and significantly elevate average order value (AOV).")
     ],
     "cover_letter": {
         "date": "August 7, 2026",
@@ -508,9 +508,9 @@ SIXFLAGS_PAYLOAD = {
         "salutation": "Dear Six Flags Selection Committee,",
         "paragraphs": [
             "I am writing to express my strong enthusiasm for the Vice President, Digital & Ecommerce position at Six Flags Entertainment Corporation. Living in {{YOUR_CITY_STATE}}, just minutes from your corporate headquarters in Arlington, I have spent over 18 years leading enterprise web strategy, e-commerce storefronts, mobile app customer journeys, and digital marketing operations. Six Flags' vision to build a scalable, seamless digital experience across web properties, mobile app platforms, guest account portals, and digital sales channels connects directly with my background in driving digital operations and commercial revenue growth.",
-            "Throughout my 18-year tenure as Global Web Marketing Director of Development at {{PREVIOUS_COMPANY_1}} (June 2008 - August 2026), I built a reputation for unifying technology, product management, UX design, and commercial marketing teams. I owned our corporate web channel as a primary demand generation engine, executing A/B testing roadmaps that increased digital conversion rates by 42% and leading a multi-national platform migration across 34 countries that reduced page load times by 40%. Prior to {{PREVIOUS_COMPANY_1}}, I served as Senior Web Producer & E-Commerce Manager at {{PREVIOUS_COMPANY_2}} in Southlake, TX, where I managed digital storefronts for mobile app products and partner channels (Sprint), increasing e-commerce checkout conversion rates by +34%.",
+            "Throughout my 18-year tenure as {{YOUR_CURRENT_TITLE}} at {{PREVIOUS_COMPANY_1}} (June 2008 - August 2026), I built a reputation for unifying technology, product management, UX design, and commercial marketing teams. I owned our corporate web channel as a primary demand generation engine, executing A/B testing roadmaps that increased digital conversion rates by 42% and leading a multi-national platform migration across 34 countries that reduced page load times by 40%. Prior to {{PREVIOUS_COMPANY_1}}, I served as Senior Web Producer & E-Commerce Manager at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefronts for mobile app products and partner channels (Sprint), increasing e-commerce checkout conversion rates by +34%.",
             "Reporting to marketing leadership, I am eager to bring my deep digital experience, e-commerce background, and Arlington-area executive presence to Six Flags. I thrive in scale-oriented environments and look forward to leading digital and e-commerce teams to maximize guest engagement, conversion velocity, and brand loyalty.",
-            "Thank you for your time and consideration. I welcome the opportunity to discuss how my background in digital leadership, e-commerce growth, and DFW presence will drive immediate impact for Six Flags."
+            "Thank you for your time and consideration. I welcome the opportunity to discuss how my background in digital leadership, e-commerce growth, and {{YOUR_PREFERRED_HYBRID_CITY}} presence will drive immediate impact for Six Flags."
         ]
     }
 }
@@ -535,28 +535,28 @@ GRAFANA_PAYLOAD = {
         ("Self-Serve Web Operations & Guardrails: ", "Established reusable CMS component models, UX guardrails, and automated intake cadences, empowering marketing and content editors to launch campaigns independently while maintaining strict quality and security standards.")
     ],
     "handmark_bullets": [
-        ("Web & Mobile Storefront Engineering: ", "Oversaw end-to-end development lifecycle and digital product operations for {{PREVIOUS_COMPANY_2}} in Southlake, TX, designing web architecture and checkout funnels for mobile app software stores (Sprint) that increased e-commerce conversion rates by +34%."),
+        ("Web & Mobile Storefront Engineering: ", "Oversaw end-to-end development lifecycle and digital product operations for {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, designing web architecture and checkout funnels for mobile app software stores (Sprint) that increased e-commerce conversion rates by +34%."),
         ("Go-To-Market & Functional Specification: ", "Defined functional requirements, wireframes, and customer use cases across web and mobile app products, driving a 30% increase in product engagement.")
     ],
     "mapsco_bullets": [
-        ("Digital Revenue & Sales Growth: ", "Directed corporate e-commerce and web marketing at {{PREVIOUS_COMPANY_3}} in Addison, TX, optimizing web architecture and checkout flows to sustain 35%+ annual online sales growth.")
+        ("Digital Revenue & Sales Growth: ", "Directed corporate e-commerce and web marketing at {{PREVIOUS_COMPANY_3}} in {{YOUR_CITY_STATE}}, optimizing web architecture and checkout flows to sustain 35%+ annual online sales growth.")
     ],
     "cover_letter": {
         "date": "August 7, 2026",
         "recipient": "Selection Committee & Web Engineering Leadership\nGrafana Labs\nRemote / United States (Req ID: 5999936004)",
         "salutation": "Dear Grafana Labs Selection Committee,",
         "paragraphs": [
-            "I am writing to express my strong enthusiasm for the Senior Manager, Web Technology position at Grafana Labs (Req ID: 5999936004). As Global Web Marketing Director of Development at {{PREVIOUS_COMPANY_1}} (June 2008 - August 2026), I have spent over 18 years leading enterprise web strategy, engineering teams, and AI-enabled digital transformation. Grafana Labs' vision to evolve grafana.com into an AI-first, agent-ready platform optimized for both humans and LLMs connects directly with my background in structuring machine-readable web content, scaling web development velocity, and building self-serve web operations.",
+            "I am writing to express my strong enthusiasm for the Senior Manager, Web Technology position at Grafana Labs (Req ID: 5999936004). As {{YOUR_CURRENT_TITLE}} at {{PREVIOUS_COMPANY_1}} (June 2008 - August 2026), I have spent over 18 years leading enterprise web strategy, engineering teams, and AI-enabled digital transformation. Grafana Labs' vision to evolve grafana.com into an AI-first, agent-ready platform optimized for both humans and LLMs connects directly with my background in structuring machine-readable web content, scaling web development velocity, and building self-serve web operations.",
             "Throughout my tenure at {{PREVIOUS_COMPANY_1}}, I owned our corporate web channel as a primary commercial and brand engine. Recognizing the shift toward AI-driven discovery, I pioneered our Generative Engine Optimization (GEO) and Answer Engine Optimization (AEO) initiatives, increasing company presence across AI assistants by 40% while lifting organic trial conversions by 15%. Embracing AI as a core productivity multiplier, I integrated AI platforms (Claude, ChatGPT, CoPilot) into our engineering workflows, accelerating production velocity by 30%. Additionally, I spearheaded a multi-national platform migration across 34 countries, establishing reusable CMS component models and automated intake cadences that enabled marketing teams to publish self-serve without compromising quality or performance.",
-            "Prior to {{PREVIOUS_COMPANY_1}}, I served as Product Manager of Web and E-commerce at {{PREVIOUS_COMPANY_2}} in Southlake, TX, where I managed digital storefront development across web and mobile partner channels (Sprint), boosting checkout conversion rates by +34%. I thrive in 100% remote, open-culture environments and am eager to bring my web engineering leadership, AI transformation experience, and operational discipline to lead the web technology team at Grafana Labs.",
+            "Prior to {{PREVIOUS_COMPANY_1}}, I served as Product Manager of Web and E-commerce at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefront development across web and mobile partner channels (Sprint), boosting checkout conversion rates by +34%. I thrive in 100% remote, open-culture environments and am eager to bring my web engineering leadership, AI transformation experience, and operational discipline to lead the web technology team at Grafana Labs.",
             "Thank you for your time and consideration. I welcome the opportunity to discuss how my experience in web platform architecture, AI-first transformation, and team leadership will drive immediate impact for grafana.com."
         ]
     }
 }
 
 MOUSER_PAYLOAD = {
-    "company": "Mouser Electronics",
-    "folder": "Mouser Electronics",
+    "company": "{{TARGET_COMPANY_6}}",
+    "folder": "{{TARGET_COMPANY_6}}",
     "role": "Web Software Development Director",
     "headline": "WEB SOFTWARE DEVELOPMENT DIRECTOR | GLOBAL ECOMMERCE & DIGITAL PLATFORMS LEADER",
     "summary": "Executive Web Software Development and Digital Engineering Leader based in {{YOUR_CITY_STATE}} (minutes from Mansfield HQ) with 18+ years managing enterprise e-commerce platforms, web software architecture, customer experience engineering, and cross-functional technology teams. Proven track record owning global web channels as primary demand generation and revenue engines at {{PREVIOUS_COMPANY_1}} (18+ years in global web marketing development). Expert in modernizing web software architectures, conversion rate optimization (CRO), CMS platform modernizations (AEM, Sanity, WordPress, Drupal), AI-assisted development velocity (Claude, Cursor, CoPilot, GEO/AEO), and high-scale digital customer experiences.",
@@ -564,7 +564,7 @@ MOUSER_PAYLOAD = {
         ("E-Commerce Software Architecture: ", "High-Impact Digital E-Commerce Platforms, Web Software Engineering, Microservices & API Integration, System Resilience & Scalability, Modernization Roadmaps."),
         ("Conversion Rate Optimization & CRO: ", "Checkout Conversion Rate Optimization (CRO), A/B & Multivariate Testing, Customer Experience Design, High-Velocity Merchandising Funnels, User Account Portals."),
         ("AI Engineering & Development Velocity: ", "AI Coding Assistants (Cursor, Claude Code, CoPilot), AI Assistant & LLM Content Optimization (GEO/AEO), Automated Testing Workflows, Content-to-Code Speed."),
-        ("Software Team Leadership & Governance: ", "Cross-Functional Engineering Management (Developers, Marketers, UX Designers, Executives), Agile Sprint Cadences, Budget Management ($1M+), DFW Leadership.")
+        ("Software Team Leadership & Governance: ", "Cross-Functional Engineering Management (Developers, Marketers, UX Designers, Executives), Agile Sprint Cadences, Budget Management ($1M+), {{YOUR_PREFERRED_HYBRID_CITY}} Leadership.")
     ],
     "trend_micro_bullets": [
         ("Global Web Software Engineering & Operations Leadership: ", "Led global web software development and digital engineering teams for {{PREVIOUS_COMPANY_1}}'s enterprise B2B and B2C web platforms (June 2008 - August 2026), owning corporate e-commerce and digital channels as primary demand generation and revenue engines."),
@@ -574,21 +574,21 @@ MOUSER_PAYLOAD = {
         ("Cross-Functional Governance & Delivery Cadences: ", "Established a unified collaboration framework for software engineers, product managers, UX designers, and external agencies to streamline project intake, elevate software quality, and enhance operational efficiency.")
     ],
     "handmark_bullets": [
-        ("E-Commerce Storefront & Mobile App Engineering: ", "Managed web software product lifecycle and digital storefront development for {{PREVIOUS_COMPANY_2}} in Southlake, TX, engineering checkout funnels for partner channels (Sprint) that boosted e-commerce conversion rates by +34%."),
+        ("E-Commerce Storefront & Mobile App Engineering: ", "Managed web software product lifecycle and digital storefront development for {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, engineering checkout funnels for partner channels (Sprint) that boosted e-commerce conversion rates by +34%."),
         ("Functional Specification & Go-To-Market Execution: ", "Defined software functional requirements, wireframes, and customer use cases across web and mobile app products, driving a 30% increase in product-led customer engagement.")
     ],
     "mapsco_bullets": [
-        ("E-Commerce Revenue & Sales Growth: ", "Directed corporate e-commerce software and web marketing at {{PREVIOUS_COMPANY_3}} in Addison, TX, optimizing web architecture and checkout flows to sustain 35%+ annual online sales growth.")
+        ("E-Commerce Revenue & Sales Growth: ", "Directed corporate e-commerce software and web marketing at {{PREVIOUS_COMPANY_3}} in {{YOUR_CITY_STATE}}, optimizing web architecture and checkout flows to sustain 35%+ annual online sales growth.")
     ],
     "cover_letter": {
         "date": "August 11, 2026",
         "recipient": "Selection Committee & Technology Leadership\nMouser Electronics, Inc.\nCorporate Headquarters | Mansfield, TX (Req ID: 30834)",
-        "salutation": "Dear Mouser Selection Committee,",
+        "salutation": "Dear {{TARGET_COMPANY_6}} Selection Committee,",
         "paragraphs": [
-            "I am writing to express my strong enthusiasm for the Web Software Development Director position at Mouser Electronics (Job ID: 30834). Living in {{YOUR_CITY_STATE}}, just minutes from your corporate headquarters in Mansfield, I have spent over 18 years leading enterprise web software development, digital e-commerce platforms, customer experience engineering, and cross-functional technology teams. Mouser's mission to lead the evolution of a high-impact digital e-commerce platform and shape the future of how customers engage at scale connects directly with my hands-on experience modernizing architectures, evolving engineering practices, and driving measurable commercial growth.",
-            "Throughout my 18-year tenure as Global Web Marketing Director of Development at {{PREVIOUS_COMPANY_1}} (June 2008 - August 2026), I built a reputation for unifying software engineering, product management, UX design, and commercial leadership. I owned our global corporate web channels as primary demand generation and e-commerce engines, executing A/B testing roadmaps that increased digital conversion rates by 42% and leading a multi-national platform modernization across 34 countries that reduced page load times by 40%. Embracing AI as a core development multiplier, I integrated AI coding copilots (Cursor, Claude, CoPilot) into our software engineering workflows, accelerating development velocity by 30% while pioneering machine-readable web content strategies (GEO/AEO) that boosted organic search presence by 40%.",
-            "Prior to {{PREVIOUS_COMPANY_1}}, I served as Product Manager of Web and E-commerce at {{PREVIOUS_COMPANY_2}} in Southlake, TX, where I managed digital storefront software development across web and mobile partner channels (Sprint), boosting checkout conversion rates by +34%. I thrive in high-scale environments and am eager to bring my web software development background, e-commerce architecture experience, and DFW executive presence to lead Mouser's software engineering team in Mansfield.",
-            "Thank you for your time and consideration. I welcome the opportunity to discuss how my experience in web software engineering, e-commerce modernization, and DFW leadership will drive immediate impact for Mouser Electronics."
+            "I am writing to express my strong enthusiasm for the Web Software Development Director position at {{TARGET_COMPANY_6}} (Job ID: 30834). Living in {{YOUR_CITY_STATE}}, just minutes from your corporate headquarters in Mansfield, I have spent over 18 years leading enterprise web software development, digital e-commerce platforms, customer experience engineering, and cross-functional technology teams. {{TARGET_COMPANY_6}}'s mission to lead the evolution of a high-impact digital e-commerce platform and shape the future of how customers engage at scale connects directly with my hands-on experience modernizing architectures, evolving engineering practices, and driving measurable commercial growth.",
+            "Throughout my 18-year tenure as {{YOUR_CURRENT_TITLE}} at {{PREVIOUS_COMPANY_1}} (June 2008 - August 2026), I built a reputation for unifying software engineering, product management, UX design, and commercial leadership. I owned our global corporate web channels as primary demand generation and e-commerce engines, executing A/B testing roadmaps that increased digital conversion rates by 42% and leading a multi-national platform modernization across 34 countries that reduced page load times by 40%. Embracing AI as a core development multiplier, I integrated AI coding copilots (Cursor, Claude, CoPilot) into our software engineering workflows, accelerating development velocity by 30% while pioneering machine-readable web content strategies (GEO/AEO) that boosted organic search presence by 40%.",
+            "Prior to {{PREVIOUS_COMPANY_1}}, I served as Product Manager of Web and E-commerce at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefront software development across web and mobile partner channels (Sprint), boosting checkout conversion rates by +34%. I thrive in high-scale environments and am eager to bring my web software development background, e-commerce architecture experience, and {{YOUR_PREFERRED_HYBRID_CITY}} executive presence to lead {{TARGET_COMPANY_6}}'s software engineering team in Mansfield.",
+            "Thank you for your time and consideration. I welcome the opportunity to discuss how my experience in web software engineering, e-commerce modernization, and {{YOUR_PREFERRED_HYBRID_CITY}} leadership will drive immediate impact for {{TARGET_COMPANY_6}}."
         ]
     }
 }
@@ -613,18 +613,18 @@ NEO_SECURITY_PAYLOAD = {
         ("Cross-Functional Governance & Remote Team Leadership: ", "Established a unified collaboration framework for developers, marketers, editors, and external agencies to streamline project intake, elevate execution quality, and manage remote digital operations.")
     ],
     "handmark_bullets": [
-        ("Web Storefront & E-Commerce Operations: ", "Oversaw product management and web storefront operations for mobile app distributor in Southlake, TX, designing UX flows and checkout funnels for partner channels (Sprint) that increased e-commerce conversion rates by +34%."),
+        ("Web Storefront & E-Commerce Operations: ", "Oversaw product management and web storefront operations for mobile app distributor in {{YOUR_CITY_STATE}}, designing UX flows and checkout funnels for partner channels (Sprint) that increased e-commerce conversion rates by +34%."),
         ("Go-To-Market & UX Functional Specification: ", "Defined functional requirements, wireframes, and customer use cases across web and mobile app products, driving a 30% increase in product engagement.")
     ],
     "mapsco_bullets": [
-        ("Digital Revenue & Sales Growth: ", "Directed corporate e-commerce and web marketing at {{PREVIOUS_COMPANY_3}} in Addison, TX, optimizing web architecture and checkout flows to sustain 35%+ annual online sales growth.")
+        ("Digital Revenue & Sales Growth: ", "Directed corporate e-commerce and web marketing at {{PREVIOUS_COMPANY_3}} in {{YOUR_CITY_STATE}}, optimizing web architecture and checkout flows to sustain 35%+ annual online sales growth.")
     ],
     "cover_letter": {
         "date": "August 10, 2026",
         "recipient": "Selection Committee & Executive Leadership\nNeo Security Inc.\nRemote - USA (Job ID: 4323676009)",
         "salutation": "Dear Neo Security Selection Committee,",
         "paragraphs": [
-            "I am writing to express my strong enthusiasm for the Director, Web & Digital (Director, Web & AEO) position at Neo Security Inc. (Job ID: 4323676009). As Global Web Marketing Director of Development at {{PREVIOUS_COMPANY_1}} (June 2008 - August 2026), I have spent over 18 years leading enterprise B2B cybersecurity web strategy, organic search growth, and AI-driven digital transformation. Neo Security's mission to build a high-converting digital front door while leading the industry in Answer Engine Optimization (AEO across ChatGPT, Perplexity, Gemini, and AI Overviews) connects directly with my hands-on experience structuring machine-readable content, accelerating development velocity with AI tools, and driving measurable pipeline growth.",
+            "I am writing to express my strong enthusiasm for the Director, Web & Digital (Director, Web & AEO) position at Neo Security Inc. (Job ID: 4323676009). As {{YOUR_CURRENT_TITLE}} at {{PREVIOUS_COMPANY_1}} (June 2008 - August 2026), I have spent over 18 years leading enterprise B2B cybersecurity web strategy, organic search growth, and AI-driven digital transformation. Neo Security's mission to build a high-converting digital front door while leading the industry in Answer Engine Optimization (AEO across ChatGPT, Perplexity, Gemini, and AI Overviews) connects directly with my hands-on experience structuring machine-readable content, accelerating development velocity with AI tools, and driving measurable pipeline growth.",
             "Throughout my 18-year tenure at {{PREVIOUS_COMPANY_1}}, I owned our corporate web channel as a primary revenue and trust engine for security buyers. Recognizing the fundamental shift toward AI-driven search, I pioneered our Generative Engine Optimization (GEO) and Answer Engine Optimization (AEO) strategies, structuring content schema and information architecture to increase brand presence across AI assistants by 40% while lifting organic trial/demo conversions by 15%. A firm believer in AI-assisted velocity, I integrated AI coding copilots (Cursor, Claude, CoPilot) into our web production workflows, reducing landing page launch times by 30%. Additionally, I led a multi-national platform migration across 34 countries, managing third-party development partners and integrating GA4, Marketo, and Tealium to drive 15% growth in web-sourced pipeline.",
             "Having spent 18+ years in the B2B cybersecurity space, I possess deep empathy for technical security buyer personas (CISOs, security engineers, IT leaders) and understand that technical credibility is everything. I thrive in hands-on, builder-oriented remote environments where modern AI tools are used to ship high-impact digital experiences rapidly.",
             "Thank you for your time and consideration. I welcome the opportunity to discuss how my cybersecurity web leadership, AEO expertise, and hands-on AI workflow execution will drive immediate pipeline growth for Neo Security Inc."
@@ -634,8 +634,8 @@ NEO_SECURITY_PAYLOAD = {
 
 
 SPINUTECH_PAYLOAD = {
-    "company": "Spinutech",
-    "folder": "Spinutech",
+    "company": "{{TARGET_COMPANY_3}}",
+    "folder": "{{TARGET_COMPANY_3}}",
     "role": "Vice President of Digital Strategy",
     "headline": "VICE PRESIDENT OF DIGITAL STRATEGY | GLOBAL DIGITAL EXPERIENCE & AI LEADER",
     "summary": "Executive digital leader with 18+ years leading cross-functional teams, digital transformation roadmaps, and AI-first activation strategies across enterprise web ecosystems. Proven track record unifying multi-disciplinary service lines (SEO/GEO/AEO, CRO, Data Analytics, Content Operations, MarTech) to transform web channels into high-velocity demand generation and commercial revenue engines. Expert in embedding Generative AI (Claude Code, ChatGPT, CoPilot, LLMs) into digital marketing workflows, establishing scalable operational frameworks, and driving strategic client growth.",
@@ -654,30 +654,30 @@ SPINUTECH_PAYLOAD = {
         ("High-Velocity CRO & Landing Page Optimization: ", "Owned web analytics and CRO roadmaps, executing A/B testing frameworks across pricing and solution flows while aligning regional marketing teams to increase campaign landing page conversions by +10% and digital trial signups by 42%.")
     ],
     "handmark_bullets": [
-        ("Digital Product Strategy & Storefront Management: ", "Oversaw end-to-end business management and product lifecycle for mobile app software distributor in Southlake, TX, designing web architecture and checkout funnels for mobile app stores (Sprint) that increased e-commerce checkout conversion rate by +34%."),
+        ("Digital Product Strategy & Storefront Management: ", "Oversaw end-to-end business management and product lifecycle for mobile app software distributor in {{YOUR_CITY_STATE}}, designing web architecture and checkout funnels for mobile app stores (Sprint) that increased e-commerce checkout conversion rate by +34%."),
         ("Go-To-Market & Consultative Alignment: ", "Executed product strategy across online and on-device stores, defining functional requirements, wireframes, and customer use cases to drive a 30% increase in product-led engagement.")
     ],
     "mapsco_bullets": [
-        ("Cross-Channel Digital Marketing & Revenue Growth: ", "Directed corporate e-commerce and web marketing (SEO, SEM, email, marketplaces) at {{PREVIOUS_COMPANY_3}} in Addison, TX, testing offers and UX flows to sustain 35%+ annual online sales growth and significantly elevate average order value (AOV).")
+        ("Cross-Channel Digital Marketing & Revenue Growth: ", "Directed corporate e-commerce and web marketing (SEO, SEM, email, marketplaces) at {{PREVIOUS_COMPANY_3}} in {{YOUR_CITY_STATE}}, testing offers and UX flows to sustain 35%+ annual online sales growth and significantly elevate average order value (AOV).")
     ],
     "cover_letter": {
         "date": "August 12, 2026",
         "recipient": "Executive Selection Committee & Leadership Team\nSpinutech\nRemote Executive Office | USA",
-        "salutation": "Dear Spinutech Leadership Team,",
+        "salutation": "Dear {{TARGET_COMPANY_3}} Leadership Team,",
         "paragraphs": [
-            "I am writing to express my strong enthusiasm for the Vice President of Digital Strategy position at Spinutech. With over 18 years of experience leading cross-functional digital marketing teams, digital transformation roadmaps, enterprise web platforms, and AI-first activation strategies, I connect directly with Spinutech's mission to lead, performance-optimize, and evolve multi-disciplinary digital teams across SEO/GEO, Paid Media, Data Science, CRO, and Content Operations.",
-            "Throughout my 18-year tenure as Global Web Marketing Director of Development at {{PREVIOUS_COMPANY_1}} (June 2008 - August 2026), I built a high-performing global organization of 13+ cross-functional specialists (development, DevOps, QA, BA, SEO). I owned our corporate web channel as the primary demand generation engine, directing a 34-country AEM 6.x migration that reduced page load times by 40% while executing CRO testing roadmaps that increased self-serve digital trial signups by 42%. Recognizing the shift toward intelligent search, I championed AI technologies (Claude, ChatGPT, CoPilot, LLMs) and Generative Engine Optimization (GEO/AEO), driving a 40% increase in search visibility and a +15% uplift in organic demo conversions.",
-            "Prior to {{PREVIOUS_COMPANY_1}}, I served as Product Manager of Web and E-commerce at {{PREVIOUS_COMPANY_2}} in Southlake, TX, where I managed digital storefronts for mobile app products and partner channels (Sprint), boosting checkout conversion rates by +34%. My background combines executive digital consulting, deep technical fluency across enterprise MarTech ecosystems, and a proven track record leading cross-disciplinary teams to deliver measurable commercial impact for clients.",
-            "Thank you for your time and consideration. I welcome the opportunity to discuss how my background in digital strategy, AI innovation, and executive leadership will drive immediate value for Spinutech and your client portfolio."
+            "I am writing to express my strong enthusiasm for the Vice President of Digital Strategy position at {{TARGET_COMPANY_3}}. With over 18 years of experience leading cross-functional digital marketing teams, digital transformation roadmaps, enterprise web platforms, and AI-first activation strategies, I connect directly with {{TARGET_COMPANY_3}}'s mission to lead, performance-optimize, and evolve multi-disciplinary digital teams across SEO/GEO, Paid Media, Data Science, CRO, and Content Operations.",
+            "Throughout my 18-year tenure as {{YOUR_CURRENT_TITLE}} at {{PREVIOUS_COMPANY_1}} (June 2008 - August 2026), I built a high-performing global organization of 13+ cross-functional specialists (development, DevOps, QA, BA, SEO). I owned our corporate web channel as the primary demand generation engine, directing a 34-country AEM 6.x migration that reduced page load times by 40% while executing CRO testing roadmaps that increased self-serve digital trial signups by 42%. Recognizing the shift toward intelligent search, I championed AI technologies (Claude, ChatGPT, CoPilot, LLMs) and Generative Engine Optimization (GEO/AEO), driving a 40% increase in search visibility and a +15% uplift in organic demo conversions.",
+            "Prior to {{PREVIOUS_COMPANY_1}}, I served as Product Manager of Web and E-commerce at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefronts for mobile app products and partner channels (Sprint), boosting checkout conversion rates by +34%. My background combines executive digital consulting, deep technical fluency across enterprise MarTech ecosystems, and a proven track record leading cross-disciplinary teams to deliver measurable commercial impact for clients.",
+            "Thank you for your time and consideration. I welcome the opportunity to discuss how my background in digital strategy, AI innovation, and executive leadership will drive immediate value for {{TARGET_COMPANY_3}} and your client portfolio."
         ]
     }
 }
 
 
 JOBGETHER_FVP_PAYLOAD = {
-    "company": "Jobgether",
-    "folder": "Jobgether",
-    "role": "FVP Digital Transformation Office",
+    "company": "{{TARGET_COMPANY_2}}",
+    "folder": "{{TARGET_COMPANY_2}}",
+    "role": "{{YOUR_TARGET_ROLE_5}}",
     "headline": "FVP, DIGITAL TRANSFORMATION OFFICE | GLOBAL DIGITAL EXPERIENCE & AI LEADER",
     "summary": "Executive digital transformation leader with 18+ years leading enterprise web strategy, digital product operations, fintech/martech modernization, and cross-functional technology teams. Proven track record defining multi-year digital transformation roadmaps, establishing governance frameworks, and unifying product management, UX design, engineering, analytics, and SEO to maximize acquisition, engagement, and retention. Expert in evaluating emerging AI technologies (Claude Code, ChatGPT, CoPilot, GEO/AEO), modernizing legacy digital architectures, and managing strategic vendor/fintech partnerships.",
     "areas_of_expertise": [
@@ -694,20 +694,20 @@ JOBGETHER_FVP_PAYLOAD = {
         ("Multi-National Platform Modernization & Performance: ", "Directed enterprise web platform migration across 34 countries and 14 languages, integrating Marketo, Tealium, GTM, mPulse, Cludo, and GA4 to reduce page load times by 40%, boost organic sessions by 10%, and drive 15% pipeline growth.")
     ],
     "handmark_bullets": [
-        ("Digital Product Strategy & Storefront Management: ", "Oversaw end-to-end business management and product lifecycle for mobile app software distributor in Southlake, TX, designing web architecture and checkout funnels for mobile app stores (Sprint) that increased e-commerce checkout conversion rate by +34%."),
+        ("Digital Product Strategy & Storefront Management: ", "Oversaw end-to-end business management and product lifecycle for mobile app software distributor in {{YOUR_CITY_STATE}}, designing web architecture and checkout funnels for mobile app stores (Sprint) that increased e-commerce checkout conversion rate by +34%."),
         ("Go-To-Market & Executive Alignment: ", "Executed product strategy across online and on-device stores, defining functional requirements, wireframes, and customer use cases to drive a 30% increase in product-led engagement.")
     ],
     "mapsco_bullets": [
-        ("Digital Marketing & Revenue Optimization: ", "Directed corporate e-commerce and web marketing (SEO, SEM, email, marketplaces) at {{PREVIOUS_COMPANY_3}} in Addison, TX, testing offers and UX flows to sustain 35%+ annual online sales growth.")
+        ("Digital Marketing & Revenue Optimization: ", "Directed corporate e-commerce and web marketing (SEO, SEM, email, marketplaces) at {{PREVIOUS_COMPANY_3}} in {{YOUR_CITY_STATE}}, testing offers and UX flows to sustain 35%+ annual online sales growth.")
     ],
     "cover_letter": {
         "date": "August 12, 2026",
-        "recipient": "Executive Selection Committee & Digital Transformation Leadership\nJobgether / FourLeaf Federal Credit Union\nRemote Executive Office | USA (Job ID: 4449323011)",
+        "recipient": "Executive Selection Committee & Digital Transformation Leadership\nJobgether / {{TARGET_COMPANY_1}}\nRemote Executive Office | USA (Job ID: 4449323011)",
         "salutation": "Dear Selection Committee,",
         "paragraphs": [
-            "I am writing to express my strong enthusiasm for the FVP Digital Transformation Office position at FourLeaf Federal Credit Union (via Jobgether, Job ID: 4449323011). With over 18 years of experience leading enterprise digital transformation strategy, digital product management, technology modernization, and cross-functional technology teams, I connect directly with your mission to define, govern, and execute a multi-year digital transformation roadmap.",
-            "Throughout my 18-year tenure as Global Web Marketing Director of Development at {{PREVIOUS_COMPANY_1}} (June 2008 - August 2026), I built a high-performing global organization of 13+ cross-functional specialists (development, DevOps, QA, BA, SEO). I owned our corporate web channel as the primary demand generation engine, directing a 34-country AEM 6.x migration that reduced page load times by 40% while leading the discovery, ROI evaluation, and decision-making for a next-gen DXP platform to replace legacy AEM. Additionally, I organized and executed the TrendAI site redesign and migration to Sanity CMS, while pioneering Generative Engine Optimization (GEO/AEO) strategies that increased search visibility by 40% and lifted organic demo conversions by +15%.",
-            "Prior to {{PREVIOUS_COMPANY_1}}, I served as Product Manager of Web and E-commerce at {{PREVIOUS_COMPANY_2}} in Southlake, TX, where I managed digital storefront software development across web and mobile partner channels (Sprint), boosting checkout conversion rates by +34%. My background combines executive digital consulting, deep technical fluency across enterprise MarTech/FinTech ecosystems, and a proven track record leading cross-disciplinary teams through organizational change.",
+            "I am writing to express my strong enthusiasm for the {{YOUR_TARGET_ROLE_5}} position at {{TARGET_COMPANY_1}} (via {{TARGET_COMPANY_2}}, Job ID: 4449323011). With over 18 years of experience leading enterprise digital transformation strategy, digital product management, technology modernization, and cross-functional technology teams, I connect directly with your mission to define, govern, and execute a multi-year digital transformation roadmap.",
+            "Throughout my 18-year tenure as {{YOUR_CURRENT_TITLE}} at {{PREVIOUS_COMPANY_1}} (June 2008 - August 2026), I built a high-performing global organization of 13+ cross-functional specialists (development, DevOps, QA, BA, SEO). I owned our corporate web channel as the primary demand generation engine, directing a 34-country AEM 6.x migration that reduced page load times by 40% while leading the discovery, ROI evaluation, and decision-making for a next-gen DXP platform to replace legacy AEM. Additionally, I organized and executed the TrendAI site redesign and migration to Sanity CMS, while pioneering Generative Engine Optimization (GEO/AEO) strategies that increased search visibility by 40% and lifted organic demo conversions by +15%.",
+            "Prior to {{PREVIOUS_COMPANY_1}}, I served as Product Manager of Web and E-commerce at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefront software development across web and mobile partner channels (Sprint), boosting checkout conversion rates by +34%. My background combines executive digital consulting, deep technical fluency across enterprise MarTech/FinTech ecosystems, and a proven track record leading cross-disciplinary teams through organizational change.",
             "Thank you for your time and consideration. I welcome the opportunity to discuss how my background in digital transformation, AI innovation, and executive leadership will drive immediate impact for the Digital Transformation Office."
         ]
     }

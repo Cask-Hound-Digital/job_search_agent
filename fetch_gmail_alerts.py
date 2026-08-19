@@ -92,12 +92,12 @@ def evaluate_job_criteria(title, context_text):
     if not has_target_title:
         return False, "Rejected: Title does not match candidate's expanded target title matrix"
 
-    # 3. Location Check (Default Remote for email alerts unless non-DFW hybrid explicitly stated)
+    # 3. Location Check (Default Remote for email alerts unless non-{{YOUR_PREFERRED_HYBRID_CITY}} hybrid explicitly stated)
     is_dfw = any(loc in combined_text for loc in DFW_LOCATIONS)
     is_non_dfw_onsite = any(loc in combined_text for loc in ["onsite in california", "onsite in new york", "hybrid in lansdale"])
 
     if is_non_dfw_onsite:
-        return False, "Rejected: Non-DFW Onsite/Hybrid constraint"
+        return False, "Rejected: Non-{{YOUR_PREFERRED_HYBRID_CITY}} Onsite/Hybrid constraint"
 
     return True, "Passed candidate criteria check"
 

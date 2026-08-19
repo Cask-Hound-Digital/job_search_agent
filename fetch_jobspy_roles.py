@@ -8,7 +8,7 @@ STATE_FILE = r".\state.json"
 
 TARGET_TITLES = [
     "Director of Web Marketing",
-    "Director of Digital Experience",
+    "{{YOUR_TARGET_ROLE_1}}",
     "Director of Website Growth",
     "VP of Digital Experience",
     "Fractional VP of Digital Product",
@@ -40,22 +40,22 @@ def is_valid_location(loc_str, is_remote_query):
         return True
     l_lower = loc_str.lower()
     
-    # Reject explicitly labeled onsite/on-site roles outside DFW
+    # Reject explicitly labeled onsite/on-site roles outside {{YOUR_PREFERRED_HYBRID_CITY}}
     if "onsite" in l_lower or "on-site" in l_lower or "in-office" in l_lower or "in office" in l_lower:
         if not any(dfw in l_lower for dfw in DFW_CITIES):
             return False
 
     if is_remote_query:
-        # If searching Remote, require "remote" OR reject non-DFW cities if labeled hybrid
+        # If searching Remote, require "remote" OR reject non-{{YOUR_PREFERRED_HYBRID_CITY}} cities if labeled hybrid
         if "remote" in l_lower or "work from home" in l_lower or "telecommute" in l_lower or "anywhere" in l_lower or "united states" == l_lower or "us" == l_lower:
             return True
-        # If it specifies a city and is NOT DFW, reject
+        # If it specifies a city and is NOT {{YOUR_PREFERRED_HYBRID_CITY}}, reject
         if any(dfw in l_lower for dfw in DFW_CITIES):
             return True
         # If it specifies another city (e.g. Austin, New York, Boston) without "remote", reject
         return False
     else:
-        # Searching Dallas, TX: Must be Remote OR DFW local
+        # Searching Dallas, TX: Must be Remote OR {{YOUR_PREFERRED_HYBRID_CITY}} local
         if "remote" in l_lower:
             return True
         if any(dfw in l_lower for dfw in DFW_CITIES):
@@ -65,7 +65,7 @@ def is_valid_location(loc_str, is_remote_query):
 def run_jobspy_scraper():
     print("=========================================================")
     print("  LAUNCHING JOBSPY MULTI-BOARD SCRAPER (LinkedIn, Indeed)")
-    print("  STRICT FILTERING: 100% Remote (US) & DFW Hybrid/Onsite ONLY")
+    print("  STRICT FILTERING: 100% Remote (US) & {{YOUR_PREFERRED_HYBRID_CITY}} Hybrid/Onsite ONLY")
     print("=========================================================")
 
     all_scraped_jobs = []

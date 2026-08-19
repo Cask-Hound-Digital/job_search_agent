@@ -36,13 +36,13 @@ def clean_queue():
 
         combined_text = f"{title} {company} {email_sub} {filter_reason} {loc_str}".lower()
 
-        # Check if explicitly non-DFW onsite/hybrid
+        # Check if explicitly non-{{YOUR_PREFERRED_HYBRID_CITY}} onsite/hybrid
         is_remote = "remote" in combined_text or "work from home" in combined_text or "telecommute" in combined_text
         is_dfw = any(dfw in combined_text for dfw in DFW_CITIES)
         has_non_dfw_city = any(city in combined_text for city in NON_DFW_CITIES)
 
         if not is_remote and has_non_dfw_city and not is_dfw:
-            print(f"[PURGED NON-DFW ONSITE/HYBRID] {title} at {company} (Text: '{loc_str}')")
+            print(f"[PURGED NON-{{YOUR_PREFERRED_HYBRID_CITY}} ONSITE/HYBRID] {title} at {company} (Text: '{loc_str}')")
             purged_count += 1
             continue
 
@@ -50,7 +50,7 @@ def clean_queue():
 
     print(f"\nQueue Audit Complete:")
     print(f"  Initial Review Queue Roles: {initial_count}")
-    print(f"  Purged Non-DFW Onsite/Hybrid Roles: {purged_count}")
+    print(f"  Purged Non-{{YOUR_PREFERRED_HYBRID_CITY}} Onsite/Hybrid Roles: {purged_count}")
     print(f"  Remaining Verified Roles: {len(valid_queue)}")
 
     state["verified_gmail_jobs"] = valid_queue

@@ -1,0 +1,14 @@
+{
+  "candidate_profile": {
+    "name": "{{YOUR_FULL_NAME}}",
+    "email": "{{YOUR_EMAIL_ADDRESS}}",
+    "phone": "{{YOUR_PHONE_NUMBER}}",
+    "location": "{{YOUR_CITY_STATE}}",
+    "linkedin": "{{YOUR_LINKEDIN_PROFILE_URL}}",
+    "target_compensation_min": "{{TARGET_COMPENSATION_MIN}}"
+  },
+  "applications": [],
+  "verified_gmail_jobs": [],
+  "rejected_gmail_jobs": [],
+  "review_queue": []
+}

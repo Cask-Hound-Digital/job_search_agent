@@ -64,7 +64,7 @@ The central database of the agent system is stored in a JSON structure (`state.j
     "linkedin": "https://www.linkedin.com/in/candidate/",
     "target_roles": [
       "Director of Web Marketing",
-      "Director of Digital Experience",
+      "{{YOUR_TARGET_ROLE_1}}",
       "Director of Website Growth / PLG",
       "VP of Digital Experience / Growth",
       "Fractional VP of Digital Product / Web Operations",

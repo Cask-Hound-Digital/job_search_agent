@@ -437,7 +437,7 @@ def sync_dashboard():
     <header>
       <div>
         <h1 class="brand-title">Executive Job Search Dashboard</h1>
-        <p class="brand-subtitle">Candidate: {{YOUR_FULL_NAME}} | Target Compensation: {{TARGET_COMPENSATION_MIN}} | DFW & Remote</p>
+        <p class="brand-subtitle">Candidate: {{YOUR_FULL_NAME}} | Target Compensation: {{TARGET_COMPENSATION_MIN}} | {{YOUR_PREFERRED_HYBRID_CITY}} & Remote</p>
       </div>
       <div class="header-badge">
         <span class="status-dot"></span> Active Search Engine Running (Verified Live Target URLs)
@@ -457,7 +457,7 @@ def sync_dashboard():
         <div class="kpi-subtext">Extracted from Live Email Alerts & Web Sweeps</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">DFW Local HQ Roles</div>
+        <div class="kpi-label">{{YOUR_PREFERRED_HYBRID_CITY}} Local HQ Roles</div>
         <div class="kpi-value" style="color: var(--accent-amber);">2</div>
         <div class="kpi-subtext">Six Flags (Arlington) & Scotiabank (Dallas)</div>
       </div>

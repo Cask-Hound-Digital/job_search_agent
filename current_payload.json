@@ -1,0 +1,19 @@
+{
+  "company": "{{TARGET_COMPANY_NAME}}",
+  "folder": "{{TARGET_COMPANY_NAME}}",
+  "role": "{{YOUR_TARGET_ROLE_TITLE}}",
+  "headline": "{{YOUR_HEADLINE}}",
+  "summary": "{{YOUR_SUMMARY}}",
+  "areas_of_expertise": [
+    ["{{SKILL_CATEGORY_1}}: ", "{{SKILL_LIST_1}}"],
+    ["{{SKILL_CATEGORY_2}}: ", "{{SKILL_LIST_2}}"]
+  ],
+  "cover_letter": {
+    "date": "{{CURRENT_DATE}}",
+    "recipient": "{{SELECTION_COMMITTEE}}",
+    "salutation": "Dear {{TARGET_COMPANY_NAME}} Selection Committee,",
+    "paragraphs": [
+      "I am writing to express my strong interest in {{TARGET_COMPANY_NAME}}'s open position..."
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 # Autonomous AI Career Advancement Agent & Job Search System
 
-An enterprise-grade autonomous AI job search, multi-board scraping, resume tailoring, cover letter generation, and application tracking system built for executive career advancement ($225,000+ target compensation).
+An enterprise-grade autonomous AI job search, multi-board scraping, resume tailoring, cover letter generation, and application tracking system built for executive career advancement ({{TARGET_COMPENSATION_MIN}} target compensation).
 
 ---
 
@@ -12,7 +12,7 @@ flowchart TD
     C[LinkedIn & Indeed Boards] -->|JobSpy Scraper| D[fetch_jobspy_roles.py]
     B --> E[Location & Role Filter Engine]
     D --> E
-    E -->|Remote or DFW Local| F[audit_and_fix_queue_companies.py]
+    E -->|Remote or {{YOUR_PREFERRED_HYBRID_CITY}} Local| F[audit_and_fix_queue_companies.py]
     F -->|Ground-Truth Verification| G[state.json - Central Tracker]
     G --> H[sync_dashboard_from_state.py]
     H --> I[dashboard.html - Live UI]
@@ -27,8 +27,8 @@ flowchart TD
 
 | Component | Script Name | Description |
 | :--- | :--- | :--- |
-| **Alert Ingestion** | [`fetch_gmail_alerts.py`](file:///P:/Projects/job-search-consultant/fetch_gmail_alerts.py) | Connects to Gmail via IMAP, parses incoming job alerts (LinkedIn, Indeed, BuiltIn), filters non-DFW onsite roles, and merges new matches additively into `state.json`. |
-| **Multi-Board Scraper** | [`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py) | Scrapes LinkedIn and Indeed via open-source `python-jobspy` with strict 100% Remote / DFW hybrid location validation. |
+| **Alert Ingestion** | [`fetch_gmail_alerts.py`](file:///P:/Projects/job-search-consultant/fetch_gmail_alerts.py) | Connects to Gmail via IMAP, parses incoming job alerts (LinkedIn, Indeed, BuiltIn), filters non-{{YOUR_PREFERRED_HYBRID_CITY}} onsite roles, and merges new matches additively into `state.json`. |
+| **Multi-Board Scraper** | [`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py) | Scrapes LinkedIn and Indeed via open-source `python-jobspy` with strict 100% Remote / {{YOUR_PREFERRED_HYBRID_CITY}} hybrid location validation. |
 | **Metadata Auditor** | [`audit_and_fix_queue_companies.py`](file:///P:/Projects/job-search-consultant/audit_and_fix_queue_companies.py) | Performs HTTP head/title requests to extract 100% accurate ground-truth hiring company titles for review queue listings. |
 | **Dashboard API Server** | [`dashboard_server.py`](file:///P:/Projects/job-search-consultant/dashboard_server.py) | Local background HTTP server listening on `http://localhost:5000` to process 1-click **"⚡ Apply & Build Package"** triggers from `dashboard.html`. |
 | **Dashboard Generator** | [`sync_dashboard_from_state.py`](file:///P:/Projects/job-search-consultant/sync_dashboard_from_state.py) | Renders `state.json` applications and review queue roles into a modern, responsive HTML dashboard (`dashboard.html`). |
@@ -46,8 +46,8 @@ flowchart TD
 ## 🎯 Candidate Profile & System Guardrails
 
 * **Target Roles**: Director, Senior Director, Head of, VP, Fractional VP, Advisory, Senior Manager, and Lead roles across Web Marketing, Digital Experience, Website Growth, PLG, Web Strategy, Fractional VP of Digital Product / Web Operations, Digital Transformation Advisor, SEO, Web & AI, and Web Development.
-* **Target Compensation**: {{TARGET_COMPENSATION_MIN}} / Year.
-* **Location Preferences**: 100% Remote (Primary) | Hybrid ONLY in Dallas–Fort Worth (DFW area near {{YOUR_CITY_STATE}}).
+* **Target Compensation**: {{TARGET_COMPENSATION_MIN}}.
+* **Location Preferences**: 100% Remote (Primary) | Hybrid ONLY in {{YOUR_TARGET_LOCATION}} ({{YOUR_PREFERRED_HYBRID_CITY}} area near {{YOUR_CITY_STATE}}).
 * **Strict Zero Em Dash Policy**: Em dashes (`—`) are strictly prohibited and auto-sanitized into standard hyphens (` - `) or pipes (` | `).
 * **Additive Queue Protection**: New search sweeps strictly **ADD** new unique roles to `state.json`. Unreviewed jobs are never automatically deleted.
 * **{{PREVIOUS_COMPANY_1}} Date Range**: All generated application packages set {{PREVIOUS_COMPANY_1}} experience to **June 2008 - August 2026**.

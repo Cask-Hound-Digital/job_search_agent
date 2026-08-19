@@ -1,8 +1,8 @@
 # PROJECT GOAL & REVISION TRACKER
 **Candidate**: {{YOUR_FULL_NAME}}  
 **Role Scope**: Director, Senior Director, Head of, VP, Fractional VP, Advisory, Senior Manager, and Lead roles across Web Marketing, Digital Experience, Website Growth, PLG, Web Strategy, Fractional VP of Digital Product / Web Operations, Digital Transformation Advisor, SEO, Web & AI, and Web Development  
-**Target Compensation**: {{TARGET_COMPENSATION_MIN}} / Year  
-**Location Preferences**: 100% Remote (Primary) | Hybrid ONLY in Dallas–Fort Worth (DFW area near {{YOUR_CITY_STATE}})  
+**Target Compensation**: {{TARGET_COMPENSATION_MIN}}  
+**Location Preferences**: 100% Remote (Primary) | Hybrid ONLY in {{YOUR_TARGET_LOCATION}} ({{YOUR_PREFERRED_HYBRID_CITY}} area near {{YOUR_CITY_STATE}})  
 **Search Hours Schedule**: **7:00 AM – 5:00 PM CT** (Business Hours Only | Every 4 Hours: 7am, 11am, 3pm CT)  
 **Primary System Location**: `P:\Projects\job-search-consultant`  
 **Local Export Storage Directory**: `P:\Projects\job-search-consultant\Job Search\`  
@@ -40,18 +40,18 @@
    * Newly discovered jobs are strictly **ADDED** to the queue using URL/ID deduplication. Roles are ONLY removed when explicitly applied for or dismissed by the user.
 
 8. **Director-Level Role Scope Negotiation Strategy**:
-   * For senior manager / manager openings that match technical GEO/AEO and web strategy competencies (e.g., Sysdig), the system builds a tailored package positioning candidate as a Director-level executive to negotiate scope and compensation elevation ({{TARGET_COMPENSATION_MIN}}).
+   * For senior manager / manager openings that match technical GEO/AEO and web strategy competencies (e.g., {{TARGET_COMPANY_4}}), the system builds a tailored package positioning candidate as a Director-level executive to negotiate scope and compensation elevation ({{TARGET_COMPENSATION_MIN}}).
 
 9. **Open-Source Multi-Board JobSpy Integration**:
    * Integrated `python-jobspy` open-source scraper engine ([`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py)) querying **LinkedIn and Indeed** for live $0-cost job extraction.
 
-10. **Strict Location Filtering Engine (Remote & DFW Local Only)**:
+10. **Strict Location Filtering Engine (Remote & {{YOUR_PREFERRED_HYBRID_CITY}} Local Only)**:
    * Enforced `is_remote=True` flags and strict location validation (`is_valid_location()`) in [`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py).
 
 11. **Authoritative Candidate Baseline Career Truth**:
-   * **{{PREVIOUS_COMPANY_1}}, Inc. (Irving, TX)**: *Global Web Marketing Director of Development* (**June 2008 - August 2026**) — Managing a **13+ person cross-functional team** (Development, DevOps, QA, BA, SEO); owning global web operations across 34 countries; **leading discovery, ROI evaluation, and decision-making for next-gen DXP to replace legacy AEM**; **organizing and executing the TrendAI site redesign & migration to Sanity CMS**; integrating mPulse, Cludo, AEM 6.x, Marketo, Tealium, GA4; driving +15% demo conversion uplift & +42% self-serve digital conversion rate.
-   * **{{PREVIOUS_COMPANY_2}}, Inc. (Southlake, TX)**: *Product Manager of Web and E-commerce* (**Aug 2007 - Mar 2008**) — E-commerce storefronts for mobile apps & partner channels (Sprint), boosting checkout conversion by +34%.
-   * **{{PREVIOUS_COMPANY_3}}, Inc. (Addison, TX)**: *E-commerce and Web Marketing Manager* (**Apr 2001 - Apr 2007**) — Sustaining 35%+ annual online sales growth via SEO/SEM/Email/Marketplaces.
+   * **{{PREVIOUS_COMPANY_1}}, Inc. ({{YOUR_CITY_STATE}})**: *{{YOUR_CURRENT_TITLE}}* (**June 2008 - August 2026**) — Managing a **13+ person cross-functional team** (Development, DevOps, QA, BA, SEO); owning global web operations across 34 countries; **leading discovery, ROI evaluation, and decision-making for next-gen DXP to replace legacy AEM**; **organizing and executing the TrendAI site redesign & migration to Sanity CMS**; integrating mPulse, Cludo, AEM 6.x, Marketo, Tealium, GA4; driving +15% demo conversion uplift & +42% self-serve digital conversion rate.
+   * **{{PREVIOUS_COMPANY_2}}, Inc. ({{YOUR_CITY_STATE}})**: *Product Manager of Web and E-commerce* (**Aug 2007 - Mar 2008**) — E-commerce storefronts for mobile apps & partner channels (Sprint), boosting checkout conversion by +34%.
+   * **{{PREVIOUS_COMPANY_3}}, Inc. ({{YOUR_CITY_STATE}})**: *E-commerce and Web Marketing Manager* (**Apr 2001 - Apr 2007**) — Sustaining 35%+ annual online sales growth via SEO/SEM/Email/Marketplaces.
    * **University of Texas at Arlington (Arlington, TX)**: *Bachelor of Arts (B.A.), E-Business Management & Internet Development* (Degree)
    * **Texas A&M University (College Station, TX)**: *Engineering Technology Coursework*
 
@@ -87,7 +87,7 @@
 * **Additive Review Queue Preservation Engine**.
 
 ### **Revision 1.75** | *2026-08-13*
-* **Sysdig Application Package & Submission Log (`JOB-19`)**.
+* **{{TARGET_COMPANY_4}} Application Package & Submission Log (`JOB-19`)**.
 
 ### **Revision 1.74** | *2026-08-13*
 * **Automated Cron Server Auto-Launch (`ensure_dashboard_server_running`)**.
@@ -99,16 +99,16 @@
 * **Strict Geographic & Location Safeguard Integration**.
 
 ### **Revision 1.71** | *2026-08-12*
-* **FourLeaf Federal Credit Union Application Package & Submission Log (`JOB-18`)**.
+* **{{TARGET_COMPANY_1}} Application Package & Submission Log (`JOB-18`)**.
 
 ### **Revision 1.70** | *2026-08-12*
-* **Jobgether / FourLeaf Application Package & Submission Log (`JOB-17`)**.
+* **{{TARGET_COMPANY_2}} / {{TARGET_COMPANY_1}} Application Package & Submission Log (`JOB-17`)**.
 
 ### **Revision 1.69** | *2026-08-12*
 * **Candidate Baseline Experience Expansion (DXP Replacement & TrendAI Sanity CMS Migration)**.
 
 ### **Revision 1.68** | *2026-08-12*
-* **Spinutech Application Package & Submission Log (`JOB-16`)**.
+* **{{TARGET_COMPANY_3}} Application Package & Submission Log (`JOB-16`)**.
 
 ### **Revision 1.67** | *2026-08-12*
 * **Candidate Career Baseline Refinement (First Horizon Excluded)**.
@@ -149,6 +149,6 @@
 | **`fetch_gmail_alerts.py`** | [`./fetch_gmail_alerts.py`](file:///P:/Projects/job-search-consultant/fetch_gmail_alerts.py) | Email job alert parser with dynamic pathing, secret environment loading, silent server auto-launch & additive queue merging. |
 | **`dashboard_server.py`** | [`./dashboard_server.py`](file:///P:/Projects/job-search-consultant/dashboard_server.py) | **[Local API Server]** Background HTTP server listening on localhost:5000 with origin-validated CORS security. |
 | **`sync_dashboard_from_state.py`** | [`./sync_dashboard_from_state.py`](file:///P:/Projects/job-search-consultant/sync_dashboard_from_state.py) | Automated state-to-HTML dashboard generator with 1-click apply button UI. |
-| **`fetch_jobspy_roles.py`** | [`./fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py) | Open-source Python multi-board live scraper engine with strict DFW/Remote location guardrails. |
+| **`fetch_jobspy_roles.py`** | [`./fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py) | Open-source Python multi-board live scraper engine with strict {{YOUR_PREFERRED_HYBRID_CITY}}/Remote location guardrails. |
 | **`build_application_package.py`** | [`./build_application_package.py`](file:///P:/Projects/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine configured with {{PREVIOUS_COMPANY_1}} end date August 2026. |
 | **`state.json`** | [`./state.json`](file:///P:/Projects/job-search-consultant/state.json) | Central persistent state tracker for candidate profile, job listings, and active submissions. |
