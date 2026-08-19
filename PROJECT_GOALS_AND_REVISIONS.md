@@ -17,38 +17,43 @@
    * Em dashes are STRICTLY PROHIBITED across all resumes, cover letters, and system text outputs.
    * The generator script automatically runs a text sanitizer to convert any dashes to standard hyphens (` - `), pipes (` | `), or commas.
 
-2. **Full Engine GitHub Repository Mirroring & 0 Security Violations**:
-   * The live GitHub repository ([github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent)) contains the complete, production-ready Python automation engine (`dashboard_server.py`, `fetch_gmail_alerts.py`, `sync_dashboard_from_state.py`, `fetch_jobspy_roles.py`, `build_application_package.py`, `audit_and_fix_queue_companies.py`, `clean_non_dfw_queue_roles.py`, `agents.md`, `.env.example`, `.gitignore`, blueprint, goals, and resume templates).
+2. **Public Repository Placeholders & Zero Personal Data**:
+   * The public GitHub repository ([github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent)) contains zero personal candidate data, hardcoded emails, app passwords, target titles, target comp, or location specifics.
+   * All personal data items are replaced with configurable placeholders (`{{YOUR_FULL_NAME}}`, `{{YOUR_GMAIL_ADDRESS}}`, `{{YOUR_GMAIL_APP_PASSWORD}}`, `{{YOUR_TARGET_ROLE_1}}`, `{{TARGET_COMPENSATION_MIN}}`, `{{YOUR_CITY_STATE}}`, etc.).
+   * Automated personal data scanner verifies **0 personal data terms** across all committed repository files.
+
+3. **Full Engine GitHub Repository Mirroring & 0 Security Violations**:
+   * The live GitHub repository contains the complete, production-ready Python automation engine (`dashboard_server.py`, `fetch_gmail_alerts.py`, `sync_dashboard_from_state.py`, `fetch_jobspy_roles.py`, `build_application_package.py`, `audit_and_fix_queue_companies.py`, `clean_non_dfw_queue_roles.py`, `agents.md`, `.env.example`, `.gitignore`, blueprint, goals, and resume templates).
    * AppSec audit scanner (`audit_repo_security.py`) confirms **0 security violations** across all committed repository files.
 
-3. **AppSec & Secret Hygiene Policy**:
+4. **AppSec & Secret Hygiene Policy**:
    * All API keys, passwords, and sensitive credentials MUST be loaded via environment variables (`os.environ`) or untracked local `.env` files. Hardcoded secrets in source files are strictly forbidden.
    * Local API endpoints (`dashboard_server.py`) MUST enforce origin validation to disallow wildcard (`*`) cross-site requests from untrusted external web origins.
 
-4. **Unified Project Root (`P:\Projects\job-search-consultant`)**:
+5. **Unified Project Root (`P:\Projects\job-search-consultant`)**:
    * All codebase scripts, state trackers (`state.json`), master application exports (`Job Search/`), and HTML dashboards (`Job Search/dashboard.html`) are consolidated under `P:\Projects\job-search-consultant`.
 
-5. **{{PREVIOUS_COMPANY_1}} Date Range Requirement (June 2008 - August 2026)**:
+6. **{{PREVIOUS_COMPANY_1}} Date Range Requirement (June 2008 - August 2026)**:
    * All future resume and cover letter packages MUST set {{YOUR_FULL_NAME}}' {{PREVIOUS_COMPANY_1}} role date range to **June 2008 - August 2026** (replacing "Present").
 
-6. **Silent Background Daemon Server Architecture**:
+7. **Silent Background Daemon Server Architecture**:
    * Standing local API background server ([`dashboard_server.py`](file:///P:/Projects/job-search-consultant/dashboard_server.py)) running on `http://localhost:5000`.
    * Launched silently using `subprocess.CREATE_NO_WINDOW` via `ensure_dashboard_server_running()` in [`fetch_gmail_alerts.py`](file:///P:/Projects/job-search-consultant/fetch_gmail_alerts.py) so no shell windows pop up or remain open on screen.
 
-7. **Additive Queue Protection Rule**:
+8. **Additive Queue Protection Rule**:
    * All search runs ([`fetch_gmail_alerts.py`](file:///P:/Projects/job-search-consultant/fetch_gmail_alerts.py) & [`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py)) MUST preserve all existing unreviewed/unapplied jobs in `state.json`.
    * Newly discovered jobs are strictly **ADDED** to the queue using URL/ID deduplication. Roles are ONLY removed when explicitly applied for or dismissed by the user.
 
-8. **Director-Level Role Scope Negotiation Strategy**:
+9. **Director-Level Role Scope Negotiation Strategy**:
    * For senior manager / manager openings that match technical GEO/AEO and web strategy competencies (e.g., {{TARGET_COMPANY_4}}), the system builds a tailored package positioning candidate as a Director-level executive to negotiate scope and compensation elevation ({{TARGET_COMPENSATION_MIN}}).
 
-9. **Open-Source Multi-Board JobSpy Integration**:
+10. **Open-Source Multi-Board JobSpy Integration**:
    * Integrated `python-jobspy` open-source scraper engine ([`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py)) querying **LinkedIn and Indeed** for live $0-cost job extraction.
 
-10. **Strict Location Filtering Engine (Remote & {{YOUR_PREFERRED_HYBRID_CITY}} Local Only)**:
+11. **Strict Location Filtering Engine (Remote & {{YOUR_PREFERRED_HYBRID_CITY}} Local Only)**:
    * Enforced `is_remote=True` flags and strict location validation (`is_valid_location()`) in [`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py).
 
-11. **Authoritative Candidate Baseline Career Truth**:
+12. **Authoritative Candidate Baseline Career Truth**:
    * **{{PREVIOUS_COMPANY_1}}, Inc. ({{YOUR_CITY_STATE}})**: *{{YOUR_CURRENT_TITLE}}* (**June 2008 - August 2026**) — Managing a **13+ person cross-functional team** (Development, DevOps, QA, BA, SEO); owning global web operations across 34 countries; **leading discovery, ROI evaluation, and decision-making for next-gen DXP to replace legacy AEM**; **organizing and executing the TrendAI site redesign & migration to Sanity CMS**; integrating mPulse, Cludo, AEM 6.x, Marketo, Tealium, GA4; driving +15% demo conversion uplift & +42% self-serve digital conversion rate.
    * **{{PREVIOUS_COMPANY_2}}, Inc. ({{YOUR_CITY_STATE}})**: *Product Manager of Web and E-commerce* (**Aug 2007 - Mar 2008**) — E-commerce storefronts for mobile apps & partner channels (Sprint), boosting checkout conversion by +34%.
    * **{{PREVIOUS_COMPANY_3}}, Inc. ({{YOUR_CITY_STATE}})**: *E-commerce and Web Marketing Manager* (**Apr 2001 - Apr 2007**) — Sustaining 35%+ annual online sales growth via SEO/SEM/Email/Marketplaces.
@@ -59,11 +64,13 @@
 
 ## 📜 2. Technical System Revision History
 
+### **Revision 1.84** | *2026-08-19*
+* **Public Repository Placeholder Sanitization**:
+  * Updated [`sanitize_and_push_github.py`](file:///P:/Projects/job-search-consultant/sanitize_and_push_github.py) and [`create_template_zip.py`](file:///P:/Projects/job-search-consultant/create_template_zip.py) with comprehensive case-insensitive placeholder rules covering candidate names, email/IMAP info, target roles/titles, compensation, location specifics, and historical company names.
+  * Verified **0 Personal Data Matches** and **0 AppSec Security Violations** across all public repository files ([github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent), Commit `5318fa7`).
+
 ### **Revision 1.83** | *2026-08-18*
-* **AppSec Repository Verification & Blueprint Sanitization**:
-  * Executed comprehensive AppSec security audit scanner ([`audit_repo_security.py`](file:///P:/Projects/job-search-consultant/audit_repo_security.py)) across all committed repository files.
-  * Sanitized blueprint code example in [`AUTONOMOUS_JOB_SEARCH_AGENT_BLUEPRINT.md`](file:///P:/Projects/job-search-consultant/AUTONOMOUS_JOB_SEARCH_AGENT_BLUEPRINT.md).
-  * Confirmed **0 Security Violations** across all repository files ([github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent), Commit `1d0edc1`).
+* **AppSec Repository Verification & Blueprint Sanitization**.
 
 ### **Revision 1.82** | *2026-08-18*
 * **Production-Ready `README.md` & Repository Documentation Update**.
@@ -143,6 +150,7 @@
 
 | File Name | Location | Description |
 | :--- | :--- | :--- |
+| **`sanitize_and_push_github.py`** | [`./sanitize_and_push_github.py`](file:///P:/Projects/job-search-consultant/sanitize_and_push_github.py) | Comprehensive placeholder sanitization & GitHub push script for public repository releases. |
 | **`audit_repo_security.py`** | [`./audit_repo_security.py`](file:///P:/Projects/job-search-consultant/audit_repo_security.py) | AppSec security audit scanner verifying 0 security violations in repository. |
 | **`README.md`** | [`./README.md`](file:///P:/Projects/job-search-consultant/README.md) | **[Production System Overview]** Architecture diagram, component matrix, AppSec standards & execution guides. |
 | **`PROJECT_GOALS_AND_REVISIONS.md`** | [`./PROJECT_GOALS_AND_REVISIONS.md`](file:///P:/Projects/job-search-consultant/PROJECT_GOALS_AND_REVISIONS.md) | System technical revision history and candidate baseline. |
