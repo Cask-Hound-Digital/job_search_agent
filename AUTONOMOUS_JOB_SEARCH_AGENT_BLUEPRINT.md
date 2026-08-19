@@ -27,7 +27,7 @@
                                                                                           ▼
 ┌─────────────────────────┐         ┌──────────────────────────────┐         ┌─────────────────────────┐
 │ Local Output Drive      │ ◄────── │ Application Package Engine   │ ◄────── │ Glassmorphism Browser   │
-│ (`P:\Job Search\`)      │         │ (PDF/DOCX Generator + Sanity)│         │ Dashboard (`index.html`)│
+│ (`P:\Job Search\`)      │         │ (PDF/DOCX Generator + {{HEADLESS_CMS}})│         │ Dashboard (`index.html`)│
 └─────────────────────────┘         └──────────────────────────────┘         └─────────────────────────┘
 ```
 
