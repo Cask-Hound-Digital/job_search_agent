@@ -9,7 +9,7 @@ PORT = 5000
 BASE_DIR = r"."
 STATE_FILE = os.path.join(BASE_DIR, "state.json")
 PAYLOAD_FILE = os.path.join(BASE_DIR, "current_payload.json")
-PYTHON_EXE = r"C:\Users\mark\AppData\Local\Python\pythoncore-3.14-64\python.exe"
+PYTHON_EXE = r"C:\Users\{{YOUR_NAME}}\AppData\Local\Python\pythoncore-3.14-64\python.exe"
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     """Handle requests in separate threads."""

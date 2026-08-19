@@ -48,7 +48,7 @@ EXCLUDED_TITLES = [
 ]
 
 DFW_LOCATIONS = [
-    "dallas", "fort worth", "dfw", "grand prairie", "irving", "plano",
+    "dallas", "fort worth", "{{YOUR_PREFERRED_HYBRID_CITY}}", "{{YOUR_CITY}}", "irving", "plano",
     "frisco", "richardson", "arlington", "texas", "tx"
 ]
 
@@ -114,7 +114,7 @@ def ensure_dashboard_server_running():
         pass
 
     print("  [SERVER] Launching Dashboard API Server (localhost:5000) for 1-click apply...")
-    python_exe = r"C:\Users\mark\AppData\Local\Python\pythoncore-3.14-64\python.exe"
+    python_exe = r"C:\Users\{{YOUR_NAME}}\AppData\Local\Python\pythoncore-3.14-64\python.exe"
     base_dir = os.path.dirname(os.path.abspath(__file__))
     subprocess.Popen(
         [python_exe, "dashboard_server.py"],

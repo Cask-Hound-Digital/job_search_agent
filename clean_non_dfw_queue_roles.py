@@ -1,12 +1,12 @@
 import json
 import os
 
-STATE_FILE = r"c:\Users\mark\.gemini\antigravity\scratch\job-search-consultant\state.json"
+STATE_FILE = r"c:\Users\{{YOUR_NAME}}\.gemini\antigravity\scratch\job-search-consultant\state.json"
 
 DFW_CITIES = [
-    "dallas", "fort worth", "arlington", "irving", "grand prairie", "plano", 
+    "dallas", "fort worth", "arlington", "irving", "{{YOUR_CITY}}", "plano", 
     "frisco", "addison", "southlake", "mansfield", "lewisville", "grapevine", 
-    "richardson", "denton", "dfw", "colleyville", "euless", "bedford"
+    "richardson", "denton", "{{YOUR_PREFERRED_HYBRID_CITY}}", "colleyville", "euless", "bedford"
 ]
 
 NON_DFW_CITIES = [
@@ -38,7 +38,7 @@ def clean_queue():
 
         # Check if explicitly non-{{YOUR_PREFERRED_HYBRID_CITY}} onsite/hybrid
         is_remote = "remote" in combined_text or "work from home" in combined_text or "telecommute" in combined_text
-        is_dfw = any(dfw in combined_text for dfw in DFW_CITIES)
+        is_dfw = any({{YOUR_PREFERRED_HYBRID_CITY}} in combined_text for {{YOUR_PREFERRED_HYBRID_CITY}} in DFW_CITIES)
         has_non_dfw_city = any(city in combined_text for city in NON_DFW_CITIES)
 
         if not is_remote and has_non_dfw_city and not is_dfw:

@@ -556,7 +556,7 @@ def sync_dashboard():
         source = q.get("source", "Email Alert").strip()
         company = q.get("company_name", "").strip()
 
-        if not company or company.lower() in ["mark", "your job alert", "job alert", "linkedin", "verified employer", "enterprise employer"]:
+        if not company or company.lower() in ["{{YOUR_NAME}}", "your job alert", "job alert", "linkedin", "verified employer", "enterprise employer"]:
             subj = q.get("email_subject", "")
             if " at " in subj and not subj.startswith("{{YOUR_NAME}}:"):
                 company = subj.split(" at ")[-1].strip()

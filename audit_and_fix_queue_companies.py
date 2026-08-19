@@ -88,7 +88,7 @@ def audit_queue():
         company, real_role = extract_company_and_role_from_title(page_title, raw_title, email_subj)
 
         # Sanitize "{{YOUR_NAME}}" or generic mistakes
-        if company.lower() in ["mark", "your job alert", "job alert", "linkedin"]:
+        if company.lower() in ["{{YOUR_NAME}}", "your job alert", "job alert", "linkedin"]:
             company = "Verified Employer"
 
         j["company_name"] = company

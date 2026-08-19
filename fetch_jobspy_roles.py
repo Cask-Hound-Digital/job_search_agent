@@ -30,9 +30,9 @@ def clean_url(url):
     return url.rstrip('/')
 
 DFW_CITIES = [
-    "dallas", "fort worth", "arlington", "irving", "grand prairie", "plano", 
+    "dallas", "fort worth", "arlington", "irving", "{{YOUR_CITY}}", "plano", 
     "frisco", "addison", "southlake", "mansfield", "lewisville", "grapevine", 
-    "richardson", "denton", "dfw", "colleyville", "euless", "bedford"
+    "richardson", "denton", "{{YOUR_PREFERRED_HYBRID_CITY}}", "colleyville", "euless", "bedford"
 ]
 
 def is_valid_location(loc_str, is_remote_query):
@@ -42,7 +42,7 @@ def is_valid_location(loc_str, is_remote_query):
     
     # Reject explicitly labeled onsite/on-site roles outside {{YOUR_PREFERRED_HYBRID_CITY}}
     if "onsite" in l_lower or "on-site" in l_lower or "in-office" in l_lower or "in office" in l_lower:
-        if not any(dfw in l_lower for dfw in DFW_CITIES):
+        if not any({{YOUR_PREFERRED_HYBRID_CITY}} in l_lower for {{YOUR_PREFERRED_HYBRID_CITY}} in DFW_CITIES):
             return False
 
     if is_remote_query:
@@ -50,7 +50,7 @@ def is_valid_location(loc_str, is_remote_query):
         if "remote" in l_lower or "work from home" in l_lower or "telecommute" in l_lower or "anywhere" in l_lower or "united states" == l_lower or "us" == l_lower:
             return True
         # If it specifies a city and is NOT {{YOUR_PREFERRED_HYBRID_CITY}}, reject
-        if any(dfw in l_lower for dfw in DFW_CITIES):
+        if any({{YOUR_PREFERRED_HYBRID_CITY}} in l_lower for {{YOUR_PREFERRED_HYBRID_CITY}} in DFW_CITIES):
             return True
         # If it specifies another city (e.g. Austin, New York, Boston) without "remote", reject
         return False
@@ -58,7 +58,7 @@ def is_valid_location(loc_str, is_remote_query):
         # Searching Dallas, TX: Must be Remote OR {{YOUR_PREFERRED_HYBRID_CITY}} local
         if "remote" in l_lower:
             return True
-        if any(dfw in l_lower for dfw in DFW_CITIES):
+        if any({{YOUR_PREFERRED_HYBRID_CITY}} in l_lower for {{YOUR_PREFERRED_HYBRID_CITY}} in DFW_CITIES):
             return True
         return False
 

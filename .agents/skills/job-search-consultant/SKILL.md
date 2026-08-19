@@ -160,8 +160,8 @@ When using AI to draft or polish resumes and cover letters, follow the **"You + 
 ## 8. Reference Guides & Deep Dives
 
 For expanded templates, prompt scripts, bullet libraries, and sample resumes, refer to the skill documentation files:
-- [`job_search_strategy_guide.md`](file:///C:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/.agents/skills/job-search-consultant/reference/job_search_strategy_guide.md)
-- [`badass_cover_letters_guide.md`](file:///C:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/.agents/skills/job-search-consultant/reference/badass_cover_letters_guide.md)
-- [`badass_resume_bullets_guide.md`](file:///C:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/.agents/skills/job-search-consultant/reference/badass_resume_bullets_guide.md)
-- [`chatgpt_resume_prompts_guide.md`](file:///C:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/.agents/skills/job-search-consultant/reference/chatgpt_resume_prompts_guide.md)
-- [`ten_out_of_ten_resumes_guide.md`](file:///C:/Users/mark/.gemini/antigravity/scratch/job-search-consultant/.agents/skills/job-search-consultant/reference/ten_out_of_ten_resumes_guide.md)
+- [`job_search_strategy_guide.md`](file:///C:/Users/{{YOUR_NAME}}/.gemini/antigravity/scratch/job-search-consultant/.agents/skills/job-search-consultant/reference/job_search_strategy_guide.md)
+- [`badass_cover_letters_guide.md`](file:///C:/Users/{{YOUR_NAME}}/.gemini/antigravity/scratch/job-search-consultant/.agents/skills/job-search-consultant/reference/badass_cover_letters_guide.md)
+- [`badass_resume_bullets_guide.md`](file:///C:/Users/{{YOUR_NAME}}/.gemini/antigravity/scratch/job-search-consultant/.agents/skills/job-search-consultant/reference/badass_resume_bullets_guide.md)
+- [`chatgpt_resume_prompts_guide.md`](file:///C:/Users/{{YOUR_NAME}}/.gemini/antigravity/scratch/job-search-consultant/.agents/skills/job-search-consultant/reference/chatgpt_resume_prompts_guide.md)
+- [`ten_out_of_ten_resumes_guide.md`](file:///C:/Users/{{YOUR_NAME}}/.gemini/antigravity/scratch/job-search-consultant/.agents/skills/job-search-consultant/reference/ten_out_of_ten_resumes_guide.md)

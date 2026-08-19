@@ -22,12 +22,12 @@ from reportlab.lib import colors
 # 1. Authoritative Candidate Baseline Profile (Locked Truth - No Em Dashes)
 # ---------------------------------------------------------------------------
 CANDIDATE = {
-    "name": "MARK JAGGERS",
-    "contact": "{{YOUR_CITY_STATE}} | {{YOUR_PHONE_NUMBER}} | {{YOUR_EMAIL_ADDRESS}} | linkedin.com/in/jaggers/",
+    "name": "{{YOUR_FULL_NAME}}",
+    "contact": "{{YOUR_CITY_STATE}} | {{YOUR_PHONE_NUMBER}} | {{YOUR_EMAIL_ADDRESS}} | linkedin.com/in/{{YOUR_LAST_NAME}}/",
     "email": "{{YOUR_EMAIL_ADDRESS}}",
     "phone": "{{YOUR_PHONE_NUMBER}}",
     "location": "{{YOUR_CITY_STATE}}",
-    "linkedin": "linkedin.com/in/jaggers/",
+    "linkedin": "linkedin.com/in/{{YOUR_LAST_NAME}}/",
     "history": {
         "trend_micro": {
             "company": "{{PREVIOUS_COMPANY_1}}, Inc.",
@@ -35,13 +35,13 @@ CANDIDATE = {
             "title": "{{YOUR_CURRENT_TITLE}}",
             "dates": "June 2008 - August 2026"
         },
-        "handmark": {
+        "{{PREVIOUS_COMPANY_2}}": {
             "company": "{{PREVIOUS_COMPANY_2}}, Inc.",
             "location": "{{YOUR_CITY_STATE}}",
             "title": "Product Manager of Web and E-commerce",
             "dates": "Aug 2007 - Mar 2008"
         },
-        "mapsco": {
+        "{{PREVIOUS_COMPANY_3}}": {
             "company": "{{PREVIOUS_COMPANY_3}}, Inc.",
             "location": "{{YOUR_CITY_STATE}}",
             "title": "E-commerce and Web Marketing Manager",
@@ -189,7 +189,7 @@ def generate_resume_docx(job_payload, output_docx_path):
         add_bullet(prefix, text)
 
     # {{PREVIOUS_COMPANY_2}}
-    hm_info = CANDIDATE["history"]["handmark"]
+    hm_info = CANDIDATE["history"]["{{PREVIOUS_COMPANY_2}}"]
     p_job2 = doc.add_paragraph()
     p_job2.paragraph_format.space_before = Pt(6)
     p_job2.paragraph_format.space_after = Pt(1)
@@ -211,7 +211,7 @@ def generate_resume_docx(job_payload, output_docx_path):
         add_bullet(prefix, text)
 
     # {{PREVIOUS_COMPANY_3}}
-    map_info = CANDIDATE["history"]["mapsco"]
+    map_info = CANDIDATE["history"]["{{PREVIOUS_COMPANY_3}}"]
     p_job3 = doc.add_paragraph()
     p_job3.paragraph_format.space_before = Pt(6)
     p_job3.paragraph_format.space_after = Pt(1)
@@ -300,14 +300,14 @@ def generate_resume_pdf(job_payload, output_pdf_path):
         story.append(Paragraph(f"&bull; <b>{sanitize_text(prefix)}</b>{sanitize_text(text)}", bullet_style))
 
     # {{PREVIOUS_COMPANY_2}}
-    hm_info = CANDIDATE["history"]["handmark"]
+    hm_info = CANDIDATE["history"]["{{PREVIOUS_COMPANY_2}}"]
     story.append(Paragraph(f"{hm_info['title']}<br/>{hm_info['company']} | {hm_info['location']}", job_header_style))
     story.append(Paragraph(hm_info["dates"], job_sub_style))
     for prefix, text in job_payload["handmark_bullets"]:
         story.append(Paragraph(f"&bull; <b>{sanitize_text(prefix)}</b>{sanitize_text(text)}", bullet_style))
 
     # {{PREVIOUS_COMPANY_3}}
-    map_info = CANDIDATE["history"]["mapsco"]
+    map_info = CANDIDATE["history"]["{{PREVIOUS_COMPANY_3}}"]
     story.append(Paragraph(f"{map_info['title']}<br/>{map_info['company']} | {map_info['location']}", job_header_style))
     story.append(Paragraph(map_info["dates"], job_sub_style))
     for prefix, text in job_payload["mapsco_bullets"]:
@@ -438,7 +438,7 @@ DATABRICKS_PAYLOAD = {
     "company": "Databricks",
     "folder": "Databricks",
     "role": "Director Web Marketing",
-    "headline": "DIRECTOR, WEB MARKETING | GLOBAL DIGITAL EXPERIENCE & AI STRATEGY LEADER",
+    "headline": "{{YOUR_TARGET_ROLE_3}} | GLOBAL DIGITAL EXPERIENCE & AI STRATEGY LEADER",
     "summary": "Visionary Global Web & Digital Marketing Executive with 18+ years leading enterprise web strategy, digital platform architecture, AI-driven search transformation (GEO/AEO), and cross-functional technology teams. Proven track record transforming corporate web properties into scalable growth engines optimized for both human visitors and AI search/answer engines. Experienced in driving multi-national platform migrations across 34 countries and 14 languages, high-velocity experimentation, structured content governance, and data-driven web operations to maximize marketing pipeline.",
     "areas_of_expertise": [
         ("Global Web Strategy & Machine Readability: ", "Global Web Ecosystem Architecture, AI Agent & Answer Engine Optimization (GEO/AEO), Structured Content Standards, Personalization & Segmented Journeys."),
@@ -718,7 +718,7 @@ if __name__ == '__main__':
     payload_file = os.path.join(r".", "current_payload.json")
     
     parser = argparse.ArgumentParser(description="Master Application Package Generator for {{YOUR_FULL_NAME}}")
-    parser.add_argument("--job", choices=["databricks", "sixflags", "grafana", "neosecurity", "mouser", "spinutech", "jobgether_fvp", "active"], default="active", help="Select target job payload")
+    parser.add_argument("--job", choices=["databricks", "sixflags", "grafana", "neosecurity", "{{TARGET_COMPANY_6}}", "{{TARGET_COMPANY_3}}", "jobgether_fvp", "active"], default="active", help="Select target job payload")
     args = parser.parse_args()
 
     if os.path.exists(payload_file) and args.job == "active":
@@ -734,9 +734,9 @@ if __name__ == '__main__':
         build_package(GRAFANA_PAYLOAD)
     elif args.job == "neosecurity":
         build_package(NEO_SECURITY_PAYLOAD)
-    elif args.job == "mouser":
+    elif args.job == "{{TARGET_COMPANY_6}}":
         build_package(MOUSER_PAYLOAD)
-    elif args.job == "spinutech":
+    elif args.job == "{{TARGET_COMPANY_3}}":
         build_package(SPINUTECH_PAYLOAD)
     elif args.job == "jobgether_fvp" or args.job == "active":
         build_package(JOBGETHER_FVP_PAYLOAD)
