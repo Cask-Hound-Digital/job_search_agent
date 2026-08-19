@@ -54,11 +54,11 @@
    * Enforced `is_remote=True` flags and strict location validation (`is_valid_location()`) in [`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py).
 
 12. **Candidate Baseline Career Profile Template**:
-   * **{{MOST_RECENT_COMPANY}} ({{YOUR_CITY_STATE}})**: *{{YOUR_MOST_RECENT_TITLE}}* (**{{MOST_RECENT_EMPLOYMENT_DATES}}**) — Managing a **{{TEAM_SIZE_PLACEHOLDER}}** (Development, DevOps, QA, BA, SEO); owning global web operations across 34 countries; **leading discovery, ROI evaluation, and decision-making for next-gen DXP to replace legacy {{ENTERPRISE_CMS}}**; **organizing and executing the {{KEY_PROJECT_MIGRATION}}**; integrating {{ENTERPRISE_TECH_STACK_LIST}}; driving +15% demo conversion uplift & +42% self-serve digital conversion rate.
-   * **{{PREVIOUS_COMPANY_2}} ({{YOUR_CITY_STATE}})**: *{{YOUR_PREVIOUS_TITLE_1}}* (**{{EMPLOYMENT_DATES_COMPANY_2}}**) — E-commerce storefronts for mobile apps & partner channels (Sprint), boosting checkout conversion by +34%.
-   * **{{PREVIOUS_COMPANY_3}} ({{YOUR_CITY_STATE}})**: *{{YOUR_PREVIOUS_TITLE_2}}* (**{{EMPLOYMENT_DATES_COMPANY_3}}**) — Sustaining 35%+ annual online sales growth via SEO/SEM/Email/Marketplaces.
-   * **University of Texas at {{YOUR_CITY}} ({{YOUR_CITY_STATE}})**: *{{YOUR_DEGREE_1}}* (Degree)
-   * **{{YOUR_UNIVERSITY_2}} (College Station, TX)**: *{{YOUR_COURSEWORK_2}}*
+    * **Most Recent Role**: `[Company Name] ([City, State]): [Title] ([Dates])` - Led cross-functional team of [N] members; managed enterprise digital platforms; executed key migration projects; achieved +[X]% conversion uplift and +[Y]% operational efficiency.
+    * **Previous Role 1**: `[Previous Company 1] ([City, State]): [Previous Title] ([Dates])` - Managed digital commerce channels and user experience; increased checkout conversion rate by +[X]%.
+    * **Previous Role 2**: `[Previous Company 2] ([City, State]): [Previous Title] ([Dates])` - Directed online marketing strategies (SEO/SEM/Email); sustained [X]% annual online revenue growth.
+    * **Higher Education**: `[University Name] ([City, State]): [Degree Name]` - [Major / Specialization].
+    * **Additional Training**: `[University / Institution Name] ([City, State]): [Coursework / Certification Name]`.
 
 ---
 
