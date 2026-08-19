@@ -12,26 +12,9 @@
 
 ## 🎥 3-Second Visual Demo
 
-```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│ 1. MULTI-BOARD SCRAPER SWEEP (Terminal)                                                │
-│ $ python fetch_jobspy_roles.py                                                         │
-│ [JOBSPY] Scraping LinkedIn & Indeed for Remote & Preferred Hybrid City Hybrid roles ({{TARGET_COMPENSATION_MIN}})...           │
-│ [INGESTED] +14 New Matching Listings -> Merged into Additive State Queue (state.json)   │
-├────────────────────────────────────────────────────────────────────────────────────────┤
-│ 2. RESPONSIVE REVIEW DASHBOARD (http://localhost:5000 / dashboard.html)                │
-│ ┌────────────────────────────────────────────────────────────────────────────────────┐ │
-│ │ Senior Director, Web Operations & Strategy | Acme Corp | Remote ($230k - $250k)   │ │
-│ │ Status: Unreviewed  [ ⚡ Apply & Build Package ]   [ ✕ Dismiss ]                    │ │
-│ └────────────────────────────────────────────────────────────────────────────────────┘ │
-├────────────────────────────────────────────────────────────────────────────────────────┤
-│ 3. 1-CLICK GENERATED ATS APPLICATION PACKAGE (Job Search/Acme Corp/)                   │
-│ 📄 Candidate_Resume_Acme_Corp.pdf      (Single-column, 0 em-dashes, ATS-optimized)    │
-│ 📄 Candidate_Cover_Letter_Acme_Corp.pdf (6-part hybrid structure, bolded proof points)  │
-└────────────────────────────────────────────────────────────────────────────────────────┘
-```
+![YACareerOps System Demo](docs/demo.jpg)
 
-> **Visual Demo Assets**: Add your screenshots or record a 5-second `.gif` demo placing it at `docs/demo.gif` or embedding a link to your screen recording!
+*Side-by-side terminal scraper sweeps (LinkedIn & Indeed), local HTTP API review dashboard with 1-Click "⚡ Apply & Build Package", and generated ATS PDF/DOCX application packages.*
 
 ---
 
