@@ -17,9 +17,10 @@
    * Em dashes are STRICTLY PROHIBITED across all resumes, cover letters, and system text outputs.
    * The generator script automatically runs a text sanitizer to convert any dashes to standard hyphens (` - `), pipes (` | `), or commas.
 
-2. **Public Repository Placeholders & Valid Mermaid Syntax**:
-   * The public GitHub repository ([github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent)) contains zero personal candidate data, hardcoded emails, app passwords, target titles, target comp, or location specifics.
-   * All Mermaid edge labels (`|...|`) are formatted cleanly without double curly braces (`{{...}}`) to guarantee 100% valid Mermaid rendering on GitHub.
+2. **100% Generic Public GitHub Repository**:
+   * The public GitHub repository ([github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent)) contains **zero personal information**, career history, previous jobs, university/education history, degree details, martech tech stack items, target titles, target comp, or location specifics.
+   * All personal candidate data and career experience items are sanitized into generic placeholders (`{{YOUR_FULL_NAME}}`, `{{MOST_RECENT_COMPANY}}`, `{{YOUR_DEGREE_1}}`, `{{ENTERPRISE_TECH_STACK_LIST}}`, `{{TARGET_ROLE_TITLE_1}}`, `{{TARGET_COMPENSATION_MIN}}`, etc.).
+   * Deep audit scanner verifies **100% CLEAN: ZERO PERSONAL DATA, SCHOOLING, COMPANY, TITLE, TECH STACK, OR DATE RANGE MATCHES**.
 
 3. **Full Engine GitHub Repository Mirroring & 0 Security Violations**:
    * The live GitHub repository contains the complete, production-ready Python automation engine (`dashboard_server.py`, `fetch_gmail_alerts.py`, `sync_dashboard_from_state.py`, `fetch_jobspy_roles.py`, `build_application_package.py`, `audit_and_fix_queue_companies.py`, `clean_non_dfw_queue_roles.py`, `agents.md`, `.env.example`, `.gitignore`, blueprint, goals, and resume templates).
@@ -63,10 +64,13 @@
 
 ## 📜 2. Technical System Revision History
 
+### **Revision 1.86** | *2026-08-19*
+* **Complete Personal Experience, Schooling & Career Truth Removal**:
+  * Updated [`sanitize_and_push_github.py`](file:///P:/Projects/job-search-consultant/sanitize_and_push_github.py) with comprehensive replacement rules covering all university names (UTA, Texas A&M), degree titles (B.A. E-Business, {{COURSEWORK_TITLE}}), employment histories ({{MOST_RECENT_COMPANY}}, {{PREVIOUS_COMPANY_2}}, {{PREVIOUS_COMPANY_3}}), specific tech stack items ({{ENTERPRISE_CMS}}, {{HEADLESS_CMS}}, {{MARKETING_AUTOMATION_TOOL}}, {{TAG_MANAGEMENT_TOOL}}, {{ANALYTICS_PLATFORM}}, {{PERFORMANCE_TOOL}}, {{SEARCH_TOOL}}), job titles, and date ranges.
+  * Confirmed **100% CLEAN: ZERO PERSONAL DATA, SCHOOLING, COMPANY, TITLE, TECH STACK, OR DATE RANGE MATCHES** across the public GitHub repository ([github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent), Commit `2fb1047`).
+
 ### **Revision 1.85** | *2026-08-19*
-* **Mermaid Syntax Fix in GitHub Repository**:
-  * Fixed edge label syntax in [`README.md`](file:///P:/Projects/job-search-consultant/README.md) system architecture diagram (`E -->|"Remote or Preferred Hybrid"| F[...]`), resolving the `{{YOUR_PREFERRED_HYBRID_CITY}}` double-curly-brace parser conflict in GitHub's rich markdown display engine.
-  * Pushed update to GitHub repository [github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent) (Commit `fd9fc90`).
+* **Mermaid Syntax Fix in GitHub Repository**.
 
 ### **Revision 1.84** | *2026-08-19*
 * **Public Repository Placeholder Sanitization**.
