@@ -7,6 +7,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-brightgreen.svg)](https://www.python.org/)
 [![Architecture](https://img.shields.io/badge/architecture-agentic--daemon-orange.svg)](#-system-architecture)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate-yellow.svg)](https://www.buymeacoffee.com/roadrashtx)
+
+<a href="https://www.buymeacoffee.com/roadrashtx" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 48px !important;width: 174px !important;" ></a>
 
 ---
 
@@ -101,6 +104,14 @@ python fetch_jobspy_roles.py
 ```
 
 Open `Job Search/dashboard.html` in your browser to view your live job review queue and click **"⚡ Apply & Build Package"**.
+
+---
+
+## ☕ Support the Project
+
+If YACareerOps helps you streamline your job search or build tailored applications, feel free to support the project:
+
+[<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="180">](https://www.buymeacoffee.com/roadrashtx)
 
 ---
 
