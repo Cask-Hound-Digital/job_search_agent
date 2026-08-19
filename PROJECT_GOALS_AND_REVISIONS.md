@@ -17,10 +17,9 @@
    * Em dashes are STRICTLY PROHIBITED across all resumes, cover letters, and system text outputs.
    * The generator script automatically runs a text sanitizer to convert any dashes to standard hyphens (` - `), pipes (` | `), or commas.
 
-2. **Public Repository Placeholders & Zero Personal Data**:
+2. **Public Repository Placeholders & Valid Mermaid Syntax**:
    * The public GitHub repository ([github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent)) contains zero personal candidate data, hardcoded emails, app passwords, target titles, target comp, or location specifics.
-   * All personal data items are replaced with configurable placeholders (`{{YOUR_FULL_NAME}}`, `{{YOUR_GMAIL_ADDRESS}}`, `{{YOUR_GMAIL_APP_PASSWORD}}`, `{{YOUR_TARGET_ROLE_1}}`, `{{TARGET_COMPENSATION_MIN}}`, `{{YOUR_CITY_STATE}}`, etc.).
-   * Automated personal data scanner verifies **0 personal data terms** across all committed repository files.
+   * All Mermaid edge labels (`|...|`) are formatted cleanly without double curly braces (`{{...}}`) to guarantee 100% valid Mermaid rendering on GitHub.
 
 3. **Full Engine GitHub Repository Mirroring & 0 Security Violations**:
    * The live GitHub repository contains the complete, production-ready Python automation engine (`dashboard_server.py`, `fetch_gmail_alerts.py`, `sync_dashboard_from_state.py`, `fetch_jobspy_roles.py`, `build_application_package.py`, `audit_and_fix_queue_companies.py`, `clean_non_dfw_queue_roles.py`, `agents.md`, `.env.example`, `.gitignore`, blueprint, goals, and resume templates).
@@ -64,10 +63,13 @@
 
 ## 📜 2. Technical System Revision History
 
+### **Revision 1.85** | *2026-08-19*
+* **Mermaid Syntax Fix in GitHub Repository**:
+  * Fixed edge label syntax in [`README.md`](file:///P:/Projects/job-search-consultant/README.md) system architecture diagram (`E -->|"Remote or Preferred Hybrid"| F[...]`), resolving the `{{YOUR_PREFERRED_HYBRID_CITY}}` double-curly-brace parser conflict in GitHub's rich markdown display engine.
+  * Pushed update to GitHub repository [github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent) (Commit `fd9fc90`).
+
 ### **Revision 1.84** | *2026-08-19*
-* **Public Repository Placeholder Sanitization**:
-  * Updated [`sanitize_and_push_github.py`](file:///P:/Projects/job-search-consultant/sanitize_and_push_github.py) and [`create_template_zip.py`](file:///P:/Projects/job-search-consultant/create_template_zip.py) with comprehensive case-insensitive placeholder rules covering candidate names, email/IMAP info, target roles/titles, compensation, location specifics, and historical company names.
-  * Verified **0 Personal Data Matches** and **0 AppSec Security Violations** across all public repository files ([github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent), Commit `5318fa7`).
+* **Public Repository Placeholder Sanitization**.
 
 ### **Revision 1.83** | *2026-08-18*
 * **AppSec Repository Verification & Blueprint Sanitization**.
