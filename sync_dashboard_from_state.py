@@ -459,7 +459,7 @@ def sync_dashboard():
       <div class="kpi-card">
         <div class="kpi-label">Preferred Hybrid City Local HQ Roles</div>
         <div class="kpi-value" style="color: var(--accent-amber);">2</div>
-        <div class="kpi-subtext">Six Flags (Arlington) & Scotiabank (Dallas)</div>
+        <div class="kpi-subtext">Six Flags ({{YOUR_CITY}}) & Scotiabank (Dallas)</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Average Match Score</div>

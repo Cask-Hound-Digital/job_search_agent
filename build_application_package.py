@@ -30,31 +30,31 @@ CANDIDATE = {
     "linkedin": "linkedin.com/in/{{YOUR_LAST_NAME}}/",
     "history": {
         "trend_micro": {
-            "company": "{{PREVIOUS_COMPANY_1}}, Inc.",
+            "company": "{{MOST_RECENT_COMPANY}}",
             "location": "{{YOUR_CITY_STATE}}",
-            "title": "{{YOUR_CURRENT_TITLE}}",
+            "title": "{{YOUR_MOST_RECENT_TITLE}}",
             "dates": "{{MOST_RECENT_EMPLOYMENT_DATES}}"
         },
         "{{PREVIOUS_COMPANY_2}}": {
-            "company": "{{PREVIOUS_COMPANY_2}}, Inc.",
+            "company": "{{PREVIOUS_COMPANY_2}}",
             "location": "{{YOUR_CITY_STATE}}",
-            "title": "Product Manager of Web and E-commerce",
+            "title": "{{YOUR_PREVIOUS_TITLE_1}}",
             "dates": "{{EMPLOYMENT_DATES_COMPANY_2}}"
         },
         "{{PREVIOUS_COMPANY_3}}": {
-            "company": "{{PREVIOUS_COMPANY_3}}, Inc.",
+            "company": "{{PREVIOUS_COMPANY_3}}",
             "location": "{{YOUR_CITY_STATE}}",
-            "title": "E-commerce and Web Marketing Manager",
+            "title": "{{YOUR_PREVIOUS_TITLE_2}}",
             "dates": "{{EMPLOYMENT_DATES_COMPANY_3}}"
         },
         "education": [
             {
                 "degree": "Bachelor of Arts, Web Management/Internet Development",
-                "institution": "University of Texas at Arlington | Arlington, TX"
+                "institution": "University of Texas at {{YOUR_CITY}} | {{YOUR_CITY_STATE}}"
             },
             {
                 "degree": "Engineering Technology",
-                "institution": "Texas A&M University | College Station, TX"
+                "institution": "{{YOUR_UNIVERSITY_2}} | College Station, TX"
             }
         ]
     }
@@ -166,7 +166,7 @@ def generate_resume_docx(job_payload, output_docx_path):
     # Professional Experience
     add_section_heading("Professional Experience")
 
-    # {{PREVIOUS_COMPANY_1}}
+    # {{MOST_RECENT_COMPANY}}
     tm_info = CANDIDATE["history"]["trend_micro"]
     p_job1 = doc.add_paragraph()
     p_job1.paragraph_format.space_before = Pt(6)
@@ -207,7 +207,7 @@ def generate_resume_docx(job_payload, output_docx_path):
     r_j2_date.font.italic = True
     r_j2_date.font.size = Pt(9)
 
-    for prefix, text in job_payload["handmark_bullets"]:
+    for prefix, text in job_payload["{{PREVIOUS_COMPANY_2}}_bullets"]:
         add_bullet(prefix, text)
 
     # {{PREVIOUS_COMPANY_3}}
@@ -229,7 +229,7 @@ def generate_resume_docx(job_payload, output_docx_path):
     r_j3_date.font.italic = True
     r_j3_date.font.size = Pt(9)
 
-    for prefix, text in job_payload["mapsco_bullets"]:
+    for prefix, text in job_payload["{{PREVIOUS_COMPANY_3}}_bullets"]:
         add_bullet(prefix, text)
 
     # Education
@@ -292,7 +292,7 @@ def generate_resume_pdf(job_payload, output_pdf_path):
     # Professional Experience
     add_pdf_sec("Professional Experience")
 
-    # {{PREVIOUS_COMPANY_1}}
+    # {{MOST_RECENT_COMPANY}}
     tm_info = CANDIDATE["history"]["trend_micro"]
     story.append(Paragraph(f"{tm_info['title']}<br/>{tm_info['company']} | {tm_info['location']}", job_header_style))
     story.append(Paragraph(tm_info["dates"], job_sub_style))
@@ -303,14 +303,14 @@ def generate_resume_pdf(job_payload, output_pdf_path):
     hm_info = CANDIDATE["history"]["{{PREVIOUS_COMPANY_2}}"]
     story.append(Paragraph(f"{hm_info['title']}<br/>{hm_info['company']} | {hm_info['location']}", job_header_style))
     story.append(Paragraph(hm_info["dates"], job_sub_style))
-    for prefix, text in job_payload["handmark_bullets"]:
+    for prefix, text in job_payload["{{PREVIOUS_COMPANY_2}}_bullets"]:
         story.append(Paragraph(f"&bull; <b>{sanitize_text(prefix)}</b>{sanitize_text(text)}", bullet_style))
 
     # {{PREVIOUS_COMPANY_3}}
     map_info = CANDIDATE["history"]["{{PREVIOUS_COMPANY_3}}"]
     story.append(Paragraph(f"{map_info['title']}<br/>{map_info['company']} | {map_info['location']}", job_header_style))
     story.append(Paragraph(map_info["dates"], job_sub_style))
-    for prefix, text in job_payload["mapsco_bullets"]:
+    for prefix, text in job_payload["{{PREVIOUS_COMPANY_3}}_bullets"]:
         story.append(Paragraph(f"&bull; <b>{sanitize_text(prefix)}</b>{sanitize_text(text)}", bullet_style))
 
     # Education
@@ -447,7 +447,7 @@ DATABRICKS_PAYLOAD = {
         ("Optimization, CRO & Governance: ", "A/B & Multivariate Testing Roadmaps, Conversion Rate Optimization (CRO), Budget Management ($1M+), Cross-Functional Collaboration Frameworks (Dev, UX, Marketing).")
     ],
     "trend_micro_bullets": [
-        ("Global Web Operations & Demand Engine: ", "Led global digital operations and transformation leadership for {{PREVIOUS_COMPANY_1}}'s B2B and B2C enterprise portfolios, owning the corporate web channel as the primary demand generation and pipeline engine across development, operations, analytics, and marketing."),
+        ("Global Web Operations & Demand Engine: ", "Led global digital operations and transformation leadership for {{MOST_RECENT_COMPANY}}'s B2B and B2C enterprise portfolios, owning the corporate web channel as the primary demand generation and pipeline engine across development, operations, analytics, and marketing."),
         ("AI Search, GEO & Answer Engine Dominance: ", "Developed and executed comprehensive SEO, Generative Engine Optimization (GEO), and Answer Engine Optimization (AEO) strategies across global web properties, structuring content for machine readability to increase presence across traditional and AI search platforms by 40%."),
         ("AI Technology Integration & Development Velocity: ", "Integrated Artificial Intelligence (AI) technologies (Claude, ChatGPT, CoPilot, and proprietary LLMs) into web production and analytics reporting workflows, accelerating development velocity and contributing to a 15% uplift in organic demo/trial conversions."),
         ("Multi-National Platform & Operating Model Migration: ", "Led large-scale platform migration and operating model transition across 34 countries and 14 languages, integrating Marketo, Tealium, GTM, and Google Analytics, improving page load time by 40%, increasing organic sessions by 10%, and driving 15% growth in web-sourced pipeline."),
@@ -456,11 +456,11 @@ DATABRICKS_PAYLOAD = {
         ("Unified Cross-Functional Governance Framework: ", "Established a common collaboration framework for Developers, Marketers, Editors, and External Agencies to streamline web project intake, elevate delivery execution, and enhance operational efficiency."),
         ("Budgeting & Strategic Ecosystem Governance: ", "Responsible for developing budgets for strategic initiatives and multi-year roadmaps across the global web ecosystem, ensuring technology investments align with corporate revenue goals.")
     ],
-    "handmark_bullets": [
+    "{{PREVIOUS_COMPANY_2}}_bullets": [
         ("Full Web Storefront Lifecycle: ", "Oversaw end-to-end business management and full development lifecycle of global web-based products, including online and on-device storefronts for {{PREVIOUS_COMPANY_2}}, Sprint, and enterprise partners."),
         ("Product Strategy & Go-To-Market Execution: ", "Executed web product strategy by analyzing market conditions, creating go-to-market plans, and developing detailed functional requirements, wireframes, and customer use cases.")
     ],
-    "mapsco_bullets": [
+    "{{PREVIOUS_COMPANY_3}}_bullets": [
         ("Digital Revenue & Campaign Growth: ", "Directed e-commerce and web marketing (SEO, SEM, email, marketplaces), testing offers and UX flows to drive 35%+ annual online sales growth and significantly increase repeat purchase and average order value.")
     ],
     "cover_letter": {
@@ -468,8 +468,8 @@ DATABRICKS_PAYLOAD = {
         "recipient": "Hiring Team & VP of Marketing\nDatabricks Inc.\nRemote / Global (Req ID: MKTQ327R30)",
         "salutation": "Dear Databricks Hiring Team,",
         "paragraphs": [
-            "I am writing to express my strong candidacy for the {{YOUR_TARGET_ROLE_3}} position at Databricks (Job ID: 8638642002). As {{YOUR_CURRENT_TITLE}} at {{PREVIOUS_COMPANY_1}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I have spent over 18 years leading enterprise web strategy, multi-national platform migrations across 34 countries, and AI-driven search transformation. Databricks’ vision to evolve its web properties to serve both human visitors and AI agents/assistants aligns perfectly with my background in structuring machine-readable web content, scaling Generative Engine Optimization (GEO), and operationalizing web development velocity.",
-            "Throughout my tenure at {{PREVIOUS_COMPANY_1}}, I have owned the global web channel as a primary pipeline engine. Recognizing the shift toward AI-driven discovery, I pioneered our Generative Engine Optimization (GEO) and Answer Engine Optimization (AEO) strategies, increasing company presence across AI search engines by 40% while lifting organic demo/trial conversions by 15%. Additionally, I led a large-scale platform migration across 14 languages, integrating Marketo, Tealium, and Google Analytics, improving page load speed by 40% and driving 15% growth in web-sourced pipeline. To ensure operational excellence, I established a common collaboration framework uniting developers, marketers, editors, and external agencies to streamline project intake and speed execution.",
+            "I am writing to express my strong candidacy for the {{YOUR_TARGET_ROLE_3}} position at Databricks (Job ID: 8638642002). As {{YOUR_MOST_RECENT_TITLE}} at {{MOST_RECENT_COMPANY}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I have spent over 18 years leading enterprise web strategy, multi-national platform migrations across 34 countries, and AI-driven search transformation. Databricks’ vision to evolve its web properties to serve both human visitors and AI agents/assistants aligns perfectly with my background in structuring machine-readable web content, scaling Generative Engine Optimization (GEO), and operationalizing web development velocity.",
+            "Throughout my tenure at {{MOST_RECENT_COMPANY}}, I have owned the global web channel as a primary pipeline engine. Recognizing the shift toward AI-driven discovery, I pioneered our Generative Engine Optimization (GEO) and Answer Engine Optimization (AEO) strategies, increasing company presence across AI search engines by 40% while lifting organic demo/trial conversions by 15%. Additionally, I led a large-scale platform migration across 14 languages, integrating Marketo, Tealium, and Google Analytics, improving page load speed by 40% and driving 15% growth in web-sourced pipeline. To ensure operational excellence, I established a common collaboration framework uniting developers, marketers, editors, and external agencies to streamline project intake and speed execution.",
             "Reporting to the VP of Marketing, I am eager to bring my deep technical experience, web architecture vision, and team governance to Databricks. I thrive in scale-oriented environments and look forward to building a high-performing web product organization that turns Databricks’ global web presence into an unmatched commercial and AI-native growth engine.",
             "Thank you for your time and consideration. I welcome the opportunity to discuss how my experience in web strategy, machine readability, and digital leadership will drive immediate impact for Databricks."
         ]
@@ -489,27 +489,27 @@ SIXFLAGS_PAYLOAD = {
         ("Executive Leadership & Operations: ", "Cross-Functional Leadership (Developers, Marketers, UX, Executives), Agile Program Management, Budget Management ($1M+), Performance Reporting.")
     ],
     "trend_micro_bullets": [
-        ("Global Web & Digital Operations Leadership: ", "Led global digital operations and transformation leadership for {{PREVIOUS_COMPANY_1}}'s B2B and B2C enterprise portfolios, owning the corporate web channel as the primary demand generation and digital revenue engine across development, operations, analytics, and marketing."),
+        ("Global Web & Digital Operations Leadership: ", "Led global digital operations and transformation leadership for {{MOST_RECENT_COMPANY}}'s B2B and B2C enterprise portfolios, owning the corporate web channel as the primary demand generation and digital revenue engine across development, operations, analytics, and marketing."),
         ("Enterprise E-Commerce & CRO Roadmap: ", "Owned global web analytics and CRO experimentation roadmap, executing 40+ annual A/B tests across pricing, solution pages, and checkout flows, increasing self-serve digital trial signups by 42% and web-sourced pipeline by 35%."),
         ("Multi-National Platform Migration: ", "Spearheaded enterprise web platform migration across 34 countries and 14 languages, integrating Marketo, Tealium, GTM, and GA4, reducing page load times by 40% and driving 15% growth in digital pipeline contribution."),
         ("AI Technology & Content Velocity: ", "Integrated Artificial Intelligence technologies (Claude, ChatGPT, CoPilot) into digital marketing workflows and content operations, accelerating production velocity and boosting organic conversions by 15%."),
         ("Unified Cross-Functional Framework: ", "Established a common collaboration framework for Developers, Marketers, Product Editors, and External Agencies to streamline intake, improve delivery execution, and enhance operational efficiency across regional markets.")
     ],
-    "handmark_bullets": [
+    "{{PREVIOUS_COMPANY_2}}_bullets": [
         ("Mobile App & Storefront Merchandising: ", "Managed product lifecycle and digital storefront operations for mobile app software distributor in {{YOUR_CITY_STATE}}, aligning functional requirements, wireframes, and customer journeys to increase e-commerce checkout conversion rate by +34%."),
         ("Go-To-Market & UX Execution: ", "Executed product strategy across online and on-device stores for {{PREVIOUS_COMPANY_2}} and enterprise partners (Sprint), driving a 30% increase in product-led engagement and repeat transactions.")
     ],
-    "mapsco_bullets": [
+    "{{PREVIOUS_COMPANY_3}}_bullets": [
         ("Multi-Channel E-Commerce Growth: ", "Directed corporate e-commerce and web marketing (SEO, SEM, email, marketplaces) at {{PREVIOUS_COMPANY_3}} in {{YOUR_CITY_STATE}}, testing UX offers and checkout flows to sustain 35%+ annual online sales growth and significantly elevate average order value (AOV).")
     ],
     "cover_letter": {
         "date": "August 7, 2026",
-        "recipient": "Selection Committee & Marketing Leadership\nSix Flags Entertainment Corporation\nCorporate Office | Arlington, TX",
+        "recipient": "Selection Committee & Marketing Leadership\nSix Flags Entertainment Corporation\nCorporate Office | {{YOUR_CITY_STATE}}",
         "salutation": "Dear Six Flags Selection Committee,",
         "paragraphs": [
-            "I am writing to express my strong enthusiasm for the Vice President, Digital & Ecommerce position at Six Flags Entertainment Corporation. Living in {{YOUR_CITY_STATE}}, just minutes from your corporate headquarters in Arlington, I have spent over 18 years leading enterprise web strategy, e-commerce storefronts, mobile app customer journeys, and digital marketing operations. Six Flags' vision to build a scalable, seamless digital experience across web properties, mobile app platforms, guest account portals, and digital sales channels connects directly with my background in driving digital operations and commercial revenue growth.",
-            "Throughout my 18-year tenure as {{YOUR_CURRENT_TITLE}} at {{PREVIOUS_COMPANY_1}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I built a reputation for unifying technology, product management, UX design, and commercial marketing teams. I owned our corporate web channel as a primary demand generation engine, executing A/B testing roadmaps that increased digital conversion rates by 42% and leading a multi-national platform migration across 34 countries that reduced page load times by 40%. Prior to {{PREVIOUS_COMPANY_1}}, I served as Senior Web Producer & E-Commerce Manager at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefronts for mobile app products and partner channels (Sprint), increasing e-commerce checkout conversion rates by +34%.",
-            "Reporting to marketing leadership, I am eager to bring my deep digital experience, e-commerce background, and Arlington-area executive presence to Six Flags. I thrive in scale-oriented environments and look forward to leading digital and e-commerce teams to maximize guest engagement, conversion velocity, and brand loyalty.",
+            "I am writing to express my strong enthusiasm for the Vice President, Digital & Ecommerce position at Six Flags Entertainment Corporation. Living in {{YOUR_CITY_STATE}}, just minutes from your corporate headquarters in {{YOUR_CITY}}, I have spent over 18 years leading enterprise web strategy, e-commerce storefronts, mobile app customer journeys, and digital marketing operations. Six Flags' vision to build a scalable, seamless digital experience across web properties, mobile app platforms, guest account portals, and digital sales channels connects directly with my background in driving digital operations and commercial revenue growth.",
+            "Throughout my 18-year tenure as {{YOUR_MOST_RECENT_TITLE}} at {{MOST_RECENT_COMPANY}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I built a reputation for unifying technology, product management, UX design, and commercial marketing teams. I owned our corporate web channel as a primary demand generation engine, executing A/B testing roadmaps that increased digital conversion rates by 42% and leading a multi-national platform migration across 34 countries that reduced page load times by 40%. Prior to {{MOST_RECENT_COMPANY}}, I served as Senior Web Producer & E-Commerce Manager at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefronts for mobile app products and partner channels (Sprint), increasing e-commerce checkout conversion rates by +34%.",
+            "Reporting to marketing leadership, I am eager to bring my deep digital experience, e-commerce background, and {{YOUR_CITY}}-area executive presence to Six Flags. I thrive in scale-oriented environments and look forward to leading digital and e-commerce teams to maximize guest engagement, conversion velocity, and brand loyalty.",
             "Thank you for your time and consideration. I welcome the opportunity to discuss how my background in digital leadership, e-commerce growth, and Preferred Hybrid City presence will drive immediate impact for Six Flags."
         ]
     }
@@ -528,17 +528,17 @@ GRAFANA_PAYLOAD = {
         ("Engineering Leadership & Team Development: ", "Hiring, Coaching & Developing Web Engineers, Agile Sprint Execution, Budget Management ($1M+), All-Remote Distributed Leadership.")
     ],
     "trend_micro_bullets": [
-        ("Global Web Platform Leadership & Velocity: ", "Led global digital operations and web development teams for {{PREVIOUS_COMPANY_1}}'s B2B and B2C enterprise portfolios, owning the corporate web ecosystem as the primary demand generation and pipeline engine across engineering, analytics, and marketing."),
+        ("Global Web Platform Leadership & Velocity: ", "Led global digital operations and web development teams for {{MOST_RECENT_COMPANY}}'s B2B and B2C enterprise portfolios, owning the corporate web ecosystem as the primary demand generation and pipeline engine across engineering, analytics, and marketing."),
         ("AI-First Web Strategy & GEO Dominance: ", "Spearheaded the evolution of global web properties into AI-ready platforms, structuring content for machine readability across AI search tools (GEO/AEO) to increase brand presence by 40% and organic conversions by 15%."),
         ("AI Technology Integration & Engineering Velocity: ", "Integrated Artificial Intelligence (AI) technologies (Claude, ChatGPT, CoPilot) into web engineering and content production workflows, accelerating development velocity by 30% and reducing coordination overhead."),
         ("Multi-National Platform Migration: ", "Led enterprise web platform migration across 34 countries and 14 languages, integrating Marketo, Tealium, GTM, and GA4, reducing page load times by 40% and driving 15% growth in web-sourced pipeline."),
         ("Self-Serve Web Operations & Guardrails: ", "Established reusable CMS component models, UX guardrails, and automated intake cadences, empowering marketing and content editors to launch campaigns independently while maintaining strict quality and security standards.")
     ],
-    "handmark_bullets": [
+    "{{PREVIOUS_COMPANY_2}}_bullets": [
         ("Web & Mobile Storefront Engineering: ", "Oversaw end-to-end development lifecycle and digital product operations for {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, designing web architecture and checkout funnels for mobile app software stores (Sprint) that increased e-commerce conversion rates by +34%."),
         ("Go-To-Market & Functional Specification: ", "Defined functional requirements, wireframes, and customer use cases across web and mobile app products, driving a 30% increase in product engagement.")
     ],
-    "mapsco_bullets": [
+    "{{PREVIOUS_COMPANY_3}}_bullets": [
         ("Digital Revenue & Sales Growth: ", "Directed corporate e-commerce and web marketing at {{PREVIOUS_COMPANY_3}} in {{YOUR_CITY_STATE}}, optimizing web architecture and checkout flows to sustain 35%+ annual online sales growth.")
     ],
     "cover_letter": {
@@ -546,20 +546,20 @@ GRAFANA_PAYLOAD = {
         "recipient": "Selection Committee & Web Engineering Leadership\nGrafana Labs\nRemote / United States (Req ID: 5999936004)",
         "salutation": "Dear Grafana Labs Selection Committee,",
         "paragraphs": [
-            "I am writing to express my strong enthusiasm for the Senior Manager, Web Technology position at Grafana Labs (Req ID: 5999936004). As {{YOUR_CURRENT_TITLE}} at {{PREVIOUS_COMPANY_1}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I have spent over 18 years leading enterprise web strategy, engineering teams, and AI-enabled digital transformation. Grafana Labs' vision to evolve grafana.com into an AI-first, agent-ready platform optimized for both humans and LLMs connects directly with my background in structuring machine-readable web content, scaling web development velocity, and building self-serve web operations.",
-            "Throughout my tenure at {{PREVIOUS_COMPANY_1}}, I owned our corporate web channel as a primary commercial and brand engine. Recognizing the shift toward AI-driven discovery, I pioneered our Generative Engine Optimization (GEO) and Answer Engine Optimization (AEO) initiatives, increasing company presence across AI assistants by 40% while lifting organic trial conversions by 15%. Embracing AI as a core productivity multiplier, I integrated AI platforms (Claude, ChatGPT, CoPilot) into our engineering workflows, accelerating production velocity by 30%. Additionally, I spearheaded a multi-national platform migration across 34 countries, establishing reusable CMS component models and automated intake cadences that enabled marketing teams to publish self-serve without compromising quality or performance.",
-            "Prior to {{PREVIOUS_COMPANY_1}}, I served as Product Manager of Web and E-commerce at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefront development across web and mobile partner channels (Sprint), boosting checkout conversion rates by +34%. I thrive in 100% remote, open-culture environments and am eager to bring my web engineering leadership, AI transformation experience, and operational discipline to lead the web technology team at Grafana Labs.",
+            "I am writing to express my strong enthusiasm for the Senior Manager, Web Technology position at Grafana Labs (Req ID: 5999936004). As {{YOUR_MOST_RECENT_TITLE}} at {{MOST_RECENT_COMPANY}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I have spent over 18 years leading enterprise web strategy, engineering teams, and AI-enabled digital transformation. Grafana Labs' vision to evolve grafana.com into an AI-first, agent-ready platform optimized for both humans and LLMs connects directly with my background in structuring machine-readable web content, scaling web development velocity, and building self-serve web operations.",
+            "Throughout my tenure at {{MOST_RECENT_COMPANY}}, I owned our corporate web channel as a primary commercial and brand engine. Recognizing the shift toward AI-driven discovery, I pioneered our Generative Engine Optimization (GEO) and Answer Engine Optimization (AEO) initiatives, increasing company presence across AI assistants by 40% while lifting organic trial conversions by 15%. Embracing AI as a core productivity multiplier, I integrated AI platforms (Claude, ChatGPT, CoPilot) into our engineering workflows, accelerating production velocity by 30%. Additionally, I spearheaded a multi-national platform migration across 34 countries, establishing reusable CMS component models and automated intake cadences that enabled marketing teams to publish self-serve without compromising quality or performance.",
+            "Prior to {{MOST_RECENT_COMPANY}}, I served as {{YOUR_PREVIOUS_TITLE_1}} at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefront development across web and mobile partner channels (Sprint), boosting checkout conversion rates by +34%. I thrive in 100% remote, open-culture environments and am eager to bring my web engineering leadership, AI transformation experience, and operational discipline to lead the web technology team at Grafana Labs.",
             "Thank you for your time and consideration. I welcome the opportunity to discuss how my experience in web platform architecture, AI-first transformation, and team leadership will drive immediate impact for grafana.com."
         ]
     }
 }
 
-MOUSER_PAYLOAD = {
+{{TARGET_COMPANY_6}}_PAYLOAD = {
     "company": "{{TARGET_COMPANY_6}}",
     "folder": "{{TARGET_COMPANY_6}}",
     "role": "Web Software Development Director",
     "headline": "WEB SOFTWARE DEVELOPMENT DIRECTOR | GLOBAL ECOMMERCE & DIGITAL PLATFORMS LEADER",
-    "summary": "Executive Web Software Development and Digital Engineering Leader based in {{YOUR_CITY_STATE}} (minutes from Mansfield HQ) with 18+ years managing enterprise e-commerce platforms, web software architecture, customer experience engineering, and cross-functional technology teams. Proven track record owning global web channels as primary demand generation and revenue engines at {{PREVIOUS_COMPANY_1}} (18+ years in global web marketing development). Expert in modernizing web software architectures, conversion rate optimization (CRO), CMS platform modernizations (AEM, Sanity, WordPress, Drupal), AI-assisted development velocity (Claude, Cursor, CoPilot, GEO/AEO), and high-scale digital customer experiences.",
+    "summary": "Executive Web Software Development and Digital Engineering Leader based in {{YOUR_CITY_STATE}} (minutes from Mansfield HQ) with 18+ years managing enterprise e-commerce platforms, web software architecture, customer experience engineering, and cross-functional technology teams. Proven track record owning global web channels as primary demand generation and revenue engines at {{MOST_RECENT_COMPANY}} (18+ years in global web marketing development). Expert in modernizing web software architectures, conversion rate optimization (CRO), CMS platform modernizations (AEM, Sanity, WordPress, Drupal), AI-assisted development velocity (Claude, Cursor, CoPilot, GEO/AEO), and high-scale digital customer experiences.",
     "areas_of_expertise": [
         ("E-Commerce Software Architecture: ", "High-Impact Digital E-Commerce Platforms, Web Software Engineering, Microservices & API Integration, System Resilience & Scalability, Modernization Roadmaps."),
         ("Conversion Rate Optimization & CRO: ", "Checkout Conversion Rate Optimization (CRO), A/B & Multivariate Testing, Customer Experience Design, High-Velocity Merchandising Funnels, User Account Portals."),
@@ -567,27 +567,27 @@ MOUSER_PAYLOAD = {
         ("Software Team Leadership & Governance: ", "Cross-Functional Engineering Management (Developers, Marketers, UX Designers, Executives), Agile Sprint Cadences, Budget Management ($1M+), Preferred Hybrid City Leadership.")
     ],
     "trend_micro_bullets": [
-        ("Global Web Software Engineering & Operations Leadership: ", "Led global web software development and digital engineering teams for {{PREVIOUS_COMPANY_1}}'s enterprise B2B and B2C web platforms ({{MOST_RECENT_EMPLOYMENT_DATES}}), owning corporate e-commerce and digital channels as primary demand generation and revenue engines."),
+        ("Global Web Software Engineering & Operations Leadership: ", "Led global web software development and digital engineering teams for {{MOST_RECENT_COMPANY}}'s enterprise B2B and B2C web platforms ({{MOST_RECENT_EMPLOYMENT_DATES}}), owning corporate e-commerce and digital channels as primary demand generation and revenue engines."),
         ("Enterprise E-Commerce Architecture & CRO Roadmap: ", "Owned global web software architecture and CRO experimentation roadmap, executing 40+ annual A/B tests across checkout flows, pricing, and solution portals, increasing self-serve digital conversions by 42% and pipeline contribution by 35%."),
         ("Multi-National Platform Modernization: ", "Spearheaded enterprise web platform modernization across 34 countries and 14 languages, integrating Marketo, Tealium, GTM, and GA4, reducing page load times by 40% and driving 15% growth in web-sourced revenue."),
         ("AI Technology Integration & Development Velocity: ", "Integrated Artificial Intelligence technologies (Claude, Cursor, CoPilot) into web engineering and analytics workflows, accelerating software development velocity by 30% and reducing time-to-market for digital capabilities."),
         ("Cross-Functional Governance & Delivery Cadences: ", "Established a unified collaboration framework for software engineers, product managers, UX designers, and external agencies to streamline project intake, elevate software quality, and enhance operational efficiency.")
     ],
-    "handmark_bullets": [
+    "{{PREVIOUS_COMPANY_2}}_bullets": [
         ("E-Commerce Storefront & Mobile App Engineering: ", "Managed web software product lifecycle and digital storefront development for {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, engineering checkout funnels for partner channels (Sprint) that boosted e-commerce conversion rates by +34%."),
         ("Functional Specification & Go-To-Market Execution: ", "Defined software functional requirements, wireframes, and customer use cases across web and mobile app products, driving a 30% increase in product-led customer engagement.")
     ],
-    "mapsco_bullets": [
+    "{{PREVIOUS_COMPANY_3}}_bullets": [
         ("E-Commerce Revenue & Sales Growth: ", "Directed corporate e-commerce software and web marketing at {{PREVIOUS_COMPANY_3}} in {{YOUR_CITY_STATE}}, optimizing web architecture and checkout flows to sustain 35%+ annual online sales growth.")
     ],
     "cover_letter": {
         "date": "August 11, 2026",
-        "recipient": "Selection Committee & Technology Leadership\nMouser Electronics, Inc.\nCorporate Headquarters | Mansfield, TX (Req ID: 30834)",
+        "recipient": "Selection Committee & Technology Leadership\n{{TARGET_COMPANY_6}}, Inc.\nCorporate Headquarters | Mansfield, TX (Req ID: 30834)",
         "salutation": "Dear {{TARGET_COMPANY_6}} Selection Committee,",
         "paragraphs": [
             "I am writing to express my strong enthusiasm for the Web Software Development Director position at {{TARGET_COMPANY_6}} (Job ID: 30834). Living in {{YOUR_CITY_STATE}}, just minutes from your corporate headquarters in Mansfield, I have spent over 18 years leading enterprise web software development, digital e-commerce platforms, customer experience engineering, and cross-functional technology teams. {{TARGET_COMPANY_6}}'s mission to lead the evolution of a high-impact digital e-commerce platform and shape the future of how customers engage at scale connects directly with my hands-on experience modernizing architectures, evolving engineering practices, and driving measurable commercial growth.",
-            "Throughout my 18-year tenure as {{YOUR_CURRENT_TITLE}} at {{PREVIOUS_COMPANY_1}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I built a reputation for unifying software engineering, product management, UX design, and commercial leadership. I owned our global corporate web channels as primary demand generation and e-commerce engines, executing A/B testing roadmaps that increased digital conversion rates by 42% and leading a multi-national platform modernization across 34 countries that reduced page load times by 40%. Embracing AI as a core development multiplier, I integrated AI coding copilots (Cursor, Claude, CoPilot) into our software engineering workflows, accelerating development velocity by 30% while pioneering machine-readable web content strategies (GEO/AEO) that boosted organic search presence by 40%.",
-            "Prior to {{PREVIOUS_COMPANY_1}}, I served as Product Manager of Web and E-commerce at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefront software development across web and mobile partner channels (Sprint), boosting checkout conversion rates by +34%. I thrive in high-scale environments and am eager to bring my web software development background, e-commerce architecture experience, and Preferred Hybrid City executive presence to lead {{TARGET_COMPANY_6}}'s software engineering team in Mansfield.",
+            "Throughout my 18-year tenure as {{YOUR_MOST_RECENT_TITLE}} at {{MOST_RECENT_COMPANY}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I built a reputation for unifying software engineering, product management, UX design, and commercial leadership. I owned our global corporate web channels as primary demand generation and e-commerce engines, executing A/B testing roadmaps that increased digital conversion rates by 42% and leading a multi-national platform modernization across 34 countries that reduced page load times by 40%. Embracing AI as a core development multiplier, I integrated AI coding copilots (Cursor, Claude, CoPilot) into our software engineering workflows, accelerating development velocity by 30% while pioneering machine-readable web content strategies (GEO/AEO) that boosted organic search presence by 40%.",
+            "Prior to {{MOST_RECENT_COMPANY}}, I served as {{YOUR_PREVIOUS_TITLE_1}} at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefront software development across web and mobile partner channels (Sprint), boosting checkout conversion rates by +34%. I thrive in high-scale environments and am eager to bring my web software development background, e-commerce architecture experience, and Preferred Hybrid City executive presence to lead {{TARGET_COMPANY_6}}'s software engineering team in Mansfield.",
             "Thank you for your time and consideration. I welcome the opportunity to discuss how my experience in web software engineering, e-commerce modernization, and Preferred Hybrid City leadership will drive immediate impact for {{TARGET_COMPANY_6}}."
         ]
     }
@@ -598,7 +598,7 @@ NEO_SECURITY_PAYLOAD = {
     "folder": "Neo Security",
     "role": "Director Web and Digital",
     "headline": "DIRECTOR, WEB & DIGITAL | GLOBAL WEB STRATEGY, AEO & AI TRANSFORMATION LEADER",
-    "summary": "Executive web marketing, technology, and SEO leader with 18+ years managing enterprise B2B SaaS web platforms, organic search growth, and AI-driven answer engine optimization (AEO/GEO across ChatGPT, Perplexity, Gemini, and Claude). Proven track record owning corporate websites as primary pipeline engines at {{PREVIOUS_COMPANY_1}} (18+ years in global cybersecurity web marketing development). Expert in website architecture, conversion rate optimization (CRO), content-to-code velocity using modern AI coding copilots (Cursor, Claude Code), and managing remote teams and agency partners.",
+    "summary": "Executive web marketing, technology, and SEO leader with 18+ years managing enterprise B2B SaaS web platforms, organic search growth, and AI-driven answer engine optimization (AEO/GEO across ChatGPT, Perplexity, Gemini, and Claude). Proven track record owning corporate websites as primary pipeline engines at {{MOST_RECENT_COMPANY}} (18+ years in global cybersecurity web marketing development). Expert in website architecture, conversion rate optimization (CRO), content-to-code velocity using modern AI coding copilots (Cursor, Claude Code), and managing remote teams and agency partners.",
     "areas_of_expertise": [
         ("Web Strategy & AEO / GEO Dominance: ", "Answer Engine Optimization (AEO), Generative Engine Optimization (GEO), Content Schema & Information Architecture for LLMs, Technical & On-Page SEO."),
         ("Enterprise B2B SaaS Web Architecture: ", "Corporate Site Architecture, CMS Governance (Sanity, AEM, WordPress, Drupal), Landing Page Velocity, Conversion Rate Optimization (CRO), A/B Testing Roadmaps."),
@@ -606,17 +606,17 @@ NEO_SECURITY_PAYLOAD = {
         ("Marketing Technology & Revenue Attribution: ", "GA4, Search Console, Ahrefs/Semrush, Google/Bing PPC Operations, Pipeline Attribution, Cross-Functional Team Leadership.")
     ],
     "trend_micro_bullets": [
-        ("Global Web & Digital Operations Leadership: ", "Led global web marketing development for {{PREVIOUS_COMPANY_1}}'s B2B and B2C enterprise portfolios (18+ years in cybersecurity), owning the corporate web channel as the primary demand generation and pipeline engine across architecture, SEO, analytics, and content velocity."),
+        ("Global Web & Digital Operations Leadership: ", "Led global web marketing development for {{MOST_RECENT_COMPANY}}'s B2B and B2C enterprise portfolios (18+ years in cybersecurity), owning the corporate web channel as the primary demand generation and pipeline engine across architecture, SEO, analytics, and content velocity."),
         ("AI Search & Answer Engine Optimization (AEO/GEO): ", "Spearheaded Generative Engine Optimization (GEO) and Answer Engine Optimization (AEO) initiatives across global web properties, structuring content schema and information architecture for LLMs to increase AI search presence by 40% and organic conversions by 15%."),
         ("Content-to-Code Velocity & AI Tooling: ", "Integrated modern AI tools (Claude, Cursor, CoPilot) into web development and content workflows, accelerating landing page velocity by 30% and reducing time-to-market for campaigns."),
         ("Multi-National Platform Migration & CRO: ", "Led enterprise web platform migration across 34 countries and 14 languages, integrating Marketo, Tealium, GTM, and GA4, reducing page load times by 40% and driving 15% growth in web-sourced pipeline."),
         ("Cross-Functional Governance & Remote Team Leadership: ", "Established a unified collaboration framework for developers, marketers, editors, and external agencies to streamline project intake, elevate execution quality, and manage remote digital operations.")
     ],
-    "handmark_bullets": [
+    "{{PREVIOUS_COMPANY_2}}_bullets": [
         ("Web Storefront & E-Commerce Operations: ", "Oversaw product management and web storefront operations for mobile app distributor in {{YOUR_CITY_STATE}}, designing UX flows and checkout funnels for partner channels (Sprint) that increased e-commerce conversion rates by +34%."),
         ("Go-To-Market & UX Functional Specification: ", "Defined functional requirements, wireframes, and customer use cases across web and mobile app products, driving a 30% increase in product engagement.")
     ],
-    "mapsco_bullets": [
+    "{{PREVIOUS_COMPANY_3}}_bullets": [
         ("Digital Revenue & Sales Growth: ", "Directed corporate e-commerce and web marketing at {{PREVIOUS_COMPANY_3}} in {{YOUR_CITY_STATE}}, optimizing web architecture and checkout flows to sustain 35%+ annual online sales growth.")
     ],
     "cover_letter": {
@@ -624,8 +624,8 @@ NEO_SECURITY_PAYLOAD = {
         "recipient": "Selection Committee & Executive Leadership\nNeo Security Inc.\nRemote - USA (Job ID: 4323676009)",
         "salutation": "Dear Neo Security Selection Committee,",
         "paragraphs": [
-            "I am writing to express my strong enthusiasm for the Director, Web & Digital (Director, Web & AEO) position at Neo Security Inc. (Job ID: 4323676009). As {{YOUR_CURRENT_TITLE}} at {{PREVIOUS_COMPANY_1}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I have spent over 18 years leading enterprise B2B cybersecurity web strategy, organic search growth, and AI-driven digital transformation. Neo Security's mission to build a high-converting digital front door while leading the industry in Answer Engine Optimization (AEO across ChatGPT, Perplexity, Gemini, and AI Overviews) connects directly with my hands-on experience structuring machine-readable content, accelerating development velocity with AI tools, and driving measurable pipeline growth.",
-            "Throughout my 18-year tenure at {{PREVIOUS_COMPANY_1}}, I owned our corporate web channel as a primary revenue and trust engine for security buyers. Recognizing the fundamental shift toward AI-driven search, I pioneered our Generative Engine Optimization (GEO) and Answer Engine Optimization (AEO) strategies, structuring content schema and information architecture to increase brand presence across AI assistants by 40% while lifting organic trial/demo conversions by 15%. A firm believer in AI-assisted velocity, I integrated AI coding copilots (Cursor, Claude, CoPilot) into our web production workflows, reducing landing page launch times by 30%. Additionally, I led a multi-national platform migration across 34 countries, managing third-party development partners and integrating GA4, Marketo, and Tealium to drive 15% growth in web-sourced pipeline.",
+            "I am writing to express my strong enthusiasm for the Director, Web & Digital (Director, Web & AEO) position at Neo Security Inc. (Job ID: 4323676009). As {{YOUR_MOST_RECENT_TITLE}} at {{MOST_RECENT_COMPANY}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I have spent over 18 years leading enterprise B2B cybersecurity web strategy, organic search growth, and AI-driven digital transformation. Neo Security's mission to build a high-converting digital front door while leading the industry in Answer Engine Optimization (AEO across ChatGPT, Perplexity, Gemini, and AI Overviews) connects directly with my hands-on experience structuring machine-readable content, accelerating development velocity with AI tools, and driving measurable pipeline growth.",
+            "Throughout my 18-year tenure at {{MOST_RECENT_COMPANY}}, I owned our corporate web channel as a primary revenue and trust engine for security buyers. Recognizing the fundamental shift toward AI-driven search, I pioneered our Generative Engine Optimization (GEO) and Answer Engine Optimization (AEO) strategies, structuring content schema and information architecture to increase brand presence across AI assistants by 40% while lifting organic trial/demo conversions by 15%. A firm believer in AI-assisted velocity, I integrated AI coding copilots (Cursor, Claude, CoPilot) into our web production workflows, reducing landing page launch times by 30%. Additionally, I led a multi-national platform migration across 34 countries, managing third-party development partners and integrating GA4, Marketo, and Tealium to drive 15% growth in web-sourced pipeline.",
             "Having spent 18+ years in the B2B cybersecurity space, I possess deep empathy for technical security buyer personas (CISOs, security engineers, IT leaders) and understand that technical credibility is everything. I thrive in hands-on, builder-oriented remote environments where modern AI tools are used to ship high-impact digital experiences rapidly.",
             "Thank you for your time and consideration. I welcome the opportunity to discuss how my cybersecurity web leadership, AEO expertise, and hands-on AI workflow execution will drive immediate pipeline growth for Neo Security Inc."
         ]
@@ -633,7 +633,7 @@ NEO_SECURITY_PAYLOAD = {
 }
 
 
-SPINUTECH_PAYLOAD = {
+{{TARGET_COMPANY_3}}_PAYLOAD = {
     "company": "{{TARGET_COMPANY_3}}",
     "folder": "{{TARGET_COMPANY_3}}",
     "role": "Vice President of Digital Strategy",
@@ -646,35 +646,35 @@ SPINUTECH_PAYLOAD = {
         ("Operational Scaling & Growth: ", "Resource Utilization & Capacity Planning, Agency Pitch & Proposal Leadership, Cross-Functional Alignment (Developers, Marketers, UX, C-Suite).")
     ],
     "trend_micro_bullets": [
-        ("Global Web & Digital Strategy Leadership: ", "Led global digital marketing and web strategy for {{PREVIOUS_COMPANY_1}}'s B2B and B2C enterprise portfolios, managing a 13+ person cross-functional team across development, DevOps, QA, BA, and SEO to own the web channel as the primary demand generation and pipeline engine."),
+        ("Global Web & Digital Strategy Leadership: ", "Led global digital marketing and web strategy for {{MOST_RECENT_COMPANY}}'s B2B and B2C enterprise portfolios, managing a {{TEAM_SIZE_PLACEHOLDER}} across development, DevOps, QA, BA, and SEO to own the web channel as the primary demand generation and pipeline engine."),
         ("Next-Gen DXP Discovery & Evaluation: ", "Led discovery, architectural evaluation, ROI analysis, and executive vendor decision-making for a next-generation Digital Experience Platform (DXP) to replace legacy Adobe Experience Manager (AEM), aligning C-suite stakeholders around modern API architecture and TCO optimization."),
-        ("TrendAI Redesign & Sanity CMS Platform Migration: ", "Organized and executed the end-to-end redesign and platform migration of the TrendAI website onto Sanity CMS, establishing structured content models, modern headless workflows, and rapid publishing cadences for AI product launches."),
+        ("TrendAI Redesign & {{MODERN_CMS}} Platform Migration: ", "Organized and executed the end-to-end redesign and platform migration of the TrendAI website onto {{MODERN_CMS}}, establishing structured content models, modern headless workflows, and rapid publishing cadences for AI product launches."),
         ("AI-First Innovation & GEO/AEO Integration: ", "Championed AI technologies (Claude, ChatGPT, CoPilot, LLMs) and Generative Engine Optimization (GEO/AEO), driving a 40% increase in brand search presence and a +15% uplift in organic demo/trial conversions."),
         ("Enterprise Platform Modernization & Performance: ", "Directed end-to-end redesign and AEM 6.x migration across 34 countries and 14 languages, integrating Marketo, Tealium, GTM, mPulse, Cludo, and GA4 to reduce page load times by 40%, boost organic sessions by 10%, and drive 15% pipeline growth."),
         ("High-Velocity CRO & Landing Page Optimization: ", "Owned web analytics and CRO roadmaps, executing A/B testing frameworks across pricing and solution flows while aligning regional marketing teams to increase campaign landing page conversions by +10% and digital trial signups by 42%.")
     ],
-    "handmark_bullets": [
+    "{{PREVIOUS_COMPANY_2}}_bullets": [
         ("Digital Product Strategy & Storefront Management: ", "Oversaw end-to-end business management and product lifecycle for mobile app software distributor in {{YOUR_CITY_STATE}}, designing web architecture and checkout funnels for mobile app stores (Sprint) that increased e-commerce checkout conversion rate by +34%."),
         ("Go-To-Market & Consultative Alignment: ", "Executed product strategy across online and on-device stores, defining functional requirements, wireframes, and customer use cases to drive a 30% increase in product-led engagement.")
     ],
-    "mapsco_bullets": [
+    "{{PREVIOUS_COMPANY_3}}_bullets": [
         ("Cross-Channel Digital Marketing & Revenue Growth: ", "Directed corporate e-commerce and web marketing (SEO, SEM, email, marketplaces) at {{PREVIOUS_COMPANY_3}} in {{YOUR_CITY_STATE}}, testing offers and UX flows to sustain 35%+ annual online sales growth and significantly elevate average order value (AOV).")
     ],
     "cover_letter": {
         "date": "August 12, 2026",
-        "recipient": "Executive Selection Committee & Leadership Team\nSpinutech\nRemote Executive Office | USA",
+        "recipient": "Executive Selection Committee & Leadership Team\n{{TARGET_COMPANY_3}}\nRemote Executive Office | USA",
         "salutation": "Dear {{TARGET_COMPANY_3}} Leadership Team,",
         "paragraphs": [
             "I am writing to express my strong enthusiasm for the Vice President of Digital Strategy position at {{TARGET_COMPANY_3}}. With over 18 years of experience leading cross-functional digital marketing teams, digital transformation roadmaps, enterprise web platforms, and AI-first activation strategies, I connect directly with {{TARGET_COMPANY_3}}'s mission to lead, performance-optimize, and evolve multi-disciplinary digital teams across SEO/GEO, Paid Media, Data Science, CRO, and Content Operations.",
-            "Throughout my 18-year tenure as {{YOUR_CURRENT_TITLE}} at {{PREVIOUS_COMPANY_1}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I built a high-performing global organization of 13+ cross-functional specialists (development, DevOps, QA, BA, SEO). I owned our corporate web channel as the primary demand generation engine, directing a 34-country AEM 6.x migration that reduced page load times by 40% while executing CRO testing roadmaps that increased self-serve digital trial signups by 42%. Recognizing the shift toward intelligent search, I championed AI technologies (Claude, ChatGPT, CoPilot, LLMs) and Generative Engine Optimization (GEO/AEO), driving a 40% increase in search visibility and a +15% uplift in organic demo conversions.",
-            "Prior to {{PREVIOUS_COMPANY_1}}, I served as Product Manager of Web and E-commerce at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefronts for mobile app products and partner channels (Sprint), boosting checkout conversion rates by +34%. My background combines executive digital consulting, deep technical fluency across enterprise MarTech ecosystems, and a proven track record leading cross-disciplinary teams to deliver measurable commercial impact for clients.",
+            "Throughout my 18-year tenure as {{YOUR_MOST_RECENT_TITLE}} at {{MOST_RECENT_COMPANY}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I built a high-performing global organization of 13+ cross-functional specialists (development, DevOps, QA, BA, SEO). I owned our corporate web channel as the primary demand generation engine, directing a 34-country AEM 6.x migration that reduced page load times by 40% while executing CRO testing roadmaps that increased self-serve digital trial signups by 42%. Recognizing the shift toward intelligent search, I championed AI technologies (Claude, ChatGPT, CoPilot, LLMs) and Generative Engine Optimization (GEO/AEO), driving a 40% increase in search visibility and a +15% uplift in organic demo conversions.",
+            "Prior to {{MOST_RECENT_COMPANY}}, I served as {{YOUR_PREVIOUS_TITLE_1}} at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefronts for mobile app products and partner channels (Sprint), boosting checkout conversion rates by +34%. My background combines executive digital consulting, deep technical fluency across enterprise MarTech ecosystems, and a proven track record leading cross-disciplinary teams to deliver measurable commercial impact for clients.",
             "Thank you for your time and consideration. I welcome the opportunity to discuss how my background in digital strategy, AI innovation, and executive leadership will drive immediate value for {{TARGET_COMPANY_3}} and your client portfolio."
         ]
     }
 }
 
 
-JOBGETHER_FVP_PAYLOAD = {
+{{TARGET_COMPANY_2}}_FVP_PAYLOAD = {
     "company": "{{TARGET_COMPANY_2}}",
     "folder": "{{TARGET_COMPANY_2}}",
     "role": "{{YOUR_TARGET_ROLE_5}}",
@@ -687,27 +687,27 @@ JOBGETHER_FVP_PAYLOAD = {
         ("Executive Governance & Team Leadership: ", "Cross-Disciplinary Team Management (Dev, DevOps, QA, BA, SEO), Risk & Compliance Alignment, Strategic Vendor & Fintech Partner Management.")
     ],
     "trend_micro_bullets": [
-        ("Enterprise Digital Transformation Leadership: ", "Led global web marketing and digital transformation leadership for {{PREVIOUS_COMPANY_1}}'s enterprise B2B and B2C portfolios, managing a 13+ person cross-functional team (Development, DevOps, QA, BA, SEO) to own the corporate web channel as the primary revenue and pipeline engine."),
+        ("Enterprise Digital Transformation Leadership: ", "Led global web marketing and digital transformation leadership for {{MOST_RECENT_COMPANY}}'s enterprise B2B and B2C portfolios, managing a {{TEAM_SIZE_PLACEHOLDER}} (Development, DevOps, QA, BA, SEO) to own the corporate web channel as the primary revenue and pipeline engine."),
         ("Next-Gen DXP Discovery & Decision-Making: ", "Led discovery, architectural evaluation, ROI analysis, and executive vendor decision-making for a next-generation Digital Experience Platform (DXP) to replace legacy Adobe Experience Manager (AEM), aligning C-suite stakeholders around modern API architecture and TCO optimization."),
-        ("TrendAI Redesign & Sanity CMS Platform Migration: ", "Organized and executed the end-to-end redesign and platform migration of the TrendAI website onto Sanity CMS, establishing structured content models, modern headless workflows, and rapid publishing cadences."),
+        ("TrendAI Redesign & {{MODERN_CMS}} Platform Migration: ", "Organized and executed the end-to-end redesign and platform migration of the TrendAI website onto {{MODERN_CMS}}, establishing structured content models, modern headless workflows, and rapid publishing cadences."),
         ("AI-First Innovation & GEO/AEO Integration: ", "Championed AI technologies (Claude, ChatGPT, CoPilot, LLMs) and Generative Engine Optimization (GEO/AEO), driving a 40% increase in brand search presence and a +15% uplift in organic demo/trial conversions."),
         ("Multi-National Platform Modernization & Performance: ", "Directed enterprise web platform migration across 34 countries and 14 languages, integrating Marketo, Tealium, GTM, mPulse, Cludo, and GA4 to reduce page load times by 40%, boost organic sessions by 10%, and drive 15% pipeline growth.")
     ],
-    "handmark_bullets": [
+    "{{PREVIOUS_COMPANY_2}}_bullets": [
         ("Digital Product Strategy & Storefront Management: ", "Oversaw end-to-end business management and product lifecycle for mobile app software distributor in {{YOUR_CITY_STATE}}, designing web architecture and checkout funnels for mobile app stores (Sprint) that increased e-commerce checkout conversion rate by +34%."),
         ("Go-To-Market & Executive Alignment: ", "Executed product strategy across online and on-device stores, defining functional requirements, wireframes, and customer use cases to drive a 30% increase in product-led engagement.")
     ],
-    "mapsco_bullets": [
+    "{{PREVIOUS_COMPANY_3}}_bullets": [
         ("Digital Marketing & Revenue Optimization: ", "Directed corporate e-commerce and web marketing (SEO, SEM, email, marketplaces) at {{PREVIOUS_COMPANY_3}} in {{YOUR_CITY_STATE}}, testing offers and UX flows to sustain 35%+ annual online sales growth.")
     ],
     "cover_letter": {
         "date": "August 12, 2026",
-        "recipient": "Executive Selection Committee & Digital Transformation Leadership\nJobgether / {{TARGET_COMPANY_1}}\nRemote Executive Office | USA (Job ID: 4449323011)",
+        "recipient": "Executive Selection Committee & Digital Transformation Leadership\n{{TARGET_COMPANY_2}} / {{TARGET_COMPANY_1}}\nRemote Executive Office | USA (Job ID: 4449323011)",
         "salutation": "Dear Selection Committee,",
         "paragraphs": [
             "I am writing to express my strong enthusiasm for the {{YOUR_TARGET_ROLE_5}} position at {{TARGET_COMPANY_1}} (via {{TARGET_COMPANY_2}}, Job ID: 4449323011). With over 18 years of experience leading enterprise digital transformation strategy, digital product management, technology modernization, and cross-functional technology teams, I connect directly with your mission to define, govern, and execute a multi-year digital transformation roadmap.",
-            "Throughout my 18-year tenure as {{YOUR_CURRENT_TITLE}} at {{PREVIOUS_COMPANY_1}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I built a high-performing global organization of 13+ cross-functional specialists (development, DevOps, QA, BA, SEO). I owned our corporate web channel as the primary demand generation engine, directing a 34-country AEM 6.x migration that reduced page load times by 40% while leading the discovery, ROI evaluation, and decision-making for a next-gen DXP platform to replace legacy AEM. Additionally, I organized and executed the TrendAI site redesign and migration to Sanity CMS, while pioneering Generative Engine Optimization (GEO/AEO) strategies that increased search visibility by 40% and lifted organic demo conversions by +15%.",
-            "Prior to {{PREVIOUS_COMPANY_1}}, I served as Product Manager of Web and E-commerce at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefront software development across web and mobile partner channels (Sprint), boosting checkout conversion rates by +34%. My background combines executive digital consulting, deep technical fluency across enterprise MarTech/FinTech ecosystems, and a proven track record leading cross-disciplinary teams through organizational change.",
+            "Throughout my 18-year tenure as {{YOUR_MOST_RECENT_TITLE}} at {{MOST_RECENT_COMPANY}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I built a high-performing global organization of 13+ cross-functional specialists (development, DevOps, QA, BA, SEO). I owned our corporate web channel as the primary demand generation engine, directing a 34-country AEM 6.x migration that reduced page load times by 40% while leading the discovery, ROI evaluation, and decision-making for a next-gen DXP platform to replace {{LEGACY_PLATFORM}}. Additionally, I organized and executed the TrendAI site redesign and migration to {{MODERN_CMS}}, while pioneering Generative Engine Optimization (GEO/AEO) strategies that increased search visibility by 40% and lifted organic demo conversions by +15%.",
+            "Prior to {{MOST_RECENT_COMPANY}}, I served as {{YOUR_PREVIOUS_TITLE_1}} at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefront software development across web and mobile partner channels (Sprint), boosting checkout conversion rates by +34%. My background combines executive digital consulting, deep technical fluency across enterprise MarTech/FinTech ecosystems, and a proven track record leading cross-disciplinary teams through organizational change.",
             "Thank you for your time and consideration. I welcome the opportunity to discuss how my background in digital transformation, AI innovation, and executive leadership will drive immediate impact for the Digital Transformation Office."
         ]
     }
@@ -718,7 +718,7 @@ if __name__ == '__main__':
     payload_file = os.path.join(r".", "current_payload.json")
     
     parser = argparse.ArgumentParser(description="Master Application Package Generator for {{YOUR_FULL_NAME}}")
-    parser.add_argument("--job", choices=["databricks", "sixflags", "grafana", "neosecurity", "{{TARGET_COMPANY_6}}", "{{TARGET_COMPANY_3}}", "jobgether_fvp", "active"], default="active", help="Select target job payload")
+    parser.add_argument("--job", choices=["databricks", "sixflags", "grafana", "neosecurity", "{{TARGET_COMPANY_6}}", "{{TARGET_COMPANY_3}}", "{{TARGET_COMPANY_2}}_fvp", "active"], default="active", help="Select target job payload")
     args = parser.parse_args()
 
     if os.path.exists(payload_file) and args.job == "active":
@@ -735,9 +735,9 @@ if __name__ == '__main__':
     elif args.job == "neosecurity":
         build_package(NEO_SECURITY_PAYLOAD)
     elif args.job == "{{TARGET_COMPANY_6}}":
-        build_package(MOUSER_PAYLOAD)
+        build_package({{TARGET_COMPANY_6}}_PAYLOAD)
     elif args.job == "{{TARGET_COMPANY_3}}":
-        build_package(SPINUTECH_PAYLOAD)
-    elif args.job == "jobgether_fvp" or args.job == "active":
-        build_package(JOBGETHER_FVP_PAYLOAD)
+        build_package({{TARGET_COMPANY_3}}_PAYLOAD)
+    elif args.job == "{{TARGET_COMPANY_2}}_fvp" or args.job == "active":
+        build_package({{TARGET_COMPANY_2}}_FVP_PAYLOAD)
 

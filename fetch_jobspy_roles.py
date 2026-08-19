@@ -30,7 +30,7 @@ def clean_url(url):
     return url.rstrip('/')
 
 DFW_CITIES = [
-    "dallas", "fort worth", "arlington", "irving", "{{YOUR_CITY}}", "plano", 
+    "dallas", "fort worth", "{{YOUR_CITY}}", "irving", "{{YOUR_CITY}}", "plano", 
     "frisco", "addison", "southlake", "mansfield", "lewisville", "grapevine", 
     "richardson", "denton", "Preferred Hybrid City", "colleyville", "euless", "bedford"
 ]

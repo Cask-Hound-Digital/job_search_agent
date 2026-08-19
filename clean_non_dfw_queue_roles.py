@@ -4,7 +4,7 @@ import os
 STATE_FILE = r"c:\Users\{{YOUR_NAME}}\.gemini\antigravity\scratch\job-search-consultant\state.json"
 
 DFW_CITIES = [
-    "dallas", "fort worth", "arlington", "irving", "{{YOUR_CITY}}", "plano", 
+    "dallas", "fort worth", "{{YOUR_CITY}}", "irving", "{{YOUR_CITY}}", "plano", 
     "frisco", "addison", "southlake", "mansfield", "lewisville", "grapevine", 
     "richardson", "denton", "Preferred Hybrid City", "colleyville", "euless", "bedford"
 ]

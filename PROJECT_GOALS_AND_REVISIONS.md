@@ -32,8 +32,8 @@
 5. **Unified Project Root (`P:\Projects\job-search-consultant`)**:
    * All codebase scripts, state trackers (`state.json`), master application exports (`Job Search/`), and HTML dashboards (`Job Search/dashboard.html`) are consolidated under `P:\Projects\job-search-consultant`.
 
-6. **{{PREVIOUS_COMPANY_1}} Date Range Requirement ({{MOST_RECENT_EMPLOYMENT_DATES}})**:
-   * All future resume and cover letter packages MUST set {{YOUR_FULL_NAME}}' {{PREVIOUS_COMPANY_1}} role date range to **{{MOST_RECENT_EMPLOYMENT_DATES}}** (replacing "Present").
+6. **{{MOST_RECENT_COMPANY}} Date Range Requirement ({{MOST_RECENT_EMPLOYMENT_DATES}})**:
+   * All future resume and cover letter packages MUST set {{YOUR_FULL_NAME}}' {{MOST_RECENT_COMPANY}} role date range to **{{MOST_RECENT_EMPLOYMENT_DATES}}** (replacing "Present").
 
 7. **Silent Background Daemon Server Architecture**:
    * Standing local API background server ([`dashboard_server.py`](file:///P:/Projects/job-search-consultant/dashboard_server.py)) running on `http://localhost:5000`.
@@ -52,12 +52,12 @@
 11. **Strict Location Filtering Engine (Remote & Preferred Hybrid City Local Only)**:
    * Enforced `is_remote=True` flags and strict location validation (`is_valid_location()`) in [`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py).
 
-12. **Authoritative Candidate Baseline Career Truth**:
-   * **{{PREVIOUS_COMPANY_1}}, Inc. ({{YOUR_CITY_STATE}})**: *{{YOUR_CURRENT_TITLE}}* (**{{MOST_RECENT_EMPLOYMENT_DATES}}**) — Managing a **13+ person cross-functional team** (Development, DevOps, QA, BA, SEO); owning global web operations across 34 countries; **leading discovery, ROI evaluation, and decision-making for next-gen DXP to replace legacy AEM**; **organizing and executing the TrendAI site redesign & migration to Sanity CMS**; integrating mPulse, Cludo, AEM 6.x, Marketo, Tealium, GA4; driving +15% demo conversion uplift & +42% self-serve digital conversion rate.
-   * **{{PREVIOUS_COMPANY_2}}, Inc. ({{YOUR_CITY_STATE}})**: *Product Manager of Web and E-commerce* (**{{EMPLOYMENT_DATES_COMPANY_2}}**) — E-commerce storefronts for mobile apps & partner channels (Sprint), boosting checkout conversion by +34%.
-   * **{{PREVIOUS_COMPANY_3}}, Inc. ({{YOUR_CITY_STATE}})**: *E-commerce and Web Marketing Manager* (**{{EMPLOYMENT_DATES_COMPANY_3}}**) — Sustaining 35%+ annual online sales growth via SEO/SEM/Email/Marketplaces.
-   * **University of Texas at Arlington (Arlington, TX)**: *Bachelor of Arts (B.A.), E-Business Management & Internet Development* (Degree)
-   * **Texas A&M University (College Station, TX)**: *Engineering Technology Coursework*
+12. **Candidate Baseline Career Profile Template**:
+   * **{{MOST_RECENT_COMPANY}} ({{YOUR_CITY_STATE}})**: *{{YOUR_MOST_RECENT_TITLE}}* (**{{MOST_RECENT_EMPLOYMENT_DATES}}**) — Managing a **{{TEAM_SIZE_PLACEHOLDER}}** (Development, DevOps, QA, BA, SEO); owning global web operations across 34 countries; **leading discovery, ROI evaluation, and decision-making for next-gen DXP to replace {{LEGACY_PLATFORM}}**; **organizing and executing the {{KEY_PROJECT_MIGRATION}}**; integrating {{ENTERPRISE_TECH_STACK_LIST}}; driving +15% demo conversion uplift & +42% self-serve digital conversion rate.
+   * **{{PREVIOUS_COMPANY_2}} ({{YOUR_CITY_STATE}})**: *{{YOUR_PREVIOUS_TITLE_1}}* (**{{EMPLOYMENT_DATES_COMPANY_2}}**) — E-commerce storefronts for mobile apps & partner channels (Sprint), boosting checkout conversion by +34%.
+   * **{{PREVIOUS_COMPANY_3}} ({{YOUR_CITY_STATE}})**: *{{YOUR_PREVIOUS_TITLE_2}}* (**{{EMPLOYMENT_DATES_COMPANY_3}}**) — Sustaining 35%+ annual online sales growth via SEO/SEM/Email/Marketplaces.
+   * **University of Texas at {{YOUR_CITY}} ({{YOUR_CITY_STATE}})**: *{{YOUR_DEGREE_1}}* (Degree)
+   * **{{YOUR_UNIVERSITY_2}} (College Station, TX)**: *{{YOUR_COURSEWORK_2}}*
 
 ---
 
@@ -87,7 +87,7 @@
 * **Full Migration to `P:\Projects\job-search-consultant`**.
 
 ### **Revision 1.78** | *2026-08-17*
-* **{{PREVIOUS_COMPANY_1}} End Date Updated to {{EMPLOYMENT_END_DATE}}**.
+* **{{MOST_RECENT_COMPANY}} End Date Updated to {{EMPLOYMENT_END_DATE}}**.
 
 ### **Revision 1.77** | *2026-08-17*
 * **Silent Background Server Launch (`subprocess.CREATE_NO_WINDOW`)**.
@@ -114,7 +114,7 @@
 * **{{TARGET_COMPANY_2}} / {{TARGET_COMPANY_1}} Application Package & Submission Log (`JOB-17`)**.
 
 ### **Revision 1.69** | *2026-08-12*
-* **Candidate Baseline Experience Expansion (DXP Replacement & TrendAI Sanity CMS Migration)**.
+* **Candidate Baseline Experience Expansion (DXP Replacement & TrendAI {{MODERN_CMS}} Migration)**.
 
 ### **Revision 1.68** | *2026-08-12*
 * **{{TARGET_COMPANY_3}} Application Package & Submission Log (`JOB-16`)**.
@@ -160,5 +160,5 @@
 | **`dashboard_server.py`** | [`./dashboard_server.py`](file:///P:/Projects/job-search-consultant/dashboard_server.py) | **[Local API Server]** Background HTTP server listening on localhost:5000 with origin-validated CORS security. |
 | **`sync_dashboard_from_state.py`** | [`./sync_dashboard_from_state.py`](file:///P:/Projects/job-search-consultant/sync_dashboard_from_state.py) | Automated state-to-HTML dashboard generator with 1-click apply button UI. |
 | **`fetch_jobspy_roles.py`** | [`./fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py) | Open-source Python multi-board live scraper engine with strict Preferred Hybrid City/Remote location guardrails. |
-| **`build_application_package.py`** | [`./build_application_package.py`](file:///P:/Projects/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine configured with {{PREVIOUS_COMPANY_1}} end date {{EMPLOYMENT_END_DATE}}. |
+| **`build_application_package.py`** | [`./build_application_package.py`](file:///P:/Projects/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine configured with {{MOST_RECENT_COMPANY}} end date {{EMPLOYMENT_END_DATE}}. |
 | **`state.json`** | [`./state.json`](file:///P:/Projects/job-search-consultant/state.json) | Central persistent state tracker for candidate profile, job listings, and active submissions. |

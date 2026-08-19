@@ -49,7 +49,7 @@ EXCLUDED_TITLES = [
 
 DFW_LOCATIONS = [
     "dallas", "fort worth", "Preferred Hybrid City", "{{YOUR_CITY}}", "irving", "plano",
-    "frisco", "richardson", "arlington", "texas", "tx"
+    "frisco", "richardson", "{{YOUR_CITY}}", "texas", "tx"
 ]
 
 def clean_url(url):
