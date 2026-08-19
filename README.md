@@ -45,12 +45,14 @@ flowchart TD
 
 ## 🎯 Candidate Profile & System Guardrails
 
-* **Target Roles**: Director, Senior Director, Head of, VP, Fractional VP, Advisory, Senior Manager, and Lead roles across Web Marketing, Digital Experience, Website Growth, PLG, Web Strategy, Fractional VP of Digital Product / Web Operations, Digital Transformation Advisor, SEO, Web & AI, and Web Development.
-* **Target Compensation**: {{TARGET_COMPENSATION_MIN}}.
-* **Location Preferences**: 100% Remote (Primary) | Hybrid ONLY in {{YOUR_TARGET_LOCATION}} ({{YOUR_PREFERRED_HYBRID_CITY}} area near {{YOUR_CITY_STATE}}).
-* **Strict Zero Em Dash Policy**: Em dashes (`—`) are strictly prohibited and auto-sanitized into standard hyphens (` - `) or pipes (` | `).
-* **Additive Queue Protection**: New search sweeps strictly **ADD** new unique roles to `state.json`. Unreviewed jobs are never automatically deleted.
-* **{{PREVIOUS_COMPANY_1}} Date Range**: All generated application packages set {{PREVIOUS_COMPANY_1}} experience to **June 2008 - August 2026**.
+The system behavior is fully configurable via `config.json` and `.env`:
+
+* **Target Roles**: Configured in `config.json` (`user_profile.target_roles`) and `fetch_gmail_alerts.py` (`TARGET_TITLES`). Define your target titles (e.g., `["{{YOUR_TARGET_ROLE_1}}", "{{YOUR_TARGET_ROLE_2}}", "{{YOUR_TARGET_ROLE_3}}"]`).
+* **Target Compensation**: Configured in `config.json` (`user_profile.target_compensation_min`). Set your minimum annual target salary (e.g., `"{{TARGET_COMPENSATION_MIN}}"`).
+* **Location Preferences**: Configured in `config.json` (`user_profile.target_locations`) and `fetch_jobspy_roles.py` (`is_valid_location()`). Set 100% Remote, preferred hybrid cities (`"{{YOUR_PREFERRED_HYBRID_CITY}}"`), or regional filters.
+* **Date Ranges & Experience History**: Configured in `build_application_package.py` and `resumes/` templates. Define employment start/end dates for recent roles (`"{{MOST_RECENT_EMPLOYMENT_DATES}}"`) across resumes and cover letters.
+* **Strict Zero Em Dash Policy**: Em dashes (`—`) are strictly prohibited across all generated materials and auto-sanitized into standard hyphens (` - `) or pipes (` | `).
+* **Additive Queue Protection**: New search sweeps strictly **ADD** new unique roles to `state.json`. Unreviewed opportunities are preserved permanently until explicitly reviewed or dismissed.
 
 ---
 

@@ -1,6 +1,6 @@
 # PROJECT GOAL & REVISION TRACKER
 **Candidate**: {{YOUR_FULL_NAME}}  
-**Role Scope**: Director, Senior Director, Head of, VP, Fractional VP, Advisory, Senior Manager, and Lead roles across Web Marketing, Digital Experience, Website Growth, PLG, Web Strategy, Fractional VP of Digital Product / Web Operations, Digital Transformation Advisor, SEO, Web & AI, and Web Development  
+**Role Scope**: {{TARGET_ROLE_SCOPE_LIST}}  
 **Target Compensation**: {{TARGET_COMPENSATION_MIN}}  
 **Location Preferences**: 100% Remote (Primary) | Hybrid ONLY in {{YOUR_TARGET_LOCATION}} ({{YOUR_PREFERRED_HYBRID_CITY}} area near {{YOUR_CITY_STATE}})  
 **Search Hours Schedule**: **7:00 AM – 5:00 PM CT** (Business Hours Only | Every 4 Hours: 7am, 11am, 3pm CT)  
@@ -33,8 +33,8 @@
 5. **Unified Project Root (`P:\Projects\job-search-consultant`)**:
    * All codebase scripts, state trackers (`state.json`), master application exports (`Job Search/`), and HTML dashboards (`Job Search/dashboard.html`) are consolidated under `P:\Projects\job-search-consultant`.
 
-6. **{{PREVIOUS_COMPANY_1}} Date Range Requirement (June 2008 - August 2026)**:
-   * All future resume and cover letter packages MUST set {{YOUR_FULL_NAME}}' {{PREVIOUS_COMPANY_1}} role date range to **June 2008 - August 2026** (replacing "Present").
+6. **{{PREVIOUS_COMPANY_1}} Date Range Requirement ({{MOST_RECENT_EMPLOYMENT_DATES}})**:
+   * All future resume and cover letter packages MUST set {{YOUR_FULL_NAME}}' {{PREVIOUS_COMPANY_1}} role date range to **{{MOST_RECENT_EMPLOYMENT_DATES}}** (replacing "Present").
 
 7. **Silent Background Daemon Server Architecture**:
    * Standing local API background server ([`dashboard_server.py`](file:///P:/Projects/job-search-consultant/dashboard_server.py)) running on `http://localhost:5000`.
@@ -54,9 +54,9 @@
    * Enforced `is_remote=True` flags and strict location validation (`is_valid_location()`) in [`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py).
 
 12. **Authoritative Candidate Baseline Career Truth**:
-   * **{{PREVIOUS_COMPANY_1}}, Inc. ({{YOUR_CITY_STATE}})**: *{{YOUR_CURRENT_TITLE}}* (**June 2008 - August 2026**) — Managing a **13+ person cross-functional team** (Development, DevOps, QA, BA, SEO); owning global web operations across 34 countries; **leading discovery, ROI evaluation, and decision-making for next-gen DXP to replace legacy AEM**; **organizing and executing the TrendAI site redesign & migration to Sanity CMS**; integrating mPulse, Cludo, AEM 6.x, Marketo, Tealium, GA4; driving +15% demo conversion uplift & +42% self-serve digital conversion rate.
-   * **{{PREVIOUS_COMPANY_2}}, Inc. ({{YOUR_CITY_STATE}})**: *Product Manager of Web and E-commerce* (**Aug 2007 - Mar 2008**) — E-commerce storefronts for mobile apps & partner channels (Sprint), boosting checkout conversion by +34%.
-   * **{{PREVIOUS_COMPANY_3}}, Inc. ({{YOUR_CITY_STATE}})**: *E-commerce and Web Marketing Manager* (**Apr 2001 - Apr 2007**) — Sustaining 35%+ annual online sales growth via SEO/SEM/Email/Marketplaces.
+   * **{{PREVIOUS_COMPANY_1}}, Inc. ({{YOUR_CITY_STATE}})**: *{{YOUR_CURRENT_TITLE}}* (**{{MOST_RECENT_EMPLOYMENT_DATES}}**) — Managing a **13+ person cross-functional team** (Development, DevOps, QA, BA, SEO); owning global web operations across 34 countries; **leading discovery, ROI evaluation, and decision-making for next-gen DXP to replace legacy AEM**; **organizing and executing the TrendAI site redesign & migration to Sanity CMS**; integrating mPulse, Cludo, AEM 6.x, Marketo, Tealium, GA4; driving +15% demo conversion uplift & +42% self-serve digital conversion rate.
+   * **{{PREVIOUS_COMPANY_2}}, Inc. ({{YOUR_CITY_STATE}})**: *Product Manager of Web and E-commerce* (**{{EMPLOYMENT_DATES_COMPANY_2}}**) — E-commerce storefronts for mobile apps & partner channels (Sprint), boosting checkout conversion by +34%.
+   * **{{PREVIOUS_COMPANY_3}}, Inc. ({{YOUR_CITY_STATE}})**: *E-commerce and Web Marketing Manager* (**{{EMPLOYMENT_DATES_COMPANY_3}}**) — Sustaining 35%+ annual online sales growth via SEO/SEM/Email/Marketplaces.
    * **University of Texas at Arlington (Arlington, TX)**: *Bachelor of Arts (B.A.), E-Business Management & Internet Development* (Degree)
    * **Texas A&M University (College Station, TX)**: *Engineering Technology Coursework*
 
@@ -85,7 +85,7 @@
 * **Full Migration to `P:\Projects\job-search-consultant`**.
 
 ### **Revision 1.78** | *2026-08-17*
-* **{{PREVIOUS_COMPANY_1}} End Date Updated to August 2026**.
+* **{{PREVIOUS_COMPANY_1}} End Date Updated to {{EMPLOYMENT_END_DATE}}**.
 
 ### **Revision 1.77** | *2026-08-17*
 * **Silent Background Server Launch (`subprocess.CREATE_NO_WINDOW`)**.
@@ -158,5 +158,5 @@
 | **`dashboard_server.py`** | [`./dashboard_server.py`](file:///P:/Projects/job-search-consultant/dashboard_server.py) | **[Local API Server]** Background HTTP server listening on localhost:5000 with origin-validated CORS security. |
 | **`sync_dashboard_from_state.py`** | [`./sync_dashboard_from_state.py`](file:///P:/Projects/job-search-consultant/sync_dashboard_from_state.py) | Automated state-to-HTML dashboard generator with 1-click apply button UI. |
 | **`fetch_jobspy_roles.py`** | [`./fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py) | Open-source Python multi-board live scraper engine with strict {{YOUR_PREFERRED_HYBRID_CITY}}/Remote location guardrails. |
-| **`build_application_package.py`** | [`./build_application_package.py`](file:///P:/Projects/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine configured with {{PREVIOUS_COMPANY_1}} end date August 2026. |
+| **`build_application_package.py`** | [`./build_application_package.py`](file:///P:/Projects/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine configured with {{PREVIOUS_COMPANY_1}} end date {{EMPLOYMENT_END_DATE}}. |
 | **`state.json`** | [`./state.json`](file:///P:/Projects/job-search-consultant/state.json) | Central persistent state tracker for candidate profile, job listings, and active submissions. |
