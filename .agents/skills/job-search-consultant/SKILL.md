@@ -159,9 +159,7 @@ When using AI to draft or polish resumes and cover letters, follow the **"You + 
 
 ## 8. Reference Guides & Deep Dives
 
-For expanded templates, prompt scripts, bullet libraries, and sample resumes, refer to the skill documentation files:
-- [`job_search_strategy_guide.md`](file:///C:/Users/{{YOUR_NAME}}/.gemini/antigravity/scratch/job-search-consultant/.agents/skills/job-search-consultant/reference/job_search_strategy_guide.md)
-- [`badass_cover_letters_guide.md`](file:///C:/Users/{{YOUR_NAME}}/.gemini/antigravity/scratch/job-search-consultant/.agents/skills/job-search-consultant/reference/badass_cover_letters_guide.md)
-- [`badass_resume_bullets_guide.md`](file:///C:/Users/{{YOUR_NAME}}/.gemini/antigravity/scratch/job-search-consultant/.agents/skills/job-search-consultant/reference/badass_resume_bullets_guide.md)
-- [`chatgpt_resume_prompts_guide.md`](file:///C:/Users/{{YOUR_NAME}}/.gemini/antigravity/scratch/job-search-consultant/.agents/skills/job-search-consultant/reference/chatgpt_resume_prompts_guide.md)
-- [`ten_out_of_ten_resumes_guide.md`](file:///C:/Users/{{YOUR_NAME}}/.gemini/antigravity/scratch/job-search-consultant/.agents/skills/job-search-consultant/reference/ten_out_of_ten_resumes_guide.md)
+For expanded strategy frameworks, bullet point formulas, cover letter playbooks, and AI prompt sequences, refer to the skill reference guides:
+- [`job_search_strategy_and_networking.md`](reference/job_search_strategy_and_networking.md)
+- [`resume_and_cover_letter_playbook.md`](reference/resume_and_cover_letter_playbook.md)
+- [`ai_prompting_and_automation_guide.md`](reference/ai_prompting_and_automation_guide.md)
