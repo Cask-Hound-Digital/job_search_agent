@@ -9,8 +9,6 @@
 [![Architecture](https://img.shields.io/badge/architecture-agentic--daemon-orange.svg)](#-system-architecture)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate-yellow.svg)](https://www.buymeacoffee.com/roadrashtx)
 
-<a href="https://www.buymeacoffee.com/roadrashtx" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 48px !important;width: 174px !important;" ></a>
-
 ---
 
 ## 🖼️ System Interface Mockup
@@ -25,12 +23,31 @@
 
 **YACareerOps** is a local, privacy-first career automation system. It combines live open-source web scraping (LinkedIn, Indeed), dynamic email alert parsing, local background API server execution, and 1-click tailored resume & cover letter package generation into a single Python platform.
 
+> [!NOTE]
+> **Human-in-the-Loop Safeguard**: Clicking **"⚡ Apply & Build Package"** builds your tailored single-column ATS PDF/DOCX resume and 6-part hybrid cover letter locally. It **does not** automatically submit forms on external job sites. You maintain 100% control to review your customized package before submitting it directly to the employer's portal.
+
 ### Key Capabilities
 - **Multi-Board Job Scraping**: Open-source scraper engine ([`fetch_jobspy_roles.py`](fetch_jobspy_roles.py)) extracting live listings from LinkedIn and Indeed with zero third-party API fees.
 - **Strict Location Guardrail Filtering**: Validates geographic location strings and remote flags (`is_remote=True`) to automatically filter out non-matching onsite postings.
 - **Silent Background API Server**: Local HTTP daemon server ([`dashboard_server.py`](dashboard_server.py)) running on `http://localhost:5000` with origin-validated CORS security.
 - **Responsive HTML Review Dashboard**: Interactive HTML dashboard ([`sync_dashboard_from_state.py`](sync_dashboard_from_state.py)) rendering live job queues with a 1-click **"⚡ Apply & Build Package"** button.
 - **ATS Master Document Builder**: Single document engine ([`build_application_package.py`](build_application_package.py)) generating single-column ATS PDF and DOCX resumes alongside 6-part hybrid cover letters.
+
+---
+
+## ⚙️ How It Works: What Happens When You Click "⚡ Apply & Build Package"?
+
+When you review your job queue on `http://localhost:5000/dashboard.html` and click **"⚡ Apply & Build Package"**:
+
+1. **API Trigger**: The HTML dashboard sends a POST request to your local background daemon server (`http://localhost:5000/api/apply`).
+2. **Document Tailoring**: The master package builder ([`build_application_package.py`](build_application_package.py)) reads the candidate profile and job requirements from `state.json`.
+3. **File Generation**: Generates 4 customized files inside your local export directory (`Job Search/[Company_Name]/`):
+   - Single-Column ATS Resume (`.pdf`)
+   - Editable ATS Resume (`.docx`)
+   - Tailored 6-Part Hybrid Cover Letter (`.pdf`)
+   - Editable Cover Letter (`.docx`)
+4. **State Tracker Update**: Updates `state.json`, marking the role status as `"applied"` so it moves out of your active review queue.
+5. **Manual Application**: You open the generated folder, review the customized documents, and upload them directly to the employer's application portal.
 
 ---
 
@@ -73,7 +90,7 @@ flowchart TD
 
 ---
 
-## 📦 Quickstart & Installation
+## 📦 Quickstart & Operating Modes
 
 ### 1. Prerequisites
 - Python 3.10 or higher
@@ -96,14 +113,32 @@ Copy `.env.example` to `.env` and fill in your candidate details:
 cp .env.example .env
 ```
 
-### 5. Launch the System
-Start the local API daemon server and run a job board sweep:
-```bash
-python dashboard_server.py
-python fetch_jobspy_roles.py
-```
+---
 
-Open `Job Search/dashboard.html` in your browser to view your live job review queue and click **"⚡ Apply & Build Package"**.
+### 🖥️ Operating Mode A: Standalone Python & Local Server
+
+1. **Start the API Daemon Server**:
+   ```bash
+   python dashboard_server.py
+   ```
+2. **Run a Multi-Board Job Sweep**:
+   ```bash
+   python fetch_jobspy_roles.py
+   ```
+3. **Review & Build Packages**:
+   Open `Job Search/dashboard.html` in your browser. Click **"⚡ Apply & Build Package"** on any job card to generate customized ATS documents locally.
+
+---
+
+### 🤖 Operating Mode B: Google Antigravity Agent & Background Cron
+
+When running inside the **Google Antigravity IDE**:
+
+1. **Skill Integration**: Load the `job-search-consultant` skill located in `.agents/skills/job-search-consultant/`.
+2. **Automated Cron Schedule**: Set an automated background schedule (e.g. `/schedule` or background cron) to execute business hours search cycles (7 AM – 5 PM CT every 4 hours):
+   * Automatically executes `fetch_jobspy_roles.py` and `fetch_gmail_alerts.py`.
+   * Auto-launches `dashboard_server.py` silently in the background (`CREATE_NO_WINDOW`).
+   * Updates `state.json` and syncs `dashboard.html` for hands-free job queue updates.
 
 ---
 
