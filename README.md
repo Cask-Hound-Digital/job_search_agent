@@ -1,94 +1,101 @@
-# Autonomous AI Career Advancement Agent & Job Search System
+# ⚡ YACareerOps: Yet Another CareerOps Agent
 
-An enterprise-grade autonomous AI job search, multi-board scraping, resume tailoring, cover letter generation, and application tracking system built for executive career advancement ({{TARGET_COMPENSATION_MIN}} target compensation).
+**An autonomous open-source job search agent, multi-board scraper, local HTTP API daemon server, and 1-click ATS application package builder.**
 
 ---
 
-## 🏗️ System Architecture & Workflow
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python Version](https://img.shields.io/badge/python-3.10%2B-brightgreen.svg)](https://www.python.org/)
+[![Architecture](https://img.shields.io/badge/architecture-agentic--daemon-orange.svg)](#-system-architecture)
+
+---
+
+## 🚀 Overview
+
+**YACareerOps** is a local, privacy-first career automation system. It combines live open-source web scraping (LinkedIn, Indeed), dynamic email alert parsing, local background API server execution, and 1-click tailored resume & cover letter package generation into a single Python platform.
+
+### Key Capabilities
+- **Multi-Board Job Scraping**: Open-source scraper engine ([`fetch_jobspy_roles.py`](fetch_jobspy_roles.py)) extracting live listings from LinkedIn and Indeed with zero third-party API fees.
+- **Strict Location Guardrail Filtering**: Validates geographic location strings and remote flags (`is_remote=True`) to automatically filter out non-matching onsite postings.
+- **Silent Background API Server**: Local HTTP daemon server ([`dashboard_server.py`](dashboard_server.py)) running on `http://localhost:5000` with origin-validated CORS security.
+- **Responsive HTML Review Dashboard**: Interactive HTML dashboard ([`sync_dashboard_from_state.py`](sync_dashboard_from_state.py)) rendering live job queues with a 1-click **"⚡ Apply & Build Package"** button.
+- **ATS Master Document Builder**: Single document engine ([`build_application_package.py`](build_application_package.py)) generating single-column ATS PDF and DOCX resumes alongside 6-part hybrid cover letters.
+
+---
+
+## 🏗️ System Architecture
 
 ```mermaid
 flowchart TD
-    A[Gmail Email Alerts] -->|IMAP Ingestion| B[fetch_gmail_alerts.py]
-    C[LinkedIn & Indeed Boards] -->|JobSpy Scraper| D[fetch_jobspy_roles.py]
-    B --> E[Location & Role Filter Engine]
-    D --> E
-    E -->|"Remote or Preferred Hybrid"| F[audit_and_fix_queue_companies.py]
-    F -->|Ground-Truth Verification| G[state.json - Central Tracker]
-    G --> H[sync_dashboard_from_state.py]
-    H --> I[dashboard.html - Live UI]
-    I -->|1-Click Apply Button| J[dashboard_server.py - API Server]
-    J --> K[build_application_package.py]
-    K --> L[PDF & DOCX Master Packages]
+    subgraph Job Discovery & Ingestion
+        A["LinkedIn & Indeed Scrapers (fetch_jobspy_roles.py)"] --> B["State Ingestion & Merge (state.json)"]
+        C["Gmail Alert Email Parser (fetch_gmail_alerts.py)"] --> B
+    end
+
+    subgraph Additive Protection & Location Guardrails
+        B --> D{"Location & Remote Safeguard"}
+        D -->|"Remote or Preferred Hybrid City"| E["Additive Review Queue (state.json)"]
+        D -->|"Non-Matching City / Onsite"| F["Excluded Records Log"]
+    end
+
+    subgraph Interactive Dashboard & Local API Server
+        E --> G["Dashboard Sync Engine (sync_dashboard_from_state.py)"]
+        G --> H["Interactive Dashboard (Job Search/dashboard.html)"]
+        H -->|"1-Click ⚡ Apply Trigger"| I["Local API Daemon Server (dashboard_server.py)"]
+    end
+
+    subgraph Master Document Generation
+        I --> J["Package Builder Engine (build_application_package.py)"]
+        J --> K["Single-Column ATS Resume (PDF & DOCX)"]
+        J --> L["Hybrid 6-Part Cover Letter (PDF & DOCX)"]
+        J --> M["Submission & State Tracker Update"]
+    end
 ```
 
 ---
 
-## ⚡ Core Engine Components
+## 🛡️ AppSec & Security Standards
 
-| Component | Script Name | Description |
-| :--- | :--- | :--- |
-| **Alert Ingestion** | [`fetch_gmail_alerts.py`](file:///P:/Projects/job-search-consultant/fetch_gmail_alerts.py) | Connects to Gmail via IMAP, parses incoming job alerts (LinkedIn, Indeed, BuiltIn), filters non-Preferred Hybrid City onsite roles, and merges new matches additively into `state.json`. |
-| **Multi-Board Scraper** | [`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py) | Scrapes LinkedIn and Indeed via open-source `python-jobspy` with strict 100% Remote / Preferred Hybrid City hybrid location validation. |
-| **Metadata Auditor** | [`audit_and_fix_queue_companies.py`](file:///P:/Projects/job-search-consultant/audit_and_fix_queue_companies.py) | Performs HTTP head/title requests to extract 100% accurate ground-truth hiring company titles for review queue listings. |
-| **Dashboard API Server** | [`dashboard_server.py`](file:///P:/Projects/job-search-consultant/dashboard_server.py) | Local background HTTP server listening on `http://localhost:5000` to process 1-click **"⚡ Apply & Build Package"** triggers from `dashboard.html`. |
-| **Dashboard Generator** | [`sync_dashboard_from_state.py`](file:///P:/Projects/job-search-consultant/sync_dashboard_from_state.py) | Renders `state.json` applications and review queue roles into a modern, responsive HTML dashboard (`dashboard.html`). |
-| **Master Generator** | [`build_application_package.py`](file:///P:/Projects/job-search-consultant/build_application_package.py) | Generates ATS-optimized PDF and DOCX resumes and tailored hybrid cover letters formatted with single-column layouts and quantified 3-part bullet points. |
+- **Environment Secrets**: Credentials and passwords are loaded strictly via environment variables (`os.environ`) or untracked local `.env` files.
+- **CORS Protection**: The background server (`dashboard_server.py`) explicitly validates origin headers, allowing requests only from trusted local origins (`http://localhost`, `http://127.0.0.1`, `file://`, `null`).
+- **Privacy-First Storage**: All candidate state data (`state.json`) and generated application packages are stored locally on your filesystem.
 
 ---
 
-## 🔒 Security & AppSec Compliance (`agents.md`)
+## 📦 Quickstart & Installation
 
-* **Secrets Management**: All sensitive credentials (`GMAIL_USER`, `GMAIL_APP_PASSWORD`) are loaded dynamically from environment variables or a local untracked `.env` file. Plaintext secrets are strictly excluded from version control via `.gitignore`.
-* **CORS Security**: `dashboard_server.py` enforces origin validation (`Access-Control-Allow-Origin`), restricting cross-site requests to trusted local origins (`http://localhost`, `http://127.0.0.1`, `file://`, `null`).
+### 1. Prerequisites
+- Python 3.10 or higher
+- Git
 
----
-
-## 🎯 Candidate Profile & System Guardrails
-
-The system behavior is fully configurable via `config.json` and `.env`:
-
-* **Target Roles**: Configured in `config.json` (`user_profile.target_roles`) and `fetch_gmail_alerts.py` (`TARGET_TITLES`). Define your target titles (e.g., `["{{YOUR_TARGET_ROLE_1}}", "{{YOUR_TARGET_ROLE_2}}", "{{YOUR_TARGET_ROLE_3}}"]`).
-* **Target Compensation**: Configured in `config.json` (`user_profile.target_compensation_min`). Set your minimum annual target salary (e.g., `"{{TARGET_COMPENSATION_MIN}}"`).
-* **Location Preferences**: Configured in `config.json` (`user_profile.target_locations`) and `fetch_jobspy_roles.py` (`is_valid_location()`). Set 100% Remote, preferred hybrid cities (`"{{YOUR_PREFERRED_HYBRID_CITY}}"`), or regional filters.
-* **Date Ranges & Experience History**: Configured in `build_application_package.py` and `resumes/` templates. Define employment start/end dates for recent roles (`"{{MOST_RECENT_EMPLOYMENT_DATES}}"`) across resumes and cover letters.
-* **Strict Zero Em Dash Policy**: Em dashes (`—`) are strictly prohibited across all generated materials and auto-sanitized into standard hyphens (` - `) or pipes (` | `).
-* **Additive Queue Protection**: New search sweeps strictly **ADD** new unique roles to `state.json`. Unreviewed opportunities are preserved permanently until explicitly reviewed or dismissed.
-
----
-
-## 🚀 Quick Setup & Execution
-
-### 1. Environment Setup
-Create a `.env` file in the root directory:
-```env
-GMAIL_USER=your_email@gmail.com
-GMAIL_APP_PASSWORD=your_gmail_app_password
-```
-
-### 2. Install Dependencies
+### 2. Clone the Repository
 ```bash
-pip install reportlab python-docx python-jobspy
+git clone https://github.com/Cask-Hound-Digital/job_search_agent.git
+cd job_search_agent
 ```
 
-### 3. Run Search & Ingestion Cycle
+### 3. Install Dependencies
 ```bash
-python fetch_gmail_alerts.py
+pip install -r requirements.txt
 ```
 
-### 4. Build Application Package Manually
+### 4. Configure Environment Variables
+Copy `.env.example` to `.env` and fill in your candidate details:
 ```bash
-python build_application_package.py
+cp .env.example .env
 ```
 
-### 5. Start Local Dashboard API Server
+### 5. Launch the System
+Start the local API daemon server and run a job board sweep:
 ```bash
 python dashboard_server.py
+python fetch_jobspy_roles.py
 ```
+
+Open `Job Search/dashboard.html` in your browser to view your live job review queue and click **"⚡ Apply & Build Package"**.
 
 ---
 
-## 📜 System Documentation
+## 📄 License
 
-* **[`PROJECT_GOALS_AND_REVISIONS.md`](file:///P:/Projects/job-search-consultant/PROJECT_GOALS_AND_REVISIONS.md)**: Full system technical revision history, candidate baseline, and workspace registry.
-* **[`AUTONOMOUS_JOB_SEARCH_AGENT_BLUEPRINT.md`](file:///P:/Projects/job-search-consultant/AUTONOMOUS_JOB_SEARCH_AGENT_BLUEPRINT.md)**: End-to-end architectural blueprint and design specifications.
-* **[`agents.md`](file:///P:/Projects/job-search-consultant/agents.md)**: AppSec code quality and security compliance rules.
+This project is open-source software licensed under the [MIT License](LICENSE).
