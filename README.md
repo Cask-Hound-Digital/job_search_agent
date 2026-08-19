@@ -10,6 +10,14 @@
 
 ---
 
+## 🖼️ System Interface Mockup
+
+![YACareerOps System Interface Mockup](./docs/demo.jpg)
+
+*System Interface Mockup: Windows PowerShell terminal scraper logs, local HTTP API review dashboard with 1-Click "⚡ Apply & Build Package", and generated ATS PDF/DOCX application packages.*
+
+---
+
 ## 🚀 Overview
 
 **YACareerOps** is a local, privacy-first career automation system. It combines live open-source web scraping (LinkedIn, Indeed), dynamic email alert parsing, local background API server execution, and 1-click tailored resume & cover letter package generation into a single Python platform.
