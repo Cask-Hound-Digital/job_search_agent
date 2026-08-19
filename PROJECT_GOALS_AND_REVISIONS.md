@@ -2,7 +2,7 @@
 **Candidate**: {{YOUR_FULL_NAME}}  
 **Role Scope**: {{TARGET_ROLE_SCOPE_LIST}}  
 **Target Compensation**: {{TARGET_COMPENSATION_MIN}}  
-**Location Preferences**: 100% Remote (Primary) | Hybrid ONLY in {{YOUR_TARGET_LOCATION}} ({{YOUR_PREFERRED_HYBRID_CITY}} area near {{YOUR_CITY_STATE}})  
+**Location Preferences**: 100% Remote (Primary) | Hybrid ONLY in Preferred Target Location (Preferred Hybrid City area near {{YOUR_CITY_STATE}})  
 **Search Hours Schedule**: **7:00 AM – 5:00 PM CT** (Business Hours Only | Every 4 Hours: 7am, 11am, 3pm CT)  
 **Primary System Location**: `P:\Projects\job-search-consultant`  
 **Local Export Storage Directory**: `P:\Projects\job-search-consultant\Job Search\`  
@@ -50,7 +50,7 @@
 10. **Open-Source Multi-Board JobSpy Integration**:
    * Integrated `python-jobspy` open-source scraper engine ([`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py)) querying **LinkedIn and Indeed** for live $0-cost job extraction.
 
-11. **Strict Location Filtering Engine (Remote & {{YOUR_PREFERRED_HYBRID_CITY}} Local Only)**:
+11. **Strict Location Filtering Engine (Remote & Preferred Hybrid City Local Only)**:
    * Enforced `is_remote=True` flags and strict location validation (`is_valid_location()`) in [`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py).
 
 12. **Authoritative Candidate Baseline Career Truth**:
@@ -157,6 +157,6 @@
 | **`fetch_gmail_alerts.py`** | [`./fetch_gmail_alerts.py`](file:///P:/Projects/job-search-consultant/fetch_gmail_alerts.py) | Email job alert parser with dynamic pathing, secret environment loading, silent server auto-launch & additive queue merging. |
 | **`dashboard_server.py`** | [`./dashboard_server.py`](file:///P:/Projects/job-search-consultant/dashboard_server.py) | **[Local API Server]** Background HTTP server listening on localhost:5000 with origin-validated CORS security. |
 | **`sync_dashboard_from_state.py`** | [`./sync_dashboard_from_state.py`](file:///P:/Projects/job-search-consultant/sync_dashboard_from_state.py) | Automated state-to-HTML dashboard generator with 1-click apply button UI. |
-| **`fetch_jobspy_roles.py`** | [`./fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py) | Open-source Python multi-board live scraper engine with strict {{YOUR_PREFERRED_HYBRID_CITY}}/Remote location guardrails. |
+| **`fetch_jobspy_roles.py`** | [`./fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py) | Open-source Python multi-board live scraper engine with strict Preferred Hybrid City/Remote location guardrails. |
 | **`build_application_package.py`** | [`./build_application_package.py`](file:///P:/Projects/job-search-consultant/build_application_package.py) | **[Single Master Generator]** Unified Python engine configured with {{PREVIOUS_COMPANY_1}} end date {{EMPLOYMENT_END_DATE}}. |
 | **`state.json`** | [`./state.json`](file:///P:/Projects/job-search-consultant/state.json) | Central persistent state tracker for candidate profile, job listings, and active submissions. |

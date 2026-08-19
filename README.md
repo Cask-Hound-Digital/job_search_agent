@@ -12,7 +12,7 @@ flowchart TD
     C[LinkedIn & Indeed Boards] -->|JobSpy Scraper| D[fetch_jobspy_roles.py]
     B --> E[Location & Role Filter Engine]
     D --> E
-    E -->|Remote or {{YOUR_PREFERRED_HYBRID_CITY}} Local| F[audit_and_fix_queue_companies.py]
+    E -->|"Remote or Preferred Hybrid"| F[audit_and_fix_queue_companies.py]
     F -->|Ground-Truth Verification| G[state.json - Central Tracker]
     G --> H[sync_dashboard_from_state.py]
     H --> I[dashboard.html - Live UI]
@@ -27,8 +27,8 @@ flowchart TD
 
 | Component | Script Name | Description |
 | :--- | :--- | :--- |
-| **Alert Ingestion** | [`fetch_gmail_alerts.py`](file:///P:/Projects/job-search-consultant/fetch_gmail_alerts.py) | Connects to Gmail via IMAP, parses incoming job alerts (LinkedIn, Indeed, BuiltIn), filters non-{{YOUR_PREFERRED_HYBRID_CITY}} onsite roles, and merges new matches additively into `state.json`. |
-| **Multi-Board Scraper** | [`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py) | Scrapes LinkedIn and Indeed via open-source `python-jobspy` with strict 100% Remote / {{YOUR_PREFERRED_HYBRID_CITY}} hybrid location validation. |
+| **Alert Ingestion** | [`fetch_gmail_alerts.py`](file:///P:/Projects/job-search-consultant/fetch_gmail_alerts.py) | Connects to Gmail via IMAP, parses incoming job alerts (LinkedIn, Indeed, BuiltIn), filters non-Preferred Hybrid City onsite roles, and merges new matches additively into `state.json`. |
+| **Multi-Board Scraper** | [`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py) | Scrapes LinkedIn and Indeed via open-source `python-jobspy` with strict 100% Remote / Preferred Hybrid City hybrid location validation. |
 | **Metadata Auditor** | [`audit_and_fix_queue_companies.py`](file:///P:/Projects/job-search-consultant/audit_and_fix_queue_companies.py) | Performs HTTP head/title requests to extract 100% accurate ground-truth hiring company titles for review queue listings. |
 | **Dashboard API Server** | [`dashboard_server.py`](file:///P:/Projects/job-search-consultant/dashboard_server.py) | Local background HTTP server listening on `http://localhost:5000` to process 1-click **"⚡ Apply & Build Package"** triggers from `dashboard.html`. |
 | **Dashboard Generator** | [`sync_dashboard_from_state.py`](file:///P:/Projects/job-search-consultant/sync_dashboard_from_state.py) | Renders `state.json` applications and review queue roles into a modern, responsive HTML dashboard (`dashboard.html`). |

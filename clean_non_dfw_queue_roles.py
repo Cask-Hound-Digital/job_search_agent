@@ -6,7 +6,7 @@ STATE_FILE = r"c:\Users\{{YOUR_NAME}}\.gemini\antigravity\scratch\job-search-con
 DFW_CITIES = [
     "dallas", "fort worth", "arlington", "irving", "{{YOUR_CITY}}", "plano", 
     "frisco", "addison", "southlake", "mansfield", "lewisville", "grapevine", 
-    "richardson", "denton", "{{YOUR_PREFERRED_HYBRID_CITY}}", "colleyville", "euless", "bedford"
+    "richardson", "denton", "Preferred Hybrid City", "colleyville", "euless", "bedford"
 ]
 
 NON_DFW_CITIES = [
@@ -36,13 +36,13 @@ def clean_queue():
 
         combined_text = f"{title} {company} {email_sub} {filter_reason} {loc_str}".lower()
 
-        # Check if explicitly non-{{YOUR_PREFERRED_HYBRID_CITY}} onsite/hybrid
+        # Check if explicitly non-Preferred Hybrid City onsite/hybrid
         is_remote = "remote" in combined_text or "work from home" in combined_text or "telecommute" in combined_text
-        is_dfw = any({{YOUR_PREFERRED_HYBRID_CITY}} in combined_text for {{YOUR_PREFERRED_HYBRID_CITY}} in DFW_CITIES)
+        is_dfw = any(Preferred Hybrid City in combined_text for Preferred Hybrid City in DFW_CITIES)
         has_non_dfw_city = any(city in combined_text for city in NON_DFW_CITIES)
 
         if not is_remote and has_non_dfw_city and not is_dfw:
-            print(f"[PURGED NON-{{YOUR_PREFERRED_HYBRID_CITY}} ONSITE/HYBRID] {title} at {company} (Text: '{loc_str}')")
+            print(f"[PURGED NON-Preferred Hybrid City ONSITE/HYBRID] {title} at {company} (Text: '{loc_str}')")
             purged_count += 1
             continue
 
@@ -50,7 +50,7 @@ def clean_queue():
 
     print(f"\nQueue Audit Complete:")
     print(f"  Initial Review Queue Roles: {initial_count}")
-    print(f"  Purged Non-{{YOUR_PREFERRED_HYBRID_CITY}} Onsite/Hybrid Roles: {purged_count}")
+    print(f"  Purged Non-Preferred Hybrid City Onsite/Hybrid Roles: {purged_count}")
     print(f"  Remaining Verified Roles: {len(valid_queue)}")
 
     state["verified_gmail_jobs"] = valid_queue

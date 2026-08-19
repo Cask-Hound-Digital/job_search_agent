@@ -32,7 +32,7 @@ def clean_url(url):
 DFW_CITIES = [
     "dallas", "fort worth", "arlington", "irving", "{{YOUR_CITY}}", "plano", 
     "frisco", "addison", "southlake", "mansfield", "lewisville", "grapevine", 
-    "richardson", "denton", "{{YOUR_PREFERRED_HYBRID_CITY}}", "colleyville", "euless", "bedford"
+    "richardson", "denton", "Preferred Hybrid City", "colleyville", "euless", "bedford"
 ]
 
 def is_valid_location(loc_str, is_remote_query):
@@ -40,32 +40,32 @@ def is_valid_location(loc_str, is_remote_query):
         return True
     l_lower = loc_str.lower()
     
-    # Reject explicitly labeled onsite/on-site roles outside {{YOUR_PREFERRED_HYBRID_CITY}}
+    # Reject explicitly labeled onsite/on-site roles outside Preferred Hybrid City
     if "onsite" in l_lower or "on-site" in l_lower or "in-office" in l_lower or "in office" in l_lower:
-        if not any({{YOUR_PREFERRED_HYBRID_CITY}} in l_lower for {{YOUR_PREFERRED_HYBRID_CITY}} in DFW_CITIES):
+        if not any(Preferred Hybrid City in l_lower for Preferred Hybrid City in DFW_CITIES):
             return False
 
     if is_remote_query:
-        # If searching Remote, require "remote" OR reject non-{{YOUR_PREFERRED_HYBRID_CITY}} cities if labeled hybrid
+        # If searching Remote, require "remote" OR reject non-Preferred Hybrid City cities if labeled hybrid
         if "remote" in l_lower or "work from home" in l_lower or "telecommute" in l_lower or "anywhere" in l_lower or "united states" == l_lower or "us" == l_lower:
             return True
-        # If it specifies a city and is NOT {{YOUR_PREFERRED_HYBRID_CITY}}, reject
-        if any({{YOUR_PREFERRED_HYBRID_CITY}} in l_lower for {{YOUR_PREFERRED_HYBRID_CITY}} in DFW_CITIES):
+        # If it specifies a city and is NOT Preferred Hybrid City, reject
+        if any(Preferred Hybrid City in l_lower for Preferred Hybrid City in DFW_CITIES):
             return True
         # If it specifies another city (e.g. Austin, New York, Boston) without "remote", reject
         return False
     else:
-        # Searching Dallas, TX: Must be Remote OR {{YOUR_PREFERRED_HYBRID_CITY}} local
+        # Searching Dallas, TX: Must be Remote OR Preferred Hybrid City local
         if "remote" in l_lower:
             return True
-        if any({{YOUR_PREFERRED_HYBRID_CITY}} in l_lower for {{YOUR_PREFERRED_HYBRID_CITY}} in DFW_CITIES):
+        if any(Preferred Hybrid City in l_lower for Preferred Hybrid City in DFW_CITIES):
             return True
         return False
 
 def run_jobspy_scraper():
     print("=========================================================")
     print("  LAUNCHING JOBSPY MULTI-BOARD SCRAPER (LinkedIn, Indeed)")
-    print("  STRICT FILTERING: 100% Remote (US) & {{YOUR_PREFERRED_HYBRID_CITY}} Hybrid/Onsite ONLY")
+    print("  STRICT FILTERING: 100% Remote (US) & Preferred Hybrid City Hybrid/Onsite ONLY")
     print("=========================================================")
 
     all_scraped_jobs = []
