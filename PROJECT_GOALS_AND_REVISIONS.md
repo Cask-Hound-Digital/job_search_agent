@@ -17,57 +17,65 @@
    * Em dashes are STRICTLY PROHIBITED across all resumes, cover letters, and system text outputs.
    * The generator script automatically runs a text sanitizer to convert any dashes to standard hyphens (` - `), pipes (` | `), or commas.
 
-2. **100% Generic Public GitHub Repository**:
-   * The public GitHub repository ([github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent)) contains **zero personal information**, career history, previous jobs, university/education history, degree details, martech tech stack items, target titles, target comp, or location specifics.
+2. **100% Generic Public Candidate Baseline & Examples**:
+   * The Candidate Baseline section in public repository documentation ([github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent)) has been refactored into a 100% generic, instruction-based template (`[Company Name] ([City, State]): [Title] ([Dates])`).
+   * Eliminates all personal resume bullet points, achievement metrics, and experience descriptions from public release files.
+
+3. **100% Generic Public GitHub Repository**:
+   * The public GitHub repository contains **zero personal information**, career history, previous jobs, university/education history, degree details, martech tech stack items, target titles, target comp, or location specifics.
    * All personal candidate data and career experience items are sanitized into generic placeholders (`{{YOUR_FULL_NAME}}`, `{{MOST_RECENT_COMPANY}}`, `{{YOUR_DEGREE_1}}`, `{{ENTERPRISE_TECH_STACK_LIST}}`, `{{TARGET_ROLE_TITLE_1}}`, `{{TARGET_COMPENSATION_MIN}}`, etc.).
    * Deep audit scanner verifies **100% CLEAN: ZERO PERSONAL DATA, SCHOOLING, COMPANY, TITLE, TECH STACK, OR DATE RANGE MATCHES**.
 
-3. **Full Engine GitHub Repository Mirroring & 0 Security Violations**:
+4. **Full Engine GitHub Repository Mirroring & 0 Security Violations**:
    * The live GitHub repository contains the complete, production-ready Python automation engine (`dashboard_server.py`, `fetch_gmail_alerts.py`, `sync_dashboard_from_state.py`, `fetch_jobspy_roles.py`, `build_application_package.py`, `audit_and_fix_queue_companies.py`, `clean_non_dfw_queue_roles.py`, `agents.md`, `.env.example`, `.gitignore`, blueprint, goals, and resume templates).
    * AppSec audit scanner (`audit_repo_security.py`) confirms **0 security violations** across all committed repository files.
 
-4. **AppSec & Secret Hygiene Policy**:
+5. **AppSec & Secret Hygiene Policy**:
    * All API keys, passwords, and sensitive credentials MUST be loaded via environment variables (`os.environ`) or untracked local `.env` files. Hardcoded secrets in source files are strictly forbidden.
    * Local API endpoints (`dashboard_server.py`) MUST enforce origin validation to disallow wildcard (`*`) cross-site requests from untrusted external web origins.
 
-5. **Unified Project Root (`P:\Projects\job-search-consultant`)**:
+6. **Unified Project Root (`P:\Projects\job-search-consultant`)**:
    * All codebase scripts, state trackers (`state.json`), master application exports (`Job Search/`), and HTML dashboards (`Job Search/dashboard.html`) are consolidated under `P:\Projects\job-search-consultant`.
 
-6. **{{MOST_RECENT_COMPANY}} Date Range Requirement ({{MOST_RECENT_EMPLOYMENT_DATES}})**:
+7. **{{MOST_RECENT_COMPANY}} Date Range Requirement ({{MOST_RECENT_EMPLOYMENT_DATES}})**:
    * All future resume and cover letter packages MUST set {{YOUR_FULL_NAME}}' {{MOST_RECENT_COMPANY}} role date range to **{{MOST_RECENT_EMPLOYMENT_DATES}}** (replacing "Present").
 
-7. **Silent Background Daemon Server Architecture**:
+8. **Silent Background Daemon Server Architecture**:
    * Standing local API background server ([`dashboard_server.py`](file:///P:/Projects/job-search-consultant/dashboard_server.py)) running on `http://localhost:5000`.
    * Launched silently using `subprocess.CREATE_NO_WINDOW` via `ensure_dashboard_server_running()` in [`fetch_gmail_alerts.py`](file:///P:/Projects/job-search-consultant/fetch_gmail_alerts.py) so no shell windows pop up or remain open on screen.
 
-8. **Additive Queue Protection Rule**:
+9. **Additive Queue Protection Rule**:
    * All search runs ([`fetch_gmail_alerts.py`](file:///P:/Projects/job-search-consultant/fetch_gmail_alerts.py) & [`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py)) MUST preserve all existing unreviewed/unapplied jobs in `state.json`.
    * Newly discovered jobs are strictly **ADDED** to the queue using URL/ID deduplication. Roles are ONLY removed when explicitly applied for or dismissed by the user.
 
-9. **Director-Level Role Scope Negotiation Strategy**:
+10. **Director-Level Role Scope Negotiation Strategy**:
    * For senior manager / manager openings that match technical GEO/AEO and web strategy competencies (e.g., {{TARGET_COMPANY_4}}), the system builds a tailored package positioning candidate as a Director-level executive to negotiate scope and compensation elevation ({{TARGET_COMPENSATION_MIN}}).
 
-10. **Open-Source Multi-Board JobSpy Integration**:
+11. **Open-Source Multi-Board JobSpy Integration**:
    * Integrated `python-jobspy` open-source scraper engine ([`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py)) querying **LinkedIn and Indeed** for live $0-cost job extraction.
 
-11. **Strict Location Filtering Engine (Remote & Preferred Hybrid City Local Only)**:
+12. **Strict Location Filtering Engine (Remote & Preferred Hybrid City Local Only)**:
    * Enforced `is_remote=True` flags and strict location validation (`is_valid_location()`) in [`fetch_jobspy_roles.py`](file:///P:/Projects/job-search-consultant/fetch_jobspy_roles.py).
 
-12. **Candidate Baseline Career Profile Template**:
-    * **Most Recent Role**: `[Company Name] ([City, State]): [Title] ([Dates])` - Led cross-functional team of [N] members; managed enterprise digital platforms; executed key migration projects; achieved +[X]% conversion uplift and +[Y]% operational efficiency.
-    * **Previous Role 1**: `[Previous Company 1] ([City, State]): [Previous Title] ([Dates])` - Managed digital commerce channels and user experience; increased checkout conversion rate by +[X]%.
-    * **Previous Role 2**: `[Previous Company 2] ([City, State]): [Previous Title] ([Dates])` - Directed online marketing strategies (SEO/SEM/Email); sustained [X]% annual online revenue growth.
-    * **Higher Education**: `[University Name] ([City, State]): [Degree Name]` - [Major / Specialization].
-    * **Additional Training**: `[University / Institution Name] ([City, State]): [Coursework / Certification Name]`.
+13. **Candidate Baseline Career Profile Template**:
+   * **{{MOST_RECENT_COMPANY}} ({{YOUR_CITY_STATE}})**: *{{YOUR_MOST_RECENT_TITLE}}* (**{{MOST_RECENT_EMPLOYMENT_DATES}}**) — Managing a **{{TEAM_SIZE_PLACEHOLDER}}** (Development, DevOps, QA, BA, SEO); owning global web operations across 34 countries; **leading discovery, ROI evaluation, and decision-making for next-gen DXP to replace legacy {{ENTERPRISE_CMS}}**; **organizing and executing the {{KEY_PROJECT_MIGRATION}}**; integrating {{ENTERPRISE_TECH_STACK_LIST}}; driving +15% demo conversion uplift & +42% self-serve digital conversion rate.
+   * **{{PREVIOUS_COMPANY_2}} ({{YOUR_CITY_STATE}})**: *{{YOUR_PREVIOUS_TITLE_1}}* (**{{EMPLOYMENT_DATES_COMPANY_2}}**) — E-commerce storefronts for mobile apps & partner channels (Sprint), boosting checkout conversion by +34%.
+   * **{{PREVIOUS_COMPANY_3}} ({{YOUR_CITY_STATE}})**: *{{YOUR_PREVIOUS_TITLE_2}}* (**{{EMPLOYMENT_DATES_COMPANY_3}}**) — Sustaining 35%+ annual online sales growth via SEO/SEM/Email/Marketplaces.
+   * **University of Texas at {{YOUR_CITY}} ({{YOUR_CITY_STATE}})**: *{{YOUR_DEGREE_1}}* (Degree)
+   * **{{YOUR_UNIVERSITY_2}} (College Station, TX)**: *{{YOUR_COURSEWORK_2}}*
 
 ---
 
 ## 📜 2. Technical System Revision History
 
+### **Revision 1.87** | *2026-08-19*
+* **Generic Candidate Baseline Template Refactoring**:
+  * Replaced Candidate Baseline section in public repository documentation ([github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent)) with a clean, instruction-based template (`[Company Name] ([City, State]): [Title] ([Dates])`).
+  * Removed all personal resume bullet points, achievement metrics, and company experience details from public repository.
+  * Pushed update to GitHub ([github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent), Commit `aa82e90`).
+
 ### **Revision 1.86** | *2026-08-19*
-* **Complete Personal Experience, Schooling & Career Truth Removal**:
-  * Updated [`sanitize_and_push_github.py`](file:///P:/Projects/job-search-consultant/sanitize_and_push_github.py) with comprehensive replacement rules covering all university names (UTA, Texas A&M), degree titles (B.A. E-Business, {{COURSEWORK_TITLE}}), employment histories ({{MOST_RECENT_COMPANY}}, {{PREVIOUS_COMPANY_2}}, {{PREVIOUS_COMPANY_3}}), specific tech stack items ({{ENTERPRISE_CMS}}, {{HEADLESS_CMS}}, {{MARKETING_AUTOMATION_TOOL}}, {{TAG_MANAGEMENT_TOOL}}, {{ANALYTICS_PLATFORM}}, {{PERFORMANCE_TOOL}}, {{SEARCH_TOOL}}), job titles, and date ranges.
-  * Confirmed **100% CLEAN: ZERO PERSONAL DATA, SCHOOLING, COMPANY, TITLE, TECH STACK, OR DATE RANGE MATCHES** across the public GitHub repository ([github.com/Cask-Hound-Digital/job_search_agent](https://github.com/Cask-Hound-Digital/job_search_agent), Commit `2fb1047`).
+* **Complete Personal Experience, Schooling & Career Truth Removal**.
 
 ### **Revision 1.85** | *2026-08-19*
 * **Mermaid Syntax Fix in GitHub Repository**.
