@@ -40,11 +40,11 @@ Candidates **do not need 100%** of the required qualifications. Having ~80% of t
 
 ---
 
-## 3. Building "Badass" Resume Bullet Points
+## 3. Building High-Impact Resume Bullet Points
 
 Every high-impact bullet point follows a **3-part formula**:
 
-$$\text{Badass Bullet Point} = \text{Action Verb} + \text{Specific / Quantifiable Detail} + \text{Measurable Result}$$
+$$\text{High-Impact Bullet Point} = \text{Action Verb} + \text{Specific / Quantifiable Detail} + \text{Measurable Result}$$
 
 ### The 3 Components
 1. **Action Verb**: Strong, punchy starting verb (e.g., *Spearheaded, Streamlined, Directed, Oversaw, Generated, Negotiated, Optimized*). Avoid weak verbs like "Worked on" or "Responsible for".
@@ -88,9 +88,9 @@ $$\text{Badass Bullet Point} = \text{Action Verb} + \text{Specific / Quantifiabl
 
 ---
 
-## 5. The "Badass" Hybrid Cover Letter Strategy
+## 5. The Executive Hybrid Cover Letter Strategy
 
-### Anatomy of a Badass Cover Letter (6 Parts)
+### Anatomy of a Hybrid Cover Letter (6 Parts)
 1. **Branding Header**: Matches the visual design/header of the resume.
 2. **Address & Salutation**: Date, company info, salutation (*"Dear [Hiring Manager Name]"*, *"Dear Hiring Manager"*, or *"Dear Selection Committee"*). **Never use "To whom it may concern"**.
 3. **Introductory Paragraph (3–5 Sentences)**: State role & company applied for, why applying, brief value summary, and introduce the body bullet points.
