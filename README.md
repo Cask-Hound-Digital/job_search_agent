@@ -104,6 +104,13 @@ Open `Job Search/dashboard.html` in your browser to view your live job review qu
 
 ---
 
+## 🙏 Acknowledgements
+
+- **[JobSpy](https://github.com/BobsData/JobSpy)**: Powered by the open-source `python-jobspy` multi-board scraper engine for live $0-cost extraction from LinkedIn and Indeed.
+- **[ReportLab](https://www.reportlab.com/) & [python-docx](https://python-docx.readthedocs.io/)**: Single-column ATS document rendering engine.
+
+---
+
 ## 📄 License
 
 This project is open-source software licensed under the [MIT License](LICENSE).
