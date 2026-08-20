@@ -414,7 +414,7 @@ def generate_cover_pdf(job_payload, output_pdf_path):
 
 def build_package(job_payload):
     folder_name = job_payload.get("folder", job_payload["company"])
-    output_dir = os.path.join(r"P:\Projects\job-search-consultant\Job Search", folder_name)
+    output_dir = os.path.join(r"P:\Job Search", folder_name)
     os.makedirs(output_dir, exist_ok=True)
 
     role_slug = job_payload["role"].replace(" ", "_").replace(",", "").replace("-", "_")

@@ -1,15 +1,45 @@
+import sys
 import json
 import os
+import re
 import subprocess
 import urllib.parse
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from socketserver import ThreadingMixIn
 
 PORT = 5000
-BASE_DIR = r"."
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATE_FILE = os.path.join(BASE_DIR, "state.json")
 PAYLOAD_FILE = os.path.join(BASE_DIR, "current_payload.json")
-PYTHON_EXE = r"C:\Users\{{YOUR_NAME}}\AppData\Local\Python\pythoncore-3.14-64\python.exe"
+APPROVED_SKILLS_FILE = os.path.join(BASE_DIR, "approved_skills.json")
+PYTHON_EXE = sys.executable
+
+def get_approved_skills_data():
+    if os.path.exists(APPROVED_SKILLS_FILE):
+        try:
+            with open(APPROVED_SKILLS_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {"approved_skills": [], "approved_categories": []}
+
+def save_new_approved_skills(new_skills_list):
+    data = get_approved_skills_data()
+    existing = set(s.lower() for s in data.get("approved_skills", []))
+    added = False
+    for s in new_skills_list:
+        s_clean = s.strip()
+        if s_clean and s_clean.lower() not in existing:
+            data.setdefault("approved_skills", []).append(s_clean)
+            existing.add(s_clean.lower())
+            added = True
+    if added:
+        try:
+            with open(APPROVED_SKILLS_FILE, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2)
+            print(f"[SKILL LEARNING ENGINE] Learned and saved {len(new_skills_list)} candidate-approved skills into approved_skills.json.")
+        except Exception as e:
+            print(f"Error saving approved skills: {e}")
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     """Handle requests in separate threads."""
@@ -40,6 +70,12 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
             response = {"status": "running", "server": "Job Search Dashboard Server v1.0"}
             self.wfile.write(json.dumps(response).encode('utf-8'))
+        elif self.path == '/api/approved_skills':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self._set_cors_headers()
+            self.end_headers()
+            self.wfile.write(json.dumps(get_approved_skills_data()).encode('utf-8'))
         else:
             self.send_response(404)
             self.end_headers()
@@ -54,13 +90,67 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 job_url = data.get('url', '').strip()
                 company = data.get('company', 'Target Company').strip()
                 title = data.get('title', 'Executive Role').strip()
+                user_confirmed = data.get('user_confirmed', False)
+                confirmed_skills = data.get('confirmed_skills', [])
 
-                print(f"\n[SERVER API APPLY TRIGGERED] Company: '{company}' | Title: '{title}' | URL: '{job_url}'")
+                print(f"\n[SERVER API APPLY TRIGGERED] Company: '{company}' | Title: '{title}' | Confirmed: {user_confirmed}")
 
                 # Clean company folder name
                 folder_name = re.sub(r'[\\/*?:"<>|]', '', company).strip()
                 if not folder_name:
                     folder_name = "Target Company"
+
+                # Define proposed skills for this application
+                proposed_skills_list = [
+                    "Enterprise Web Strategy & Architecture",
+                    "Global Web Operations",
+                    "CMS Governance ({{HEADLESS_CMS}}, {{ENTERPRISE_CMS}}, WordPress, Drupal)",
+                    "Next-Gen DXP Modernization",
+                    "Multi-National Site Performance",
+                    "Generative Engine Optimization (GEO/AEO)",
+                    "AI-Assisted Workflows (Claude, ChatGPT, CoPilot)",
+                    "Automated Personalization & Analytics",
+                    "High-Velocity A/B Testing Roadmaps",
+                    "Customer Experience (CX) Architecture",
+                    "Multi-Site Funnel Velocity",
+                    "{{ANALYTICS_PLATFORM}} / GTM Data Governance",
+                    "Cross-Disciplinary Team Management (13+ Dev, DevOps, QA, BA, SEO)",
+                    "ROI & Business Case Governance",
+                    "Strategic Partner Management"
+                ]
+
+                # Check against approved skills database
+                skills_data = get_approved_skills_data()
+                approved_set = set(s.lower() for s in skills_data.get("approved_skills", []))
+                
+                # Check for unverified skills if not explicitly user_confirmed
+                unverified = []
+                for sk in proposed_skills_list:
+                    # Check if skill substring is in approved set
+                    if not any(app_s in sk.lower() or sk.lower() in app_s for app_s in approved_set):
+                        unverified.append(sk)
+
+                if not user_confirmed and unverified:
+                    print(f"[SKILL VERIFICATION REQUIRED] {len(unverified)} unverified skills detected for {company} ({title}). Prompting candidate...")
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json')
+                    self._set_cors_headers()
+                    self.end_headers()
+                    res = {
+                        "status": "needs_confirmation",
+                        "company": company,
+                        "title": title,
+                        "url": job_url,
+                        "proposed_skills": proposed_skills_list,
+                        "unverified_skills": unverified,
+                        "message": "Candidate confirmation required for unverified skills before generating package."
+                    }
+                    self.wfile.write(json.dumps(res).encode('utf-8'))
+                    return
+
+                # If confirmed or no unverified skills, learn newly confirmed skills
+                if confirmed_skills:
+                    save_new_approved_skills(confirmed_skills)
 
                 # Construct dynamic application payload
                 payload = {
@@ -68,7 +158,7 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                     "folder": folder_name,
                     "role": title,
                     "headline": f"{title.upper()} | GLOBAL DIGITAL EXPERIENCE & AI LEADER",
-                    "summary": f"Executive web technology and digital experience leader with 18+ years leading enterprise web strategy, digital product operations, and cross-functional teams. Proven track record turning corporate web channels into high-velocity demand generation and revenue engines. Expert in evaluating emerging AI technologies (Claude Code, ChatGPT, CoPilot, GEO/AEO), modernizing legacy digital architectures, and managing strategic vendor/partner relationships for {company}.",
+                    "summary": "Executive web technology and digital experience leader with 18+ years leading enterprise web strategy, digital product operations, and cross-functional teams. Proven track record turning corporate web channels into high-velocity demand generation and revenue engines. Expert in evaluating emerging AI technologies (Claude Code, ChatGPT, CoPilot, GEO/AEO), modernizing legacy digital architectures, and managing strategic vendor/partner relationships.",
                     "areas_of_expertise": [
                         ["Enterprise Web Strategy & Architecture: ", "Global Web Operations, CMS Governance ({{HEADLESS_CMS}}, {{ENTERPRISE_CMS}}, WordPress, Drupal), Next-Gen DXP Modernization, Multi-National Site Performance."],
                         ["AI Activation & Digital Innovation: ", "Generative Engine Optimization (GEO/AEO), AI-Assisted Workflows (Claude, ChatGPT, CoPilot), Automated Personalization & Analytics."],
@@ -183,7 +273,6 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
 
 if __name__ == '__main__':
-    import re
     print(f"Starting Job Search Dashboard API Server on http://localhost:{PORT}...")
     server = ThreadedHTTPServer(('localhost', PORT), DashboardRequestHandler)
     server.serve_forever()

@@ -2,3 +2,4 @@
 __pycache__/
 *.pyc
 *.log
+approved_skills.json

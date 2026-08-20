@@ -4,7 +4,8 @@ import shutil
 
 STATE_FILE = r".\state.json"
 INDEX_FILE = r".\index.html"
-P_DASHBOARD = r"P:\Projects\job-search-consultant\Job Search\dashboard.html"
+PRIMARY_DASHBOARD = r"P:\Job Search\dashboard.html"
+SECONDARY_DASHBOARD = r"P:\Projects\job-search-consultant\Job Search\dashboard.html"
 
 def sync_dashboard():
     if not os.path.exists(STATE_FILE):
@@ -603,6 +604,29 @@ def sync_dashboard():
     </footer>
   </div>
 
+  <!-- Candidate Skill Verification Modal -->
+  <div id="skillVerificationModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title">🛡️ Candidate Skill Verification Required</h2>
+          <p class="modal-subtitle" id="modalSubTitle">Verify targeted skills before generating resume package</p>
+        </div>
+        <button class="modal-close-btn" onclick="closeSkillModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
+          To ensure your resume reflects 100% genuine candidate experience without automated keyword stuffing, please review the skills targeted for this role:
+        </p>
+        <div id="skillChecklist" class="skill-checklist"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeSkillModal()">Cancel</button>
+        <button class="btn-primary" id="btnConfirmBuild" onclick="confirmSkillAndBuild()">⚡ Confirm Selected & Build Package</button>
+      </div>
+    </div>
+  </div>
+
   <style>
     .btn-apply {
       background: linear-gradient(135deg, #1b365d 0%, #38bdf8 100%);
@@ -625,32 +649,108 @@ def sync_dashboard():
       cursor: not-allowed;
       transform: none;
     }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(10, 15, 29, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: #0f172a;
+      border: 1px solid var(--panel-border);
+      border-radius: 1rem;
+      width: 90%;
+      max-width: 620px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      color: #ffffff;
+    }
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--panel-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title { font-size: 1.2rem; font-weight: 700; color: #f8fafc; margin: 0; }
+    .modal-subtitle { font-size: 0.85rem; color: var(--text-muted); margin: 0.25rem 0 0 0; }
+    .modal-close-btn { background: transparent; border: none; color: var(--text-muted); font-size: 1.25rem; cursor: pointer; }
+    .modal-body { padding: 1.25rem 1.5rem; overflow-y: auto; flex: 1; }
+    .skill-checklist { display: flex; flex-direction: column; gap: 0.55rem; }
+    .skill-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 0.85rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--panel-border);
+      border-radius: 0.5rem;
+    }
+    .skill-item.unverified {
+      border-color: #f59e0b;
+      background: rgba(245, 158, 11, 0.05);
+    }
+    .skill-label { display: flex; align-items: center; gap: 0.65rem; font-size: 0.88rem; cursor: pointer; flex: 1; }
+    .badge-new { background: #f59e0b; color: #000000; font-weight: 700; font-size: 0.7rem; padding: 0.15rem 0.4rem; border-radius: 0.25rem; }
+    .badge-approved { background: var(--accent-green); color: #000000; font-weight: 700; font-size: 0.7rem; padding: 0.15rem 0.4rem; border-radius: 0.25rem; }
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--panel-border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+    .btn-secondary { background: transparent; border: 1px solid var(--panel-border); color: #ffffff; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; }
+    .btn-primary { background: linear-gradient(135deg, #1b365d 0%, #38bdf8 100%); border: none; color: #ffffff; padding: 0.55rem 1.1rem; font-weight: 700; border-radius: 0.5rem; cursor: pointer; }
   </style>
 
   <script>
     let currentFilter = 'all';
+    let pendingModalContext = null;
 
     document.addEventListener('DOMContentLoaded', () => {
       applyDismissedState();
     });
 
-    async function triggerApply(cardId, company, title, url) {
+    async function triggerApply(cardId, company, title, url, userConfirmed = false, confirmedSkills = []) {
       const btn = document.getElementById(`btn-apply-${cardId}`);
       if (btn) {
         btn.disabled = true;
-        btn.innerText = '⏳ Building Package...';
+        btn.innerText = '⏳ Checking Skills...';
       }
 
-      showToast(`⏳ Generating tailored application package for <strong>${company}</strong>...`);
+      showToast(`⏳ Evaluating candidate skill matches for <strong>${company}</strong>...`);
 
       try {
         const response = await fetch('http://localhost:5000/api/apply', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ company: company, title: title, url: url })
+          body: JSON.stringify({
+            company: company,
+            title: title,
+            url: url,
+            user_confirmed: userConfirmed,
+            confirmed_skills: confirmedSkills
+          })
         });
 
         const data = await response.json();
+
+        if (data.status === 'needs_confirmation') {
+          if (btn) {
+            btn.disabled = false;
+            btn.innerText = '⚡ Apply & Build Package';
+          }
+          openSkillModal(cardId, company, title, url, data.proposed_skills, data.unverified_skills);
+          return;
+        }
 
         if (data.status === 'success') {
           showToast(`✅ <strong>Master Package Created!</strong><br>${data.message}`);
@@ -671,6 +771,50 @@ def sync_dashboard():
           btn.innerText = '⚡ Apply & Build Package';
         }
       }
+    }
+
+    function openSkillModal(cardId, company, title, url, proposedSkills, unverifiedSkills) {
+      pendingModalContext = { cardId, company, title, url };
+      document.getElementById('modalSubTitle').innerText = `${company} — ${title}`;
+      
+      const container = document.getElementById('skillChecklist');
+      container.innerHTML = '';
+
+      const unverifiedSet = new Set((unverifiedSkills || []).map(s => s.toLowerCase()));
+
+      (proposedSkills || []).forEach((sk, idx) => {
+        const isUnverified = unverifiedSet.has(sk.toLowerCase());
+        const itemDiv = document.createElement('div');
+        itemDiv.className = `skill-item ${isUnverified ? 'unverified' : ''}`;
+        
+        itemDiv.innerHTML = `
+          <label class="skill-label">
+            <input type="checkbox" class="skill-checkbox" value="${sk}" checked />
+            <span>${sk}</span>
+          </label>
+          ${isUnverified ? '<span class="badge-new">NEW SKILL</span>' : '<span class="badge-approved">VERIFIED</span>'}
+        `;
+        container.appendChild(itemDiv);
+      });
+
+      document.getElementById('skillVerificationModal').style.display = 'flex';
+    }
+
+    function closeSkillModal() {
+      document.getElementById('skillVerificationModal').style.display = 'none';
+      pendingModalContext = null;
+    }
+
+    async function confirmSkillAndBuild() {
+      if (!pendingModalContext) return;
+      
+      const checkboxes = document.querySelectorAll('.skill-checkbox:checked');
+      const selectedSkills = Array.from(checkboxes).map(cb => cb.value);
+
+      const ctx = pendingModalContext;
+      closeSkillModal();
+
+      await triggerApply(ctx.cardId, ctx.company, ctx.title, ctx.url, true, selectedSkills);
     }
 
     function showToast(htmlMsg) {
@@ -768,8 +912,13 @@ def sync_dashboard():
 
     print(f"Saved updated dashboard HTML to {INDEX_FILE}.")
 
-    shutil.copy(INDEX_FILE, P_DASHBOARD)
-    print(f"Copied live dashboard to {P_DASHBOARD}.")
+    os.makedirs(os.path.dirname(PRIMARY_DASHBOARD), exist_ok=True)
+    shutil.copy(INDEX_FILE, PRIMARY_DASHBOARD)
+    print(f"Copied live dashboard to {PRIMARY_DASHBOARD}.")
+
+    if os.path.exists(os.path.dirname(SECONDARY_DASHBOARD)):
+        shutil.copy(INDEX_FILE, SECONDARY_DASHBOARD)
+        print(f"Copied live dashboard mirror to {SECONDARY_DASHBOARD}.")
 
 if __name__ == '__main__':
     sync_dashboard()

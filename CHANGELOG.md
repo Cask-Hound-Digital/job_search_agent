@@ -5,6 +5,13 @@ All notable changes to the Autonomous AI Career Advancement & Job Search System 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2026-08-20
+
+### Added
+- **Candidate Skill Verification Engine**: Prevents automated keyword stuffing by prompting candidate confirmation via an interactive UI modal (`P:\Job Search\dashboard.html`) before building resume packages.
+- **Skills Learning Database**: Persistent skill storage (`approved_skills.json`) auto-approving candidate-verified technical skills, tools, and competencies in future builds.
+- **Generic Example Template**: Public template (`approved_skills.example.json`) for open-source repository sharing.
+
 ---
 
 ## [1.8.0] - 2026-08-19

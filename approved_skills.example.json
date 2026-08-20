@@ -1,0 +1,25 @@
+{
+  "last_updated": "2026-08-20",
+  "candidate": "{{YOUR_FULL_NAME}}",
+  "approved_skills": [
+    "Enterprise Web Strategy & Architecture",
+    "Headless CMS Architecture ({{HEADLESS_CMS}}, WordPress, Drupal)",
+    "Generative Engine Optimization (GEO/AEO)",
+    "AI-Assisted Workflows (Claude, ChatGPT, CoPilot)",
+    "Schema Markup & Structured Content Governance",
+    "SEO & Organic Search Strategy",
+    "Marketing Automation ({{MARKETING_AUTOMATION_TOOL}}, Hubspot)",
+    "Tag Management & Web Analytics ({{ANALYTICS_PLATFORM}}, GTM)",
+    "Conversion Rate Optimization (CRO) & A/B Testing",
+    "Global Web Ecosystem Management",
+    "Cross-Functional Team Leadership",
+    "Agile Program Management & Budgeting",
+    "Core Web Vitals & Performance Optimization"
+  ],
+  "approved_categories": [
+    "Enterprise Web Strategy & Architecture",
+    "AI Activation & Digital Innovation",
+    "Conversion Rate Optimization (CRO) & Analytics",
+    "Executive Leadership & Governance"
+  ]
+}
