@@ -486,6 +486,92 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode('utf-8'))
 
+        elif self.path == '/api/add_queue_url':
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                raw_url = data.get('url', '').strip()
+                if not raw_url:
+                    raise Exception("URL cannot be empty.")
+
+                clean_url = raw_url.split('?')[0].strip()
+                company_name = "Target Company"
+                role_title = "Executive Opportunity"
+                source = "Company Portal"
+
+                if "linkedin.com" in clean_url.lower():
+                    source = "LinkedIn"
+                elif "indeed.com" in clean_url.lower():
+                    source = "Indeed"
+                elif "greenhouse.io" in clean_url.lower():
+                    source = "Greenhouse"
+                elif "lever.co" in clean_url.lower():
+                    source = "Lever"
+                elif "builtin.com" in clean_url.lower():
+                    source = "BuiltIn"
+
+                # Attempt to fetch title via urllib
+                try:
+                    req = urllib.request.Request(clean_url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'})
+                    html_content = urllib.request.urlopen(req, timeout=5).read().decode('utf-8', errors='ignore')
+                    m_title = re.search(r'<title[^>]*>(.*?)</title>', html_content, re.IGNORECASE | re.DOTALL)
+                    if m_title:
+                        page_title = m_title.group(1).strip()
+                        page_title = re.sub(r'\s+', ' ', page_title)
+                        
+                        if " hiring " in page_title:
+                            parts = page_title.split(" hiring ")
+                            company_name = parts[0].strip()
+                            rest = parts[1]
+                            role_title = rest.split(" in ")[0].split(" | ")[0].strip()
+                        elif " - " in page_title:
+                            parts = page_title.split(" - ")
+                            role_title = parts[0].strip()
+                            company_name = parts[1].split(" | ")[0].strip()
+                        elif " | " in page_title:
+                            parts = page_title.split(" | ")
+                            role_title = parts[0].strip()
+                            company_name = parts[1].strip()
+                        else:
+                            role_title = page_title[:60]
+                except Exception as fetch_err:
+                    print(f"[MANUAL URL FETCH WARNING] {fetch_err}")
+
+                # Build new queue entry
+                new_entry = {
+                    "company_name": company_name,
+                    "audited_role_title": role_title,
+                    "title": role_title,
+                    "url": clean_url,
+                    "source": source,
+                    "location": "100% Remote / Preferred Hybrid City Hybrid",
+                    "added_via": "Manual Candidate Ingestion",
+                    "date_added": "2026-08-21"
+                }
+
+                if os.path.exists(STATE_FILE):
+                    with open(STATE_FILE, 'r', encoding='utf-8') as sf:
+                        state_data = json.load(sf)
+                    rq = state_data.setdefault("review_queue", [])
+                    u_lower = clean_url.lower()
+                    if not any(j.get("url", "").split('?')[0].lower() == u_lower for j in rq):
+                        rq.insert(0, new_entry)
+                        with open(STATE_FILE, 'w', encoding='utf-8') as sf:
+                            json.dump(state_data, sf, indent=2)
+
+                subprocess.run([PYTHON_EXE, "sync_dashboard_from_state.py"], cwd=BASE_DIR)
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "success", "company": company_name, "title": role_title}).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode('utf-8'))
+
         else:
             self.send_response(404)
             self.end_headers()

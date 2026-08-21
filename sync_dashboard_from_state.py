@@ -21,8 +21,8 @@ def sync_dashboard():
     review_queue = state.get("review_queue", [])
     archived_queue = state.get("archived_queue", [])
 
-    # Sort applications by submission_date descending (newest applied date first)
-    apps.sort(key=lambda x: str(x.get("submission_date", "1970-01-01")), reverse=True)
+    # Sort applications by submission_date ascending (oldest applied date first) as default
+    apps.sort(key=lambda x: str(x.get("submission_date", "1970-01-01")), reverse=False)
 
     # Normalize historical "Submitted" statuses to "Applied"
     for a in apps:
@@ -583,7 +583,7 @@ def sync_dashboard():
               <th>Lifecycle Status</th>
               <th>Location & Comp</th>
               <th>Match</th>
-              <th>Applied Date</th>
+              <th onclick="toggleDateSort()" style="cursor: pointer; user-select: none; color: var(--accent-blue);" title="Click to toggle Oldest/Newest sort">Applied Date <span id="dateSortIcon">▲ (Oldest)</span></th>
               <th>Actions & Details</th>
             </tr>
           </thead>
@@ -636,7 +636,7 @@ def sync_dashboard():
         select_html += '</select>'
 
         html += f"""
-            <tr data-status="{status.lower()}" class="app-row" onclick="openJobDetailModal('{app_id}')">
+            <tr data-status="{status.lower()}" data-date="{date}" class="app-row" onclick="openJobDetailModal('{app_id}')">
               <td>
                 <div class="company-name">{co}</div>
                 <div class="role-title">{title}</div>
@@ -667,6 +667,12 @@ def sync_dashboard():
         <span class="section-badge" id="queueCountBadge">{len(unique_queue)} Opportunities</span>
       </div>
 
+      <!-- Manual Job URL Ingestion Form -->
+      <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+        <input type="url" id="manualJobUrl" class="search-box" style="flex: 1; min-width: 320px;" placeholder="Paste job URL to parse & add to queue (LinkedIn, Greenhouse, Lever, Indeed, Company Portal)..." />
+        <button class="btn-primary" style="font-size: 0.88rem; padding: 0.55rem 1.25rem;" onclick="addManualJobUrl()">➕ Add & Parse Job URL</button>
+      </div>
+
       <div class="queue-grid" id="queueContainer">
 """
 
@@ -676,10 +682,15 @@ def sync_dashboard():
         title = item.get("audited_role_title", item.get("title", "Executive Opportunity")).strip()
         url = item.get("url", "#")
         source = item.get("source", "LinkedIn")
+        loc = item.get("location", "100% Remote / Preferred Hybrid City Hybrid")
+        comp = item.get("compensation", "{{TARGET_COMPENSATION_MIN}} Scope")
+        match = item.get("match_score", 98)
         
         src_class = "src-default"
         if "linkedin" in source.lower(): src_class = "src-linkedin"
         elif "indeed" in source.lower(): src_class = "src-indeed"
+        elif "greenhouse" in source.lower(): src_class = "src-greenhouse"
+        elif "lever" in source.lower(): src_class = "src-lever"
 
         html += f"""
         <div class="queue-card" id="{card_id}">
@@ -690,7 +701,10 @@ def sync_dashboard():
             </div>
             <span class="source-badge {src_class}">{source}</span>
           </div>
-          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Verified Executive Opportunity</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.85rem; line-height: 1.4;">
+            <div><strong style="color: var(--accent-cyan);">Location:</strong> {loc}</div>
+            <div><strong style="color: var(--accent-purple);">Target Fit:</strong> {match}% Executive Capability Fit ({comp})</div>
+          </div>
           <div style="display: flex; gap: 0.5rem; justify-content: space-between; align-items: center;">
             <a href="{url}" class="btn-link" target="_blank">🔗 View Posting</a>
             <div style="display: flex; gap: 0.4rem;">
@@ -918,6 +932,27 @@ def sync_dashboard():
     const APPS_DATA = {apps_json_str};
     let currentFilter = 'all';
     let currentAppDetailId = null;
+    let dateSortAsc = true;
+
+    function toggleDateSort() {{
+      dateSortAsc = !dateSortAsc;
+      const tbody = document.querySelector('#appTable tbody');
+      if (!tbody) return;
+      const rows = Array.from(tbody.querySelectorAll('.app-row'));
+
+      rows.sort((a, b) => {{
+        const dateA = a.getAttribute('data-date') || '1970-01-01';
+        const dateB = b.getAttribute('data-date') || '1970-01-01';
+        return dateSortAsc ? dateA.localeCompare(dateB) : dateB.localeCompare(dateA);
+      }});
+
+      rows.forEach(r => tbody.appendChild(r));
+
+      const icon = document.getElementById('dateSortIcon');
+      if (icon) {{
+        icon.innerText = dateSortAsc ? '▲ (Oldest)' : '▼ (Newest)';
+      }}
+    }}
 
     function filterTab(status, btnElement) {{
       currentFilter = status.toLowerCase();
@@ -948,6 +983,33 @@ def sync_dashboard():
       }});
 
       document.getElementById('roleCount').innerText = `${{visibleCount}} Roles Showing`;
+    }}
+
+    async function addManualJobUrl() {{
+      const input = document.getElementById('manualJobUrl');
+      const url = (input ? input.value : '').trim();
+      if (!url) {{
+        showToast('⚠️ Please paste a valid job posting URL.');
+        return;
+      }}
+      showToast('🔄 Fetching & parsing job URL...');
+      try {{
+        const res = await fetch('http://localhost:5000/api/add_queue_url', {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }},
+          body: JSON.stringify({{ url: url }})
+        }});
+        const data = await res.json();
+        if (data.status === 'success') {{
+          showToast(`✅ Added & parsed <strong>${{data.company}} — ${{data.title}}</strong>`);
+          if (input) input.value = '';
+          setTimeout(() => window.location.reload(), 1200);
+        }} else {{
+          showToast(`❌ Error: ${{data.message || 'Failed to add URL'}}`);
+        }}
+      }} catch (err) {{
+        showToast('❌ Failed to add manual job URL.');
+      }}
     }}
 
     async function updateJobStatus(appId, newStatus) {{

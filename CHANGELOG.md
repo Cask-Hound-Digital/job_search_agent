@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.0] - 2026-08-21
 
 ### Added
+- **Manual Job URL Ingestion Engine**: Allows candidates to paste and parse any job posting URL (`/api/add_queue_url`) directly into the dashboard to add to the review queue.
+- **Dynamic Queue Card Metadata**: Replaced static text with dynamic location (`100% Remote / Preferred Hybrid City Hybrid`), compensation scope (`{{TARGET_COMPENSATION_MIN}}`), and target capability fit details (`98% Fit`).
 - **4-Week Stale Application Alert Engine**: Automatically flags applications submitted over 28 days ago (`⚠️ 4+ Weeks — Follow Up Needed`) with a dedicated KPI counter and a 1-click **"{{YOUR_NAME}} No Response"** quick-action button.
 - **Application Lifecycle Tracker**: Inline status dropdown selector on each application row (`Applied`, `Interviewing`, `Negotiating`, `I Withdrew`, `Not Selected`, `No Response`, `Archived`).
 - **Interactive Job Detail Modal**: Deep details view with 3 tabs: **Overview & Package**, **Applied Tab** (General notes & post-application follow-up tracker), and **Interviewing Tab** (Interview round logger with contact info, discussion notes, and post-interview follow-up tracker).
