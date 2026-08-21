@@ -5,6 +5,16 @@ All notable changes to the Autonomous AI Career Advancement & Job Search System 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-08-21
+
+### Added
+- **Application Lifecycle Tracker**: Inline status dropdown selector on each application row (`Applied`, `Interviewing`, `Negotiating`, `I Withdrew`, `Not Selected`, `No Response`, `Archived`).
+- **Interactive Job Detail Modal**: Deep details view with 3 tabs: **Overview & Package**, **Applied Tab** (General notes & post-application follow-up tracker), and **Interviewing Tab** (Interview round logger with contact info, discussion notes, and post-interview follow-up tracker).
+- **Queue Archiving Engine**: Replaced queue "Remove" button with "Archive" (`/api/archive_queue`), with restore (`/api/restore_queue`) and permanent deletion (`/api/delete_queue_permanent`).
+- **Job Source Visual Badges**: Visual badges (`LinkedIn`, `Indeed`, `Greenhouse`, `Lever`, `Company Portal`) rendered on application rows and queue cards.
+
+---
+
 ## [1.9.0] - 2026-08-20
 
 ### Added

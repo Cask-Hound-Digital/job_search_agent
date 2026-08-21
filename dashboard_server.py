@@ -228,10 +228,14 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                         "location": "Remote / Hybrid",
                         "compensation_range": "Executive Leadership Level",
                         "match_score": 98,
-                        "status": "Submitted",
+                        "status": "Applied",
+                        "source": "LinkedIn" if "linkedin" in job_url.lower() else ("Greenhouse" if "greenhouse" in job_url.lower() else ("Lever" if "lever" in job_url.lower() else "Company Portal")),
                         "submission_date": "2026-08-12",
                         "submission_channel": "Direct 1-Click Dashboard Apply",
-                        "notes": f"Applied via 1-click dashboard trigger. Master application package generated in P:\\Job Search\\{folder_name}\\"
+                        "notes": f"Applied via 1-click dashboard trigger. Master application package generated in P:\\Job Search\\{folder_name}\\",
+                        "application_notes": "",
+                        "application_followups": [],
+                        "interviews": []
                     }
 
                     apps.append(new_app)
@@ -268,6 +272,220 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 self._set_cors_headers()
                 self.end_headers()
                 self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode('utf-8'))
+
+        elif self.path == '/api/update_status':
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                app_id = data.get('id')
+                new_status = data.get('status')
+                if os.path.exists(STATE_FILE):
+                    with open(STATE_FILE, 'r', encoding='utf-8') as sf:
+                        state_data = json.load(sf)
+                    for app in state_data.get("applications", []):
+                        if app.get("id") == app_id:
+                            app["status"] = new_status
+                            break
+                    with open(STATE_FILE, 'w', encoding='utf-8') as sf:
+                        json.dump(state_data, sf, indent=2)
+                subprocess.run([PYTHON_EXE, "sync_dashboard_from_state.py"], cwd=BASE_DIR)
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "success"}).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode('utf-8'))
+
+        elif self.path == '/api/save_application_details':
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                app_id = data.get('id')
+                notes = data.get('application_notes', '')
+                followups = data.get('application_followups', [])
+                if os.path.exists(STATE_FILE):
+                    with open(STATE_FILE, 'r', encoding='utf-8') as sf:
+                        state_data = json.load(sf)
+                    for app in state_data.get("applications", []):
+                        if app.get("id") == app_id:
+                            app["application_notes"] = notes
+                            app["application_followups"] = followups
+                            break
+                    with open(STATE_FILE, 'w', encoding='utf-8') as sf:
+                        json.dump(state_data, sf, indent=2)
+                subprocess.run([PYTHON_EXE, "sync_dashboard_from_state.py"], cwd=BASE_DIR)
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "success"}).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode('utf-8'))
+
+        elif self.path == '/api/save_interview':
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                app_id = data.get('app_id')
+                interview_data = data.get('interview', {})
+                if os.path.exists(STATE_FILE):
+                    with open(STATE_FILE, 'r', encoding='utf-8') as sf:
+                        state_data = json.load(sf)
+                    for app in state_data.get("applications", []):
+                        if app.get("id") == app_id:
+                            interviews = app.setdefault("interviews", [])
+                            # Check if updating existing or adding new
+                            int_id = interview_data.get("id")
+                            found = False
+                            if int_id:
+                                for idx, existing_int in enumerate(interviews):
+                                    if existing_int.get("id") == int_id:
+                                        interviews[idx] = interview_data
+                                        found = True
+                                        break
+                            if not found:
+                                interview_data["id"] = f"INT-{len(interviews) + 1:02d}"
+                                interviews.append(interview_data)
+                            break
+                    with open(STATE_FILE, 'w', encoding='utf-8') as sf:
+                        json.dump(state_data, sf, indent=2)
+                subprocess.run([PYTHON_EXE, "sync_dashboard_from_state.py"], cwd=BASE_DIR)
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "success"}).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode('utf-8'))
+
+        elif self.path == '/api/delete_interview':
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                app_id = data.get('app_id')
+                int_id = data.get('interview_id')
+                if os.path.exists(STATE_FILE):
+                    with open(STATE_FILE, 'r', encoding='utf-8') as sf:
+                        state_data = json.load(sf)
+                    for app in state_data.get("applications", []):
+                        if app.get("id") == app_id:
+                            app["interviews"] = [i for i in app.get("interviews", []) if i.get("id") != int_id]
+                            break
+                    with open(STATE_FILE, 'w', encoding='utf-8') as sf:
+                        json.dump(state_data, sf, indent=2)
+                subprocess.run([PYTHON_EXE, "sync_dashboard_from_state.py"], cwd=BASE_DIR)
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "success"}).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode('utf-8'))
+
+        elif self.path == '/api/archive_queue':
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                job_url = data.get('url', '').strip()
+                u_clean = job_url.split('?')[0].lower() if job_url else ""
+                if os.path.exists(STATE_FILE):
+                    with open(STATE_FILE, 'r', encoding='utf-8') as sf:
+                        state_data = json.load(sf)
+                    rq = state_data.get("review_queue", [])
+                    archived = state_data.setdefault("archived_queue", [])
+                    to_archive = [j for j in rq if j.get("url", "").split('?')[0].lower() == u_clean]
+                    state_data["review_queue"] = [j for j in rq if j.get("url", "").split('?')[0].lower() != u_clean]
+                    for item in to_archive:
+                        item["archived_date"] = "2026-08-21"
+                        archived.append(item)
+                    with open(STATE_FILE, 'w', encoding='utf-8') as sf:
+                        json.dump(state_data, sf, indent=2)
+                subprocess.run([PYTHON_EXE, "sync_dashboard_from_state.py"], cwd=BASE_DIR)
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "success"}).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode('utf-8'))
+
+        elif self.path == '/api/restore_queue':
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                job_url = data.get('url', '').strip()
+                u_clean = job_url.split('?')[0].lower() if job_url else ""
+                if os.path.exists(STATE_FILE):
+                    with open(STATE_FILE, 'r', encoding='utf-8') as sf:
+                        state_data = json.load(sf)
+                    archived = state_data.get("archived_queue", [])
+                    rq = state_data.setdefault("review_queue", [])
+                    to_restore = [j for j in archived if j.get("url", "").split('?')[0].lower() == u_clean]
+                    state_data["archived_queue"] = [j for j in archived if j.get("url", "").split('?')[0].lower() != u_clean]
+                    for item in to_restore:
+                        rq.append(item)
+                    with open(STATE_FILE, 'w', encoding='utf-8') as sf:
+                        json.dump(state_data, sf, indent=2)
+                subprocess.run([PYTHON_EXE, "sync_dashboard_from_state.py"], cwd=BASE_DIR)
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "success"}).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode('utf-8'))
+
+        elif self.path == '/api/delete_queue_permanent':
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                job_url = data.get('url', '').strip()
+                u_clean = job_url.split('?')[0].lower() if job_url else ""
+                if os.path.exists(STATE_FILE):
+                    with open(STATE_FILE, 'r', encoding='utf-8') as sf:
+                        state_data = json.load(sf)
+                    state_data["archived_queue"] = [j for j in state_data.get("archived_queue", []) if j.get("url", "").split('?')[0].lower() != u_clean]
+                    state_data["review_queue"] = [j for j in state_data.get("review_queue", []) if j.get("url", "").split('?')[0].lower() != u_clean]
+                    with open(STATE_FILE, 'w', encoding='utf-8') as sf:
+                        json.dump(state_data, sf, indent=2)
+                subprocess.run([PYTHON_EXE, "sync_dashboard_from_state.py"], cwd=BASE_DIR)
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "success"}).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode('utf-8'))
+
         else:
             self.send_response(404)
             self.end_headers()

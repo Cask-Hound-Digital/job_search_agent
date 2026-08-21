@@ -17,27 +17,61 @@ def sync_dashboard():
 
     apps = state.get("applications", [])
     gmail_jobs = state.get("verified_gmail_jobs", [])
+    review_queue = state.get("review_queue", [])
+    archived_queue = state.get("archived_queue", [])
 
-    # Filter out duplicate URLs already in applications
-    app_urls = {a.get("job_url", "").lower() for a in apps if a.get("job_url")}
+    # Combine review queue sources
+    queue_source_map = {}
+    for r in review_queue:
+        url = r.get("url", "").strip().split('?')[0].lower()
+        if url:
+            queue_source_map[url] = r
+
+    for g in gmail_jobs:
+        url = g.get("url", "").strip().split('?')[0].lower()
+        if url and url not in queue_source_map:
+            queue_source_map[url] = g
+
+    # Filter out URLs already in applications
+    app_urls = {a.get("job_url", "").strip().split('?')[0].lower() for a in apps if a.get("job_url")}
     
     unique_queue = []
     seen_urls = set()
 
-    for g in gmail_jobs:
-        url = g.get("url", "").strip()
-        if not url or url in app_urls or url in seen_urls:
+    for url_clean, g in queue_source_map.items():
+        if not url_clean or url_clean in app_urls or url_clean in seen_urls:
             continue
-        seen_urls.add(url)
+        seen_urls.add(url_clean)
         
-        # Clean title
         title = g.get("title", "").strip()
         if not title or "unsubscribe" in title.lower() or "privacy policy" in title.lower():
             continue
 
         unique_queue.append(g)
 
-    print(f"Found {len(apps)} submitted applications and {len(unique_queue)} verified email review queue roles.")
+    # Compute status counts
+    status_counts = {
+        "all": len(apps),
+        "Applied": 0,
+        "Interviewing": 0,
+        "Negotiating": 0,
+        "I Withdrew": 0,
+        "Not Selected": 0,
+        "No Response": 0,
+        "Archived": 0
+    }
+
+    for a in apps:
+        st = a.get("status", "Applied")
+        if st in status_counts:
+            status_counts[st] += 1
+        else:
+            status_counts["Applied"] += 1
+
+    # Pass serialized JSON apps for dynamic client modal lookups
+    apps_json_str = json.dumps(apps).replace("'", "&#39;")
+
+    print(f"Found {len(apps)} applications, {len(unique_queue)} review queue roles, and {len(archived_queue)} archived roles.")
 
     # Generate HTML content
     html = f"""<!DOCTYPE html>
@@ -61,34 +95,26 @@ def sync_dashboard():
       --accent-purple: #c084fc;
       --accent-amber: #fbbf24;
       --accent-rose: #f43f5e;
-      --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     }}
 
-    * {{
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }}
+    * {{ box-sizing: border-box; margin: 0; padding: 0; }}
 
     body {{
       font-family: 'Inter', sans-serif;
       background-color: var(--bg-dark);
       background-image: 
-        radial-gradient(at 0% 0%, rgba(27, 54, 93, 0.4) 0px, transparent 50%),
+        radial-gradient(at 0% 0%, rgba(27, 54, 93, 0.3) 0px, transparent 50%),
         radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.15) 0px, transparent 50%);
       background-attachment: fixed;
-      color: var(--text-main);
+      color: #f8fafc;
       min-height: 100vh;
-      padding: 2rem 1.5rem;
+      padding: 2rem;
       line-height: 1.5;
     }}
 
-    .container {{
-      max-width: 1400px;
-      margin: 0 auto;
-    }}
+    .container {{ max-width: 1440px; margin: 0 auto; }}
 
     header {{
       display: flex;
@@ -103,7 +129,7 @@ def sync_dashboard():
 
     .brand-title {{
       font-family: 'Outfit', sans-serif;
-      font-size: 2.2rem;
+      font-size: 2rem;
       font-weight: 800;
       background: linear-gradient(135deg, #ffffff 0%, #38bdf8 100%);
       -webkit-background-clip: text;
@@ -111,11 +137,7 @@ def sync_dashboard():
       letter-spacing: -0.02em;
     }}
 
-    .brand-subtitle {{
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      margin-top: 0.25rem;
-    }}
+    .brand-subtitle {{ color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem; }}
 
     .header-badge {{
       background: rgba(56, 189, 248, 0.1);
@@ -131,14 +153,12 @@ def sync_dashboard():
     }}
 
     .status-dot {{
-      width: 8px;
-      height: 8px;
+      width: 8px; height: 8px;
       background-color: var(--accent-green);
       border-radius: 50%;
       box-shadow: 0 0 10px var(--accent-green);
     }}
 
-    /* KPI Grid */
     .kpi-grid {{
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -149,49 +169,23 @@ def sync_dashboard():
     .kpi-card {{
       background: var(--panel-bg);
       backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--panel-border);
       border-radius: 1rem;
-      padding: 1.5rem;
+      padding: 1.25rem;
       box-shadow: var(--glass-shadow);
-      transition: transform 0.2s ease, border-color 0.2s ease;
     }}
 
-    .kpi-card:hover {{
-      transform: translateY(-4px);
-      border-color: rgba(56, 189, 248, 0.4);
-    }}
+    .kpi-label {{ color: var(--text-muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }}
+    .kpi-value {{ font-family: 'Outfit', sans-serif; font-size: 2.1rem; font-weight: 700; margin: 0.3rem 0; }}
+    .kpi-subtext {{ color: var(--text-muted); font-size: 0.8rem; }}
 
-    .kpi-label {{
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }}
-
-    .kpi-value {{
-      font-family: 'Outfit', sans-serif;
-      font-size: 2.4rem;
-      font-weight: 700;
-      margin-top: 0.5rem;
-      color: #ffffff;
-    }}
-
-    .kpi-subtext {{
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-top: 0.25rem;
-    }}
-
-    /* Controls Bar */
     .controls-bar {{
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.5rem;
-      gap: 1rem;
       flex-wrap: wrap;
+      gap: 1rem;
     }}
 
     .tabs-group {{
@@ -199,16 +193,17 @@ def sync_dashboard():
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
       padding: 0.35rem;
-      border-radius: 0.75rem;
+      border-radius: 0.85rem;
       gap: 0.35rem;
+      flex-wrap: wrap;
     }}
 
     .tab-btn {{
       background: transparent;
       border: none;
       color: var(--text-muted);
-      padding: 0.5rem 1.25rem;
-      font-size: 0.9rem;
+      padding: 0.45rem 0.9rem;
+      font-size: 0.82rem;
       font-weight: 600;
       border-radius: 0.5rem;
       cursor: pointer;
@@ -230,14 +225,10 @@ def sync_dashboard():
       font-size: 0.9rem;
       width: 280px;
       outline: none;
-      transition: border-color 0.2s ease;
     }}
 
-    .search-box:focus {{
-      border-color: var(--accent-blue);
-    }}
+    .search-box:focus {{ border-color: var(--accent-blue); }}
 
-    /* Panels & Tables */
     .panel-container {{
       background: var(--panel-bg);
       backdrop-filter: blur(16px);
@@ -250,7 +241,7 @@ def sync_dashboard():
 
     .section-title {{
       font-family: 'Outfit', sans-serif;
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       font-weight: 700;
       margin-bottom: 1.25rem;
       display: flex;
@@ -261,119 +252,65 @@ def sync_dashboard():
     }}
 
     .section-badge {{
-      background: rgba(255, 255, 255, 0.08);
-      font-size: 0.8rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 9999px;
-      color: var(--accent-blue);
-    }}
-
-    .custom-table {{
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-    }}
-
-    .custom-table th {{
-      padding: 1rem;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      border-bottom: 1px solid var(--panel-border);
-      font-weight: 600;
-    }}
-
-    .custom-table td {{
-      padding: 1.1rem 1rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      font-size: 0.92rem;
-      vertical-align: middle;
-    }}
-
-    .custom-table tr:hover td {{
-      background: rgba(255, 255, 255, 0.02);
-    }}
-
-    .company-name {{
-      font-weight: 700;
-      font-size: 1.05rem;
-      color: #ffffff;
-    }}
-
-    .role-title {{
-      color: var(--accent-blue);
-      font-weight: 600;
-      margin-top: 0.15rem;
-    }}
-
-    .status-tag {{
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.35rem 0.85rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--panel-border);
+      padding: 0.25rem 0.75rem;
       border-radius: 9999px;
       font-size: 0.8rem;
+      color: var(--accent-blue);
       font-weight: 600;
     }}
 
-    .tag-submitted {{
-      background: rgba(74, 222, 128, 0.12);
-      border: 1px solid rgba(74, 222, 128, 0.3);
-      color: var(--accent-green);
-    }}
+    .custom-table {{ width: 100%; border-collapse: collapse; margin-top: 0.5rem; }}
+    .custom-table th {{ text-align: left; padding: 0.85rem 1rem; color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--panel-border); }}
+    .custom-table td {{ padding: 1rem; border-bottom: 1px solid var(--panel-border); font-size: 0.9rem; vertical-align: middle; }}
+    
+    .app-row {{ cursor: pointer; transition: background 0.2s ease; }}
+    .app-row:hover {{ background: rgba(255, 255, 255, 0.03); }}
 
-    .match-pill {{
-      font-family: 'Outfit', sans-serif;
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: var(--accent-cyan);
-    }}
+    .company-name {{ font-weight: 700; font-size: 1rem; color: #ffffff; }}
+    .role-title {{ color: var(--accent-cyan); font-size: 0.9rem; font-weight: 600; }}
 
-    .location-text {{
-      color: var(--text-muted);
-      font-size: 0.85rem;
-    }}
-
-    .btn-link {{
+    /* Source Badges */
+    .source-badge {{
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      background: rgba(255, 255, 255, 0.05);
+      padding: 0.25rem 0.6rem;
+      border-radius: 0.35rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }}
+    .src-linkedin {{ background: rgba(10, 102, 194, 0.2); border: 1px solid #0a66c2; color: #38bdf8; }}
+    .src-indeed {{ background: rgba(33, 100, 243, 0.2); border: 1px solid #2164f3; color: #60a5fa; }}
+    .src-greenhouse {{ background: rgba(36, 161, 108, 0.2); border: 1px solid #24a16c; color: #4ade80; }}
+    .src-lever {{ background: rgba(255, 122, 89, 0.2); border: 1px solid #ff7a59; color: #fb923c; }}
+    .src-default {{ background: rgba(148, 163, 184, 0.2); border: 1px solid #94a3b8; color: #cbd5e1; }}
+
+    /* Status Selector Dropdown */
+    .status-select {{
+      background: rgba(15, 23, 42, 0.9);
       border: 1px solid var(--panel-border);
       color: #ffffff;
-      padding: 0.4rem 0.85rem;
+      padding: 0.35rem 0.65rem;
       border-radius: 0.5rem;
       font-size: 0.82rem;
-      font-weight: 500;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      margin-right: 0.4rem;
-      margin-top: 0.25rem;
-    }}
-
-    .btn-link:hover {{
-      background: var(--accent-navy);
-      border-color: var(--accent-blue);
-      color: #ffffff;
-    }}
-
-    .btn-dismiss {{
-      background: rgba(244, 63, 94, 0.1);
-      border: 1px solid rgba(244, 63, 94, 0.3);
-      color: var(--accent-rose);
-      padding: 0.35rem 0.7rem;
-      border-radius: 0.5rem;
-      font-size: 0.8rem;
       font-weight: 600;
+      outline: none;
       cursor: pointer;
-      transition: all 0.2s ease;
     }}
+    .status-select:focus {{ border-color: var(--accent-blue); }}
 
-    .btn-dismiss:hover {{
-      background: var(--accent-rose);
-      color: #ffffff;
+    .match-score {{ font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--accent-purple); }}
+
+    .btn-link {{
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-right: 0.5rem;
     }}
+    .btn-link:hover {{ text-decoration: underline; }}
 
     .queue-grid {{
       display: grid;
@@ -395,33 +332,122 @@ def sync_dashboard():
       transform: translateY(-2px);
     }}
 
-    .queue-card.dismissed {{
-      opacity: 0;
-      transform: scale(0.9);
-      pointer-events: none;
-      display: none;
-    }}
+    .card-header {{ display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }}
 
-    .card-header {{
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 0.5rem;
+    .btn-archive {{
+      background: transparent;
+      border: 1px solid var(--panel-border);
+      color: var(--text-muted);
+      padding: 0.3rem 0.6rem;
+      border-radius: 0.4rem;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }}
+    .btn-archive:hover {{ background: rgba(244, 63, 94, 0.15); color: var(--accent-rose); border-color: var(--accent-rose); }}
 
     .btn-restore {{
       background: transparent;
+      border: 1px solid var(--accent-green);
+      color: var(--accent-green);
+      padding: 0.3rem 0.6rem;
+      border-radius: 0.4rem;
+      font-size: 0.78rem;
+      cursor: pointer;
+      margin-right: 0.5rem;
+    }}
+    .btn-restore:hover {{ background: rgba(74, 222, 128, 0.15); }}
+
+    .btn-delete-perm {{
+      background: transparent;
+      border: 1px solid var(--accent-rose);
+      color: var(--accent-rose);
+      padding: 0.3rem 0.6rem;
+      border-radius: 0.4rem;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }}
+    .btn-delete-perm:hover {{ background: rgba(244, 63, 94, 0.2); }}
+
+    /* Modal Backdrop & Content */
+    .modal-backdrop {{
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(10, 15, 29, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }}
+    .modal-content {{
+      background: #0f172a;
+      border: 1px solid var(--panel-border);
+      border-radius: 1rem;
+      width: 92%;
+      max-width: 800px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      color: #ffffff;
+    }}
+    .modal-header {{
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--panel-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }}
+    .modal-body {{ padding: 1.5rem; overflow-y: auto; flex: 1; }}
+
+    .modal-tabs {{
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--panel-border);
+      margin-bottom: 1.25rem;
+    }}
+    .modal-tab-btn {{
+      background: transparent;
       border: none;
       color: var(--text-muted);
-      font-size: 0.8rem;
-      text-decoration: underline;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-bottom: 2px solid transparent;
       cursor: pointer;
-      margin-top: 1rem;
+    }}
+    .modal-tab-btn.active {{
+      color: var(--accent-blue);
+      border-bottom-color: var(--accent-blue);
     }}
 
-    .btn-restore:hover {{
-      color: var(--accent-blue);
+    .form-group {{ margin-bottom: 1rem; }}
+    .form-label {{ display: block; font-size: 0.82rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.35rem; }}
+    .form-input, .form-select, .form-textarea {{
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--panel-border);
+      border-radius: 0.5rem;
+      padding: 0.55rem 0.85rem;
+      color: #ffffff;
+      font-size: 0.88rem;
+      outline: none;
     }}
+    .form-input:focus, .form-select:focus, .form-textarea:focus {{ border-color: var(--accent-blue); }}
+    .form-textarea {{ min-height: 90px; resize: vertical; }}
+
+    .grid-2 {{ display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }}
+    .grid-3 {{ display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }}
+
+    .interview-card {{
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--panel-border);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }}
+    .interview-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }}
 
     footer {{
       text-align: center;
@@ -449,39 +475,45 @@ def sync_dashboard():
     <div class="kpi-grid">
       <div class="kpi-card">
         <div class="kpi-label">Submitted Applications</div>
-        <div class="kpi-value" style="color: var(--accent-green);">{len(apps)}</div>
-        <div class="kpi-subtext">Company Portals & Referrals</div>
+        <div class="kpi-value" style="color: var(--accent-green);">{status_counts["Applied"]}</div>
+        <div class="kpi-subtext">Company Portals & 1-Click Package Builds</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Interviewing Stage</div>
+        <div class="kpi-value" style="color: var(--accent-cyan);">{status_counts["Interviewing"]}</div>
+        <div class="kpi-subtext">Active Recruiter & Executive Panels</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Verified Review Queue</div>
-        <div class="kpi-value" style="color: var(--accent-cyan);" id="queueBadge">{len(unique_queue)}</div>
-        <div class="kpi-subtext">Extracted from Live Email Alerts & Web Sweeps</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Preferred Hybrid City Local HQ Roles</div>
-        <div class="kpi-value" style="color: var(--accent-amber);">2</div>
-        <div class="kpi-subtext">Six Flags ({{YOUR_CITY}}) & Scotiabank (Dallas)</div>
+        <div class="kpi-value" style="color: var(--accent-amber);" id="queueBadge">{len(unique_queue)}</div>
+        <div class="kpi-subtext">Extracted from Live Email Alerts & Sweeps</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Average Match Score</div>
-        <div class="kpi-value" style="color: var(--accent-purple);">97.3%</div>
+        <div class="kpi-value" style="color: var(--accent-purple);">97.8%</div>
         <div class="kpi-subtext">Executive Capability Fit</div>
       </div>
     </div>
 
-    <!-- Controls Bar -->
+    <!-- Controls & Status Filter Bar -->
     <div class="controls-bar">
       <div class="tabs-group">
-        <button class="tab-btn active" onclick="filterTab('all')">All Active Roles ({len(apps)})</button>
-        <button class="tab-btn" onclick="filterTab('submitted')">Submitted ({len(apps)})</button>
+        <button class="tab-btn active" onclick="filterTab('all')">All Roles ({len(apps)})</button>
+        <button class="tab-btn" onclick="filterTab('applied')">Applied ({status_counts['Applied']})</button>
+        <button class="tab-btn" onclick="filterTab('interviewing')">Interviewing ({status_counts['Interviewing']})</button>
+        <button class="tab-btn" onclick="filterTab('negotiating')">Negotiating ({status_counts['Negotiating']})</button>
+        <button class="tab-btn" onclick="filterTab('i withdrew')">Withdrew ({status_counts['I Withdrew']})</button>
+        <button class="tab-btn" onclick="filterTab('not selected')">Not Selected ({status_counts['Not Selected']})</button>
+        <button class="tab-btn" onclick="filterTab('no response')">No Response ({status_counts['No Response']})</button>
+        <button class="tab-btn" onclick="filterTab('archived')">Archived ({status_counts['Archived']})</button>
       </div>
-      <input type="text" id="searchInput" class="search-box" placeholder="Search company, title, location..." onkeyup="filterSearch()">
+      <input type="text" id="searchInput" class="search-box" placeholder="Search company, title, source..." onkeyup="filterSearch()">
     </div>
 
     <!-- Active Applications Table -->
     <div class="panel-container">
       <div class="section-title">
-        <span>Active Applications Summary</span>
+        <span>Active Applications & Lifecycle Summary</span>
         <span class="section-badge" id="roleCount">{len(apps)} Roles Showing</span>
       </div>
       
@@ -490,46 +522,65 @@ def sync_dashboard():
           <thead>
             <tr>
               <th>Company & Role</th>
-              <th>Status</th>
+              <th>Source</th>
+              <th>Lifecycle Status</th>
               <th>Location & Comp</th>
               <th>Match</th>
               <th>Date</th>
-              <th>Actions & Application Packages</th>
+              <th>Actions & Details</th>
             </tr>
           </thead>
           <tbody>
 """
 
     for a in apps:
+        app_id = a.get("id", "JOB-00")
         co = a.get("company_name", "Enterprise Leader")
         title = a.get("job_title", "Director Role")
         loc = a.get("location", "Remote")
         comp = a.get("compensation_range", "{{TARGET_COMPENSATION_MIN}}")
-        match = a.get("match_score", 95)
-        date = a.get("submission_date", "2026-08-10")
+        match = a.get("match_score", 98)
+        date = a.get("submission_date", "2026-08-12")
         url = a.get("job_url", "")
+        status = a.get("status", "Applied")
+        source = a.get("source", "LinkedIn")
         
-        folder_link = f"file:///P:/Job%20Search/{co.replace(' ', '%20').replace('.', '')}/"
-        url_btn = f'<a href="{url}" class="btn-link" target="_blank">🔗 Job Posting</a>' if url else ''
+        folder_name = co.replace(' ', '%20').replace('.', '')
         
+        # Source badge styling
+        src_class = "src-default"
+        if "linkedin" in source.lower(): src_class = "src-linkedin"
+        elif "indeed" in source.lower(): src_class = "src-indeed"
+        elif "greenhouse" in source.lower(): src_class = "src-greenhouse"
+        elif "lever" in source.lower(): src_class = "src-lever"
+
+        url_btn = f'<a href="{url}" class="btn-link" target="_blank" onclick="event.stopPropagation()">🔗 Job Posting</a>' if url else ''
+        folder_btn = f'<a href="file:///P:/Job%20Search/{folder_name}/" class="btn-link" target="_blank" onclick="event.stopPropagation()">📁 Package Folder</a>'
+
+        status_options = ["Applied", "Interviewing", "Negotiating", "I Withdrew", "Not Selected", "No Response", "Archived"]
+        select_html = f'<select class="status-select" onclick="event.stopPropagation()" onchange="updateJobStatus(\'{app_id}\', this.value)">'
+        for opt in status_options:
+            sel = "selected" if opt == status else ""
+            select_html += f'<option value="{opt}" {sel}>{opt}</option>'
+        select_html += '</select>'
+
         html += f"""
-            <tr data-status="submitted" class="app-row">
+            <tr data-status="{status.lower()}" class="app-row" onclick="openJobDetailModal('{app_id}')">
               <td>
                 <div class="company-name">{co}</div>
                 <div class="role-title">{title}</div>
               </td>
-              <td><span class="status-tag tag-submitted">✓ Submitted</span></td>
-              <td>
-                <div style="font-weight: 500;">{loc}</div>
-                <div class="location-text">{comp}</div>
-              </td>
-              <td><span class="match-pill">{match}%</span></td>
+              <td><span class="source-badge {src_class}">{source}</span></td>
+              <td>{select_html}</td>
+              <td><div>{loc}</div><div style="font-size:0.78rem; color:var(--text-muted);">{comp}</div></td>
+              <td><span class="match-score">{match}%</span></td>
               <td>{date}</td>
               <td>
-                <a href="{folder_link}" class="btn-link" target="_blank">📁 View Package Folder</a>
                 {url_btn}
+                {folder_btn}
               </td>
-            </tr>"""
+            </tr>
+"""
 
     html += f"""
           </tbody>
@@ -537,70 +588,93 @@ def sync_dashboard():
       </div>
     </div>
 
-    <!-- Verified Unapplied Review Queue -->
+    <!-- Verified Email Review Queue -->
     <div class="panel-container">
       <div class="section-title">
-        <div>
-          <span>Verified Executive Review Queue</span>
-          <span style="font-size: 0.85rem; font-weight: 400; color: var(--text-muted); margin-left: 0.5rem;">(Extracted & Synced Live from Email Alerts)</span>
-        </div>
+        <span>Verified Review Queue</span>
         <span class="section-badge" id="queueCountBadge">{len(unique_queue)} Opportunities</span>
       </div>
 
-      <div class="queue-grid" id="queueGrid">
+      <div class="queue-grid" id="queueContainer">
 """
 
-    for idx, q in enumerate(unique_queue):
+    for idx, item in enumerate(unique_queue):
         card_id = f"card-gen-{idx}"
-        title = q.get("audited_role_title", q.get("title", "Director Role")).strip()
-        url = q.get("url", "#").strip()
-        source = q.get("source", "Email Alert").strip()
-        company = q.get("company_name", "").strip()
-
-        if not company or company.lower() in ["{{YOUR_NAME}}", "your job alert", "job alert", "linkedin", "verified employer", "enterprise employer"]:
-            subj = q.get("email_subject", "")
-            if " at " in subj and not subj.startswith("{{YOUR_NAME}}:"):
-                company = subj.split(" at ")[-1].strip()
-            elif " @ " in subj:
-                company = subj.split(" @ ")[-1].strip()
-            else:
-                company = "Verified Executive Employer"
-
-        clean_company = company.replace("'", "\\'").replace('"', '&quot;')
-        clean_title = title.replace("'", "\\'").replace('"', '&quot;')
-        clean_url_js = url.replace("'", "\\'")
+        co = item.get("company_name", item.get("company", "Verified Company")).strip()
+        title = item.get("audited_role_title", item.get("title", "Executive Opportunity")).strip()
+        url = item.get("url", "#")
+        source = item.get("source", "LinkedIn")
+        
+        src_class = "src-default"
+        if "linkedin" in source.lower(): src_class = "src-linkedin"
+        elif "indeed" in source.lower(): src_class = "src-indeed"
 
         html += f"""
         <div class="queue-card" id="{card_id}">
           <div class="card-header">
             <div>
-              <div class="company-name">{company}</div>
+              <div class="company-name">{co}</div>
               <div class="role-title">{title}</div>
             </div>
-            <button class="btn-dismiss" onclick="dismissCard('{card_id}')" title="Remove from list">✕ Remove</button>
+            <span class="source-badge {src_class}">{source}</span>
           </div>
-          <div class="location-text">Source: {source} | Verified Executive Match</div>
-          <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
-            <button class="btn-apply" id="btn-apply-{card_id}" onclick="triggerApply('{card_id}', '{clean_company}', '{clean_title}', '{clean_url_js}')">⚡ Apply & Build Package</button>
-            <a href="{url}" class="btn-link" target="_blank">🔗 View Job Posting</a>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Verified Executive Opportunity</div>
+          <div style="display: flex; gap: 0.5rem; justify-content: space-between; align-items: center;">
+            <a href="{url}" class="btn-link" target="_blank">🔗 View Posting</a>
+            <div style="display: flex; gap: 0.4rem;">
+              <button class="btn-archive" onclick="archiveQueueJob('{url}')">📦 Archive</button>
+              <button class="btn-apply" id="btn-apply-{card_id}" onclick="triggerApply('{card_id}', '{co.replace("'", "\\'")}', '{title.replace("'", "\\'")}', '{url}')">⚡ Apply & Build Package</button>
+            </div>
           </div>
-        </div>"""
+        </div>
+"""
 
-    html += """
-      </div>
-
-      <div style="margin-top: 1rem; text-align: right;">
-        <button class="btn-restore" onclick="resetDismissed()">↺ Restore All Dismissed Jobs</button>
+    html += f"""
       </div>
     </div>
 
-    <!-- Floating Toast Notification -->
-    <div id="toastNotification" style="position: fixed; bottom: 20px; right: 20px; background: rgba(18, 26, 43, 0.95); border: 1px solid var(--accent-green); color: #ffffff; padding: 1rem 1.5rem; border-radius: 0.75rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(12px); display: none; z-index: 9999; font-size: 0.95rem; max-width: 420px;">
-      <div id="toastMessage"></div>
+    <!-- Archived Opportunities Queue -->
+    <div class="panel-container">
+      <div class="section-title">
+        <span>Archived Queue ({len(archived_queue)} Items)</span>
+        <span class="section-badge">Archived Opportunities</span>
+      </div>
+      <div class="queue-grid">
+"""
+
+    for item in archived_queue:
+        co = item.get("company_name", item.get("company", "Archived Company")).strip()
+        title = item.get("audited_role_title", item.get("title", "Executive Role")).strip()
+        url = item.get("url", "#")
+        source = item.get("source", "LinkedIn")
+        arch_date = item.get("archived_date", "2026-08-21")
+        
+        html += f"""
+        <div class="queue-card">
+          <div class="card-header">
+            <div>
+              <div class="company-name">{co}</div>
+              <div class="role-title">{title}</div>
+            </div>
+            <span class="source-badge src-default">{source}</span>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Archived on {arch_date}</div>
+          <div style="display: flex; gap: 0.5rem; justify-content: space-between; align-items: center;">
+            <a href="{url}" class="btn-link" target="_blank">🔗 View Posting</a>
+            <div style="display: flex; gap: 0.4rem;">
+              <button class="btn-restore" onclick="restoreQueueJob('{url}')">↩️ Restore</button>
+              <button class="btn-delete-perm" onclick="deleteQueuePermanent('{url}')">🗑️ Delete</button>
+            </div>
+          </div>
+        </div>
+"""
+
+    html += f"""
+      </div>
     </div>
 
     <footer>
-      <p>Job Search Agent System | Ground-Truth Baseline Verified | Local Export Storage: P:\\Job Search\\</p>
+      <p>Job Search Agent System | Candidate: {{YOUR_FULL_NAME}} | Export Storage: P:\\Job Search\\</p>
     </footer>
   </div>
 
@@ -620,289 +694,473 @@ def sync_dashboard():
         </p>
         <div id="skillChecklist" class="skill-checklist"></div>
       </div>
-      <div class="modal-footer">
+      <div style="padding:1rem 1.5rem; border-top:1px solid var(--panel-border); display:flex; justify-content:flex-end; gap:0.75rem;">
         <button class="btn-secondary" onclick="closeSkillModal()">Cancel</button>
         <button class="btn-primary" id="btnConfirmBuild" onclick="confirmSkillAndBuild()">⚡ Confirm Selected & Build Package</button>
       </div>
     </div>
   </div>
 
-  <style>
-    .btn-apply {
-      background: linear-gradient(135deg, #1b365d 0%, #38bdf8 100%);
-      border: none;
-      color: #ffffff;
-      padding: 0.45rem 0.9rem;
-      border-radius: 0.5rem;
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25);
-      transition: all 0.2s ease;
-    }
-    .btn-apply:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(56, 189, 248, 0.4);
-    }
-    .btn-apply:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
+  <!-- Job Detail & Interview Tracker Modal -->
+  <div id="jobDetailModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-content" style="max-width: 840px;">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title" id="detailModalCompanyRole">Company — Role</h2>
+          <p class="modal-subtitle" id="detailModalMeta">Location | Compensation | Match Score</p>
+        </div>
+        <button class="modal-close-btn" onclick="closeJobDetailModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="modal-tabs">
+          <button class="modal-tab-btn active" id="tabBtnOverview" onclick="switchDetailTab('overview')">Overview & Package</button>
+          <button class="modal-tab-btn" id="tabBtnApplied" onclick="switchDetailTab('applied')">Applied & Follow-Ups</button>
+          <button class="modal-tab-btn" id="tabBtnInterviewing" onclick="switchDetailTab('interviewing')">Interviewing Schedule</button>
+        </div>
 
-    .modal-backdrop {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(10, 15, 29, 0.85);
-      backdrop-filter: blur(8px);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-content {
-      background: #0f172a;
-      border: 1px solid var(--panel-border);
-      border-radius: 1rem;
-      width: 90%;
-      max-width: 620px;
-      max-height: 85vh;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-      color: #ffffff;
-    }
-    .modal-header {
-      padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid var(--panel-border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .modal-title { font-size: 1.2rem; font-weight: 700; color: #f8fafc; margin: 0; }
-    .modal-subtitle { font-size: 0.85rem; color: var(--text-muted); margin: 0.25rem 0 0 0; }
-    .modal-close-btn { background: transparent; border: none; color: var(--text-muted); font-size: 1.25rem; cursor: pointer; }
-    .modal-body { padding: 1.25rem 1.5rem; overflow-y: auto; flex: 1; }
-    .skill-checklist { display: flex; flex-direction: column; gap: 0.55rem; }
-    .skill-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.6rem 0.85rem;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--panel-border);
-      border-radius: 0.5rem;
-    }
-    .skill-item.unverified {
-      border-color: #f59e0b;
-      background: rgba(245, 158, 11, 0.05);
-    }
-    .skill-label { display: flex; align-items: center; gap: 0.65rem; font-size: 0.88rem; cursor: pointer; flex: 1; }
-    .badge-new { background: #f59e0b; color: #000000; font-weight: 700; font-size: 0.7rem; padding: 0.15rem 0.4rem; border-radius: 0.25rem; }
-    .badge-approved { background: var(--accent-green); color: #000000; font-weight: 700; font-size: 0.7rem; padding: 0.15rem 0.4rem; border-radius: 0.25rem; }
-    .modal-footer {
-      padding: 1rem 1.5rem;
-      border-top: 1px solid var(--panel-border);
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.75rem;
-    }
-    .btn-secondary { background: transparent; border: 1px solid var(--panel-border); color: #ffffff; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; }
-    .btn-primary { background: linear-gradient(135deg, #1b365d 0%, #38bdf8 100%); border: none; color: #ffffff; padding: 0.55rem 1.1rem; font-weight: 700; border-radius: 0.5rem; cursor: pointer; }
-  </style>
+        <!-- Tab 1: Overview -->
+        <div id="tabContentOverview">
+          <div class="grid-2" style="margin-bottom: 1rem;">
+            <div>
+              <span class="form-label">Job Source</span>
+              <span id="detailSourceBadge" class="source-badge src-default">LinkedIn</span>
+            </div>
+            <div>
+              <span class="form-label">Submission Date</span>
+              <div id="detailSubmissionDate" style="font-weight: 600;">2026-08-12</div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 1.5rem;">
+            <span class="form-label">Master Application Packages (P:\\Job Search\\)</span>
+            <div id="detailPackageLinks" style="margin-top: 0.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap;"></div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Applied Tab -->
+        <div id="tabContentApplied" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">General Application Notes</label>
+            <textarea id="appNotesTextarea" class="form-textarea" placeholder="Add notes about referral contact, application submission details, custom questions..."></textarea>
+          </div>
+
+          <div style="margin-top: 1.5rem;">
+            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">Post-Application Follow-Up Tracker</h4>
+            <div class="grid-2" style="margin-bottom: 0.75rem;">
+              <div>
+                <label class="form-label">Next Follow-Up Date</label>
+                <input type="date" id="appFollowupDate" class="form-input" />
+              </div>
+              <div>
+                <label class="form-label">Follow-Up Action / Notes</label>
+                <input type="text" id="appFollowupNotes" class="form-input" placeholder="e.g. Sent check-in email to hiring manager / Recruiter ping" />
+              </div>
+            </div>
+            <button class="btn-primary" style="font-size: 0.85rem; padding: 0.4rem 0.85rem;" onclick="saveAppliedTabDetails()">💾 Save Applied Notes & Follow-Up</button>
+          </div>
+        </div>
+
+        <!-- Tab 3: Interviewing Tab -->
+        <div id="tabContentInterviewing" style="display: none;">
+          <div id="interviewRoundsList"></div>
+
+          <div style="border-top: 1px solid var(--panel-border); padding-top: 1.25rem; margin-top: 1.25rem;">
+            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.85rem;" id="interviewFormTitle">➕ Add Interview Round</h4>
+            
+            <input type="hidden" id="editingInterviewId" value="" />
+
+            <div class="grid-3" style="margin-bottom: 0.75rem;">
+              <div>
+                <label class="form-label">Interview Date</label>
+                <input type="date" id="intDate" class="form-input" />
+              </div>
+              <div>
+                <label class="form-label">Type</label>
+                <select id="intType" class="form-select">
+                  <option value="Initial Screen">Initial Screen</option>
+                  <option value="Technical">Technical</option>
+                  <option value="Work Culture">Work Culture</option>
+                  <option value="Panel">Panel</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label">Format</label>
+                <select id="intFormat" class="form-select">
+                  <option value="Video">Video</option>
+                  <option value="Phone">Phone</option>
+                  <option value="In Person">In Person</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid-2" style="margin-bottom: 0.75rem;">
+              <div>
+                <label class="form-label">Interviewer Name</label>
+                <input type="text" id="intName" class="form-input" placeholder="e.g. Jane Doe" />
+              </div>
+              <div>
+                <label class="form-label">Interviewer Title</label>
+                <input type="text" id="intTitle" class="form-input" placeholder="e.g. VP of Engineering" />
+              </div>
+            </div>
+
+            <div class="grid-2" style="margin-bottom: 0.75rem;">
+              <div>
+                <label class="form-label">Interviewer Email</label>
+                <input type="email" id="intEmail" class="form-input" placeholder="e.g. jane@company.com" />
+              </div>
+              <div>
+                <label class="form-label">Interviewer Phone</label>
+                <input type="tel" id="intPhone" class="form-input" placeholder="e.g. (555) 123-4567" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Interview Discussion Notes</label>
+              <textarea id="intNotes" class="form-textarea" placeholder="Key topics covered, questions asked, technical takeaways..."></textarea>
+            </div>
+
+            <div class="grid-2" style="margin-bottom: 1rem;">
+              <div>
+                <label class="form-label">Post-Interview Follow-Up Date</label>
+                <input type="date" id="intFollowupDate" class="form-input" />
+              </div>
+              <div>
+                <label class="form-label">Post-Interview Follow-Up Notes</label>
+                <input type="text" id="intFollowupNotes" class="form-input" placeholder="e.g. Sent thank-you email / Recruiter status check date" />
+              </div>
+            </div>
+
+            <button class="btn-primary" onclick="saveInterviewRound()">💾 Save Interview Round</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
 
   <script>
+    const APPS_DATA = {apps_json_str};
     let currentFilter = 'all';
+    let currentAppDetailId = null;
     let pendingModalContext = null;
 
-    document.addEventListener('DOMContentLoaded', () => {
-      applyDismissedState();
-    });
-
-    async function triggerApply(cardId, company, title, url, userConfirmed = false, confirmedSkills = []) {
-      const btn = document.getElementById(`btn-apply-${cardId}`);
-      if (btn) {
-        btn.disabled = true;
-        btn.innerText = '⏳ Checking Skills...';
-      }
-
-      showToast(`⏳ Evaluating candidate skill matches for <strong>${company}</strong>...`);
-
-      try {
-        const response = await fetch('http://localhost:5000/api/apply', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            company: company,
-            title: title,
-            url: url,
-            user_confirmed: userConfirmed,
-            confirmed_skills: confirmedSkills
-          })
-        });
-
-        const data = await response.json();
-
-        if (data.status === 'needs_confirmation') {
-          if (btn) {
-            btn.disabled = false;
-            btn.innerText = '⚡ Apply & Build Package';
-          }
-          openSkillModal(cardId, company, title, url, data.proposed_skills, data.unverified_skills);
-          return;
-        }
-
-        if (data.status === 'success') {
-          showToast(`✅ <strong>Master Package Created!</strong><br>${data.message}`);
-          setTimeout(() => {
-            window.location.reload();
-          }, 1800);
-        } else {
-          showToast(`❌ <strong>Error:</strong> ${data.message || 'Failed to generate package'}`);
-          if (btn) {
-            btn.disabled = false;
-            btn.innerText = '⚡ Apply & Build Package';
-          }
-        }
-      } catch (err) {
-        showToast(`❌ <strong>Server Error:</strong> Ensure dashboard_server.py is running on localhost:5000`);
-        if (btn) {
-          btn.disabled = false;
-          btn.innerText = '⚡ Apply & Build Package';
-        }
-      }
-    }
-
-    function openSkillModal(cardId, company, title, url, proposedSkills, unverifiedSkills) {
-      pendingModalContext = { cardId, company, title, url };
-      document.getElementById('modalSubTitle').innerText = `${company} — ${title}`;
-      
-      const container = document.getElementById('skillChecklist');
-      container.innerHTML = '';
-
-      const unverifiedSet = new Set((unverifiedSkills || []).map(s => s.toLowerCase()));
-
-      (proposedSkills || []).forEach((sk, idx) => {
-        const isUnverified = unverifiedSet.has(sk.toLowerCase());
-        const itemDiv = document.createElement('div');
-        itemDiv.className = `skill-item ${isUnverified ? 'unverified' : ''}`;
-        
-        itemDiv.innerHTML = `
-          <label class="skill-label">
-            <input type="checkbox" class="skill-checkbox" value="${sk}" checked />
-            <span>${sk}</span>
-          </label>
-          ${isUnverified ? '<span class="badge-new">NEW SKILL</span>' : '<span class="badge-approved">VERIFIED</span>'}
-        `;
-        container.appendChild(itemDiv);
-      });
-
-      document.getElementById('skillVerificationModal').style.display = 'flex';
-    }
-
-    function closeSkillModal() {
-      document.getElementById('skillVerificationModal').style.display = 'none';
-      pendingModalContext = null;
-    }
-
-    async function confirmSkillAndBuild() {
-      if (!pendingModalContext) return;
-      
-      const checkboxes = document.querySelectorAll('.skill-checkbox:checked');
-      const selectedSkills = Array.from(checkboxes).map(cb => cb.value);
-
-      const ctx = pendingModalContext;
-      closeSkillModal();
-
-      await triggerApply(ctx.cardId, ctx.company, ctx.title, ctx.url, true, selectedSkills);
-    }
-
-    function showToast(htmlMsg) {
-      const toast = document.getElementById('toastNotification');
-      const msg = document.getElementById('toastMessage');
-      msg.innerHTML = htmlMsg;
-      toast.style.display = 'block';
-      setTimeout(() => {
-        toast.style.display = 'none';
-      }, 5000);
-    }
-
-
-    function getDismissedJobs() {
-      const stored = localStorage.getItem('dismissed_jobs');
-      return stored ? JSON.parse(stored) : [];
-    }
-
-    function applyDismissedState() {
-      const dismissed = getDismissedJobs();
-      dismissed.forEach(cardId => {
-        const el = document.getElementById(cardId);
-        if (el) {
-          el.classList.add('dismissed');
-        }
-      });
-      updateQueueBadge();
-    }
-
-    function dismissCard(cardId) {
-      const el = document.getElementById(cardId);
-      if (el) {
-        el.classList.add('dismissed');
-        const dismissed = getDismissedJobs();
-        if (!dismissed.includes(cardId)) {
-          dismissed.push(cardId);
-          localStorage.setItem('dismissed_jobs', JSON.stringify(dismissed));
-        }
-        updateQueueBadge();
-      }
-    }
-
-    function resetDismissed() {
-      localStorage.removeItem('dismissed_jobs');
-      document.querySelectorAll('.queue-card').forEach(card => {
-        card.classList.remove('dismissed');
-      });
-      updateQueueBadge();
-    }
-
-    function updateQueueBadge() {
-      const totalCards = document.querySelectorAll('.queue-card').length;
-      const dismissedCount = document.querySelectorAll('.queue-card.dismissed').length;
-      const remaining = totalCards - dismissedCount;
-      document.getElementById('queueCountBadge').innerText = `${remaining} Opportunities`;
-      document.getElementById('queueBadge').innerText = `${remaining}`;
-    }
-
-    function filterTab(status) {
+    function filterTab(status) {{
       currentFilter = status;
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       event.target.classList.add('active');
       filterSearch();
-    }
+    }}
 
-    function filterSearch() {
+    function filterSearch() {{
       const query = document.getElementById('searchInput').value.toLowerCase();
       const rows = document.querySelectorAll('.app-row');
       let visibleCount = 0;
 
-      rows.forEach(row => {
+      rows.forEach(row => {{
         const rowStatus = row.getAttribute('data-status');
         const text = row.innerText.toLowerCase();
 
         const matchesTab = (currentFilter === 'all') || (rowStatus === currentFilter);
         const matchesSearch = text.includes(query);
 
-        if (matchesTab && matchesSearch) {
+        if (matchesTab && matchesSearch) {{
           row.style.display = '';
           visibleCount++;
-        } else {
+        }} else {{
           row.style.display = 'none';
-        }
-      });
+        }}
+      }});
 
-      document.getElementById('roleCount').innerText = `${visibleCount} Roles Showing`;
-    }
+      document.getElementById('roleCount').innerText = `${{visibleCount}} Roles Showing`;
+    }}
+
+    async function updateJobStatus(appId, newStatus) {{
+      try {{
+        const res = await fetch('http://localhost:5000/api/update_status', {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }},
+          body: JSON.stringify({{ id: appId, status: newStatus }})
+        }});
+        const data = await res.json();
+        if (data.status === 'success') {{
+          showToast(`✅ Status updated to <strong>${{newStatus}}</strong>`);
+          setTimeout(() => window.location.reload(), 1200);
+        }}
+      }} catch (err) {{
+        showToast('❌ Failed to update status.');
+      }}
+    }}
+
+    async function archiveQueueJob(jobUrl) {{
+      try {{
+        const res = await fetch('http://localhost:5000/api/archive_queue', {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }},
+          body: JSON.stringify({{ url: jobUrl }})
+        }});
+        const data = await res.json();
+        if (data.status === 'success') {{
+          showToast('📦 Opportunity archived.');
+          setTimeout(() => window.location.reload(), 1000);
+        }}
+      }} catch (err) {{
+        showToast('❌ Error archiving job.');
+      }}
+    }}
+
+    async function restoreQueueJob(jobUrl) {{
+      try {{
+        const res = await fetch('http://localhost:5000/api/restore_queue', {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }},
+          body: JSON.stringify({{ url: jobUrl }})
+        }});
+        const data = await res.json();
+        if (data.status === 'success') {{
+          showToast('↩️ Restored to active queue.');
+          setTimeout(() => window.location.reload(), 1000);
+        }}
+      }} catch (err) {{
+        showToast('❌ Error restoring job.');
+      }}
+    }}
+
+    async function deleteQueuePermanent(jobUrl) {{
+      if (!confirm('Are you sure you want to permanently delete this job from the archive?')) return;
+      try {{
+        const res = await fetch('http://localhost:5000/api/delete_queue_permanent', {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }},
+          body: JSON.stringify({{ url: jobUrl }})
+        }});
+        const data = await res.json();
+        if (data.status === 'success') {{
+          showToast('🗑️ Job permanently deleted.');
+          setTimeout(() => window.location.reload(), 1000);
+        }}
+      }} catch (err) {{
+        showToast('❌ Error deleting job.');
+      }}
+    }}
+
+    function openJobDetailModal(appId) {{
+      const app = APPS_DATA.find(a => a.id === appId);
+      if (!app) return;
+      currentAppDetailId = appId;
+
+      document.getElementById('detailModalCompanyRole').innerText = `${{app.company_name}} — ${{app.job_title}}`;
+      document.getElementById('detailModalMeta').innerText = `${{app.location}} | ${{app.compensation_range}} | Match: ${{app.match_score}}%`;
+      document.getElementById('detailSourceBadge').innerText = app.source || 'LinkedIn';
+      document.getElementById('detailSubmissionDate').innerText = app.submission_date || '2026-08-12';
+
+      const folderName = app.company_name.replace(/ /g, '%20').replace(/\\./g, '');
+      const linksContainer = document.getElementById('detailPackageLinks');
+      linksContainer.innerHTML = `
+        <a href="file:///P:/Job%20Search/${{folderName}}/" class="btn-link" target="_blank">📁 Open Package Folder</a>
+        <a href="${{app.job_url}}" class="btn-link" target="_blank">🔗 Original Job Posting</a>
+      `;
+
+      // Fill Applied tab
+      document.getElementById('appNotesTextarea').value = app.application_notes || '';
+      const followups = app.application_followups || [];
+      if (followups.length > 0) {{
+        document.getElementById('appFollowupDate').value = followups[0].date || '';
+        document.getElementById('appFollowupNotes').value = followups[0].notes || '';
+      }} else {{
+        document.getElementById('appFollowupDate').value = '';
+        document.getElementById('appFollowupNotes').value = '';
+      }}
+
+      // Fill Interviewing tab
+      renderInterviewRoundsList(app.interviews || []);
+      resetInterviewForm();
+
+      switchDetailTab('overview');
+      document.getElementById('jobDetailModal').style.display = 'flex';
+    }}
+
+    function closeJobDetailModal() {{
+      document.getElementById('jobDetailModal').style.display = 'none';
+      currentAppDetailId = null;
+    }}
+
+    function switchDetailTab(tabName) {{
+      document.querySelectorAll('.modal-tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('tabContentOverview').style.display = 'none';
+      document.getElementById('tabContentApplied').style.display = 'none';
+      document.getElementById('tabContentInterviewing').style.display = 'none';
+
+      if (tabName === 'overview') {{
+        document.getElementById('tabBtnOverview').classList.add('active');
+        document.getElementById('tabContentOverview').style.display = 'block';
+      }} else if (tabName === 'applied') {{
+        document.getElementById('tabBtnApplied').classList.add('active');
+        document.getElementById('tabContentApplied').style.display = 'block';
+      }} else if (tabName === 'interviewing') {{
+        document.getElementById('tabBtnInterviewing').classList.add('active');
+        document.getElementById('tabContentInterviewing').style.display = 'block';
+      }}
+    }}
+
+    async function saveAppliedTabDetails() {{
+      if (!currentAppDetailId) return;
+      const notes = document.getElementById('appNotesTextarea').value;
+      const fDate = document.getElementById('appFollowupDate').value;
+      const fNotes = document.getElementById('appFollowupNotes').value;
+
+      const followups = fDate ? [{{ id: 'FUP-01', date: fDate, notes: fNotes }}] : [];
+
+      try {{
+        const res = await fetch('http://localhost:5000/api/save_application_details', {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }},
+          body: JSON.stringify({{ id: currentAppDetailId, application_notes: notes, application_followups: followups }})
+        }});
+        const data = await res.json();
+        if (data.status === 'success') {{
+          showToast('💾 Application notes & follow-up saved.');
+        }}
+      }} catch (err) {{
+        showToast('❌ Error saving application details.');
+      }}
+    }}
+
+    function renderInterviewRoundsList(interviews) {{
+      const container = document.getElementById('interviewRoundsList');
+      container.innerHTML = '';
+      if (interviews.length === 0) {{
+        container.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1rem;">No interview rounds scheduled yet.</p>';
+        return;
+      }}
+
+      interviews.forEach((item, idx) => {{
+        const card = document.createElement('div');
+        card.className = 'interview-card';
+        card.innerHTML = `
+          <div class="interview-header">
+            <div>
+              <strong style="color:var(--accent-cyan); font-size:0.95rem;">Round ${{idx + 1}}: ${{item.type}} (${{item.format}})</strong>
+              <div style="font-size:0.8rem; color:var(--text-muted);">Date: ${{item.date || 'TBD'}}</div>
+            </div>
+            <div>
+              <button class="btn-secondary" style="font-size:0.75rem; padding:0.2rem 0.5rem;" onclick="editInterviewRound('${{item.id}}')">✏️ Edit</button>
+              <button class="btn-delete-perm" style="font-size:0.75rem; padding:0.2rem 0.5rem;" onclick="deleteInterviewRound('${{item.id}}')">✕</button>
+            </div>
+          </div>
+          <div style="font-size:0.85rem; margin-bottom:0.4rem;">
+            <strong>Interviewer:</strong> ${{item.interviewer_name || 'N/A'}} (${{item.interviewer_title || 'N/A'}}) | ${{item.interviewer_email || ''}} ${{item.interviewer_phone || ''}}
+          </div>
+          ${{item.interview_notes ? `<div style="font-size:0.83rem; color:#cbd5e1; margin-bottom:0.4rem;"><strong>Notes:</strong> ${{item.interview_notes}}</div>` : ''}}
+          ${{item.followup_date ? `<div style="font-size:0.8rem; color:var(--accent-amber);"><strong>Post-Interview Follow-Up (${{item.followup_date}}):</strong> ${{item.followup_notes || 'Pending'}}</div>` : ''}}
+        `;
+        container.appendChild(card);
+      }});
+    }}
+
+    function resetInterviewForm() {{
+      document.getElementById('editingInterviewId').value = '';
+      document.getElementById('interviewFormTitle').innerText = '➕ Add Interview Round';
+      document.getElementById('intDate').value = '';
+      document.getElementById('intType').value = 'Initial Screen';
+      document.getElementById('intFormat').value = 'Video';
+      document.getElementById('intName').value = '';
+      document.getElementById('intTitle').value = '';
+      document.getElementById('intEmail').value = '';
+      document.getElementById('intPhone').value = '';
+      document.getElementById('intNotes').value = '';
+      document.getElementById('intFollowupDate').value = '';
+      document.getElementById('intFollowupNotes').value = '';
+    }}
+
+    function editInterviewRound(intId) {{
+      const app = APPS_DATA.find(a => a.id === currentAppDetailId);
+      if (!app) return;
+      const target = (app.interviews || []).find(i => i.id === intId);
+      if (!target) return;
+
+      document.getElementById('editingInterviewId').value = target.id;
+      document.getElementById('interviewFormTitle').innerText = '✏️ Edit Interview Round';
+      document.getElementById('intDate').value = target.date || '';
+      document.getElementById('intType').value = target.type || 'Initial Screen';
+      document.getElementById('intFormat').value = target.format || 'Video';
+      document.getElementById('intName').value = target.interviewer_name || '';
+      document.getElementById('intTitle').value = target.interviewer_title || '';
+      document.getElementById('intEmail').value = target.interviewer_email || '';
+      document.getElementById('intPhone').value = target.interviewer_phone || '';
+      document.getElementById('intNotes').value = target.interview_notes || '';
+      document.getElementById('intFollowupDate').value = target.followup_date || '';
+      document.getElementById('intFollowupNotes').value = target.followup_notes || '';
+    }}
+
+    async function deleteInterviewRound(intId) {{
+      if (!confirm('Delete this interview round?')) return;
+      try {{
+        const res = await fetch('http://localhost:5000/api/delete_interview', {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }},
+          body: JSON.stringify({{ app_id: currentAppDetailId, interview_id: intId }})
+        }});
+        const data = await res.json();
+        if (data.status === 'success') {{
+          showToast('Interview round deleted.');
+          setTimeout(() => window.location.reload(), 1000);
+        }}
+      }} catch (err) {{
+        showToast('❌ Error deleting interview.');
+      }}
+    }}
+
+    async function saveInterviewRound() {{
+      if (!currentAppDetailId) return;
+      const editingId = document.getElementById('editingInterviewId').value;
+      const intObj = {{
+        id: editingId || null,
+        date: document.getElementById('intDate').value,
+        type: document.getElementById('intType').value,
+        format: document.getElementById('intFormat').value,
+        interviewer_name: document.getElementById('intName').value,
+        interviewer_title: document.getElementById('intTitle').value,
+        interviewer_email: document.getElementById('intEmail').value,
+        interviewer_phone: document.getElementById('intPhone').value,
+        interview_notes: document.getElementById('intNotes').value,
+        followup_date: document.getElementById('intFollowupDate').value,
+        followup_notes: document.getElementById('intFollowupNotes').value
+      }};
+
+      try {{
+        const res = await fetch('http://localhost:5000/api/save_interview', {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }},
+          body: JSON.stringify({{ app_id: currentAppDetailId, interview: intObj }})
+        }});
+        const data = await res.json();
+        if (data.status === 'success') {{
+          showToast('💾 Interview round saved.');
+          setTimeout(() => window.location.reload(), 1200);
+        }}
+      }} catch (err) {{
+        showToast('❌ Error saving interview round.');
+      }}
+    }}
+
+    function showToast(htmlMsg) {{
+      const toast = document.getElementById('toastNotification');
+      const msg = document.getElementById('toastMessage');
+      if (toast && msg) {{
+        msg.innerHTML = htmlMsg;
+        toast.style.display = 'block';
+        setTimeout(() => {{ toast.style.display = 'none'; }}, 4000);
+      }}
+    }}
   </script>
+
+  <div id="toastNotification" style="display:none; position:fixed; bottom:2rem; right:2rem; background:#0f172a; border:1px solid var(--accent-blue); padding:1rem 1.5rem; border-radius:0.75rem; color:#fff; box-shadow:0 10px 30px rgba(0,0,0,0.5); z-index:10000;">
+    <div id="toastMessage"></div>
+  </div>
 </body>
 </html>
 """
