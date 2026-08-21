@@ -4,6 +4,7 @@ import os
 import re
 import subprocess
 import urllib.parse
+from datetime import datetime
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from socketserver import ThreadingMixIn
 
@@ -185,7 +186,7 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                         "salutation": f"Dear {company} Selection Committee,",
                         "paragraphs": [
                             f"I am writing to express my strong enthusiasm for the {title} position at {company}. With over 18 years of experience leading enterprise digital strategy, digital transformation roadmaps, technology modernization, and cross-functional technology teams, I connect directly with your mission to build and scale high-performing digital channels.",
-                            "Throughout my 18-year tenure as {{YOUR_MOST_RECENT_TITLE}} at {{MOST_RECENT_COMPANY}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I built a high-performing global organization of 13+ cross-functional specialists (development, DevOps, QA, BA, SEO). I owned our corporate web channel as the primary demand generation engine, directing a 34-country {{ENTERPRISE_CMS}} 6.x migration that reduced page load times by 40% while leading the discovery, ROI evaluation, and decision-making for a next-gen DXP platform to replace legacy {{ENTERPRISE_CMS}}. Additionally, I organized and executed the TrendAI site redesign and migration to {{HEADLESS_CMS}} CMS, while pioneering Generative Engine Optimization (GEO/AEO) strategies that increased search visibility by 40% and lifted organic demo conversions by +15%.",
+                            "Throughout my tenure as {{YOUR_MOST_RECENT_TITLE}} at {{MOST_RECENT_COMPANY}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I built a high-performing global organization of 13+ cross-functional specialists (development, DevOps, QA, BA, SEO). I owned our corporate web channel as the primary demand generation engine, directing a 34-country {{ENTERPRISE_CMS}} 6.x migration that reduced page load times by 40% while leading the discovery, ROI evaluation, and decision-making for a next-gen DXP platform to replace legacy {{ENTERPRISE_CMS}}. Additionally, I organized and executed the TrendAI site redesign and migration to {{HEADLESS_CMS}} CMS, while pioneering Generative Engine Optimization (GEO/AEO) strategies that increased search visibility by 40% and lifted organic demo conversions by +15%.",
                             "Prior to {{MOST_RECENT_COMPANY}}, I served as {{YOUR_PREVIOUS_TITLE_1}} at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefront software development across web and mobile partner channels (Sprint), boosting checkout conversion rates by +34%. My background combines executive digital consulting, deep technical fluency across enterprise MarTech ecosystems, and a proven track record leading cross-disciplinary teams through organizational change.",
                             f"Thank you for your time and consideration. I welcome the opportunity to discuss how my background in digital strategy, AI innovation, and executive leadership will drive immediate value for {company}."
                         ]
@@ -230,7 +231,7 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                         "match_score": 98,
                         "status": "Applied",
                         "source": "LinkedIn" if "linkedin" in job_url.lower() else ("Greenhouse" if "greenhouse" in job_url.lower() else ("Lever" if "lever" in job_url.lower() else "Company Portal")),
-                        "submission_date": "2026-08-12",
+                        "submission_date": datetime.now().strftime("%Y-%m-%d"),
                         "submission_channel": "Direct 1-Click Dashboard Apply",
                         "notes": f"Applied via 1-click dashboard trigger. Master application package generated in P:\\Job Search\\{folder_name}\\",
                         "application_notes": "",

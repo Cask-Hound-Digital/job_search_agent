@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Job Source Visual Badges**: Visual badges (`LinkedIn`, `Indeed`, `Greenhouse`, `Lever`, `Company Portal`) rendered on application rows and queue cards.
 
 ### Fixed
+- **Cover Letter Date Consistency**: Updated cover letter generator template (`dashboard_server.py`) to explicitly enforce {{MOST_RECENT_COMPANY}} candidate baseline dates (`{{MOST_RECENT_EMPLOYMENT_DATES}}`) across all cover letter PDF and DOCX outputs.
 - **Applied Tab Status Filtering**: Normalized legacy application statuses in `state.json` to ensure all 17 applied roles display properly when clicking the **Applied** tab.
 
 ---
