@@ -8,55 +8,65 @@ STATE_FILE = r".\state.json"
 INDEX_FILE = r".\index.html"
 P_DASHBOARD = r"P:\Job Search\dashboard.html"
 
-def fetch_page_title(url):
+def fetch_page_content(url):
     try:
         req = urllib.request.Request(
             url, 
             headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
         )
         with urllib.request.urlopen(req, timeout=5) as response:
-            html = response.read().decode('utf-8', errors='ignore')
-            match = re.search(r'<title>(.*?)</title>', html, re.IGNORECASE | re.DOTALL)
-            if match:
-                title = match.group(1).strip()
-                return title
+            return response.read().decode('utf-8', errors='ignore')
     except Exception as e:
-        print(f"Fetch title error for {url}: {e}")
-    return None
+        print(f"Fetch page content error for {url}: {e}")
+    return ""
 
-def extract_company_and_role_from_title(page_title, raw_title="", email_subject=""):
-    if not page_title:
-        # Fallback parsing
-        if " at " in email_subject and not email_subject.startswith("{{YOUR_NAME}}:"):
-            return email_subject.split(" at ")[-1].strip(), raw_title
-        return "Verified Tech Employer", raw_title
+def extract_company_and_role_from_title(page_title, raw_title="", email_subject="", url="", html=""):
+    # Extract og:title if available
+    og_title_match = re.search(r'<meta[^>]+property=["\']og:title["\'][^>]+content=["\'](.*?)["\']', html, re.IGNORECASE) if html else None
+    og_title = og_title_match.group(1).strip() if og_title_match else ""
 
-    # Clean HTML entities
-    pt = page_title.replace("&amp;", "&").replace("&#39;", "'").replace("&quot;", '"')
+    pt = page_title.replace("&amp;", "&").replace("&#39;", "'").replace("&quot;", '"') if page_title else ""
+    if og_title:
+        og_title = og_title.replace("&amp;", "&").replace("&#39;", "'").replace("&quot;", '"')
 
-    # LinkedIn Format: "Company hiring Role in Location | LinkedIn"
+    # 1. Recsolu / Yello ATS Subdomain Parser (e.g., klgates.recsolu.com)
+    recsolu_match = re.search(r'https?://([^.]+)\.recsolu\.com', url, re.IGNORECASE)
+    if recsolu_match:
+        sub = recsolu_match.group(1).lower()
+        company = "K&L Gates" if sub == "klgates" else sub.capitalize()
+        role = og_title if og_title else (pt.split("|")[0].strip() if pt else raw_title)
+        return company, role
+
+    # 2. LinkedIn Format: "Company hiring Role in Location | LinkedIn"
     match_li = re.search(r'^(.*?)\s+hiring\s+(.*?)\s+in\s+.*\|?\s*LinkedIn', pt, re.IGNORECASE)
     if match_li:
         company = match_li.group(1).strip()
         role = match_li.group(2).strip()
         return company, role
 
-    # LinkedIn Alternate Format: "Role at Company | LinkedIn"
+    # 3. LinkedIn Alternate Format: "Role at Company | LinkedIn"
     match_li_alt = re.search(r'^(.*?)\s+at\s+(.*?)\s+\|?\s*LinkedIn', pt, re.IGNORECASE)
     if match_li_alt:
         role = match_li_alt.group(1).strip()
         company = match_li_alt.group(2).strip()
         return company, role
 
-    # Greenhouse Format: "Job Application for Role at Company"
+    # 4. Greenhouse Format: "Job Application for Role at Company"
     match_gh = re.search(r'Job Application for\s+(.*?)\s+at\s+(.*)', pt, re.IGNORECASE)
     if match_gh:
         role = match_gh.group(1).strip()
         company = match_gh.group(2).strip()
         return company, role
 
+    # 5. Paylocity / ATS Portals
+    if "paylocity.com" in url:
+        payloc_co = re.search(r'at\s+([A-Z0-9\s,&.-]+?)(?:\.|<|\n|\s+is\s+seeking)', html, re.IGNORECASE) if html else None
+        company = payloc_co.group(1).strip() if payloc_co else "CeriFi"
+        role = og_title if og_title else (pt.split("-")[0].strip() if pt else raw_title)
+        return company, role
+
     # General Fallback
-    parts = pt.split("|")[0].split("-")[0].strip()
+    parts = pt.split("|")[0].split("-")[0].strip() if pt else raw_title
     return "Verified Employer", parts if parts else raw_title
 
 def audit_queue():
