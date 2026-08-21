@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import shutil
 from datetime import datetime
 
@@ -57,6 +58,27 @@ def sync_dashboard():
             continue
 
         unique_queue.append(g)
+
+    # Sort unique_queue Newest First by date_added / date
+    def get_queue_date_key(item):
+        d_added = item.get("date_added", "")
+        if d_added:
+            return d_added
+        d_raw = item.get("date", "")
+        if d_raw:
+            m = re.search(r'(\d{1,2}\s+[A-Za-z]{3}\s+\d{4})', d_raw)
+            if m:
+                try:
+                    dt = datetime.strptime(m.group(1), "%d %b %Y")
+                    return dt.strftime("%Y-%m-%d")
+                except Exception:
+                    pass
+            m_iso = re.search(r'(\d{4}-\d{2}-\d{2})', d_raw)
+            if m_iso:
+                return m_iso.group(1)
+        return "1970-01-01"
+
+    unique_queue.sort(key=get_queue_date_key, reverse=True)
 
     # Compute status counts and stale applications (> 28 days)
     today = datetime.strptime("2026-08-21", "%Y-%m-%d")
