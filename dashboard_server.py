@@ -131,8 +131,9 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                     if not any(app_s in sk.lower() or sk.lower() in app_s for app_s in approved_set):
                         unverified.append(sk)
 
-                if not user_confirmed and unverified:
-                    print(f"[SKILL VERIFICATION REQUIRED] {len(unverified)} unverified skills detected for {company} ({title}). Prompting candidate...")
+                # Always prompt candidate for skill confirmation unless user_confirmed is True
+                if not user_confirmed:
+                    print(f"[SKILL VERIFICATION REQUIRED] Prompting candidate for {company} ({title})...")
                     self.send_response(200)
                     self.send_header('Content-Type', 'application/json')
                     self._set_cors_headers()
@@ -144,7 +145,7 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                         "url": job_url,
                         "proposed_skills": proposed_skills_list,
                         "unverified_skills": unverified,
-                        "message": "Candidate confirmation required for unverified skills before generating package."
+                        "message": "Candidate confirmation required before generating package."
                     }
                     self.wfile.write(json.dumps(res).encode('utf-8'))
                     return
