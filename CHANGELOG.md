@@ -8,10 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.0] - 2026-08-21
 
 ### Added
+- **4-Week Stale Application Alert Engine**: Automatically flags applications submitted over 28 days ago (`⚠️ 4+ Weeks — Follow Up Needed`) with a dedicated KPI counter and a 1-click **"{{YOUR_NAME}} No Response"** quick-action button.
 - **Application Lifecycle Tracker**: Inline status dropdown selector on each application row (`Applied`, `Interviewing`, `Negotiating`, `I Withdrew`, `Not Selected`, `No Response`, `Archived`).
 - **Interactive Job Detail Modal**: Deep details view with 3 tabs: **Overview & Package**, **Applied Tab** (General notes & post-application follow-up tracker), and **Interviewing Tab** (Interview round logger with contact info, discussion notes, and post-interview follow-up tracker).
 - **Queue Archiving Engine**: Replaced queue "Remove" button with "Archive" (`/api/archive_queue`), with restore (`/api/restore_queue`) and permanent deletion (`/api/delete_queue_permanent`).
 - **Job Source Visual Badges**: Visual badges (`LinkedIn`, `Indeed`, `Greenhouse`, `Lever`, `Company Portal`) rendered on application rows and queue cards.
+
+### Fixed
+- **Applied Tab Status Filtering**: Normalized legacy application statuses in `state.json` to ensure all 17 applied roles display properly when clicking the **Applied** tab.
 
 ---
 

@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+from datetime import datetime
 
 STATE_FILE = r".\state.json"
 INDEX_FILE = r".\index.html"
@@ -19,6 +20,11 @@ def sync_dashboard():
     gmail_jobs = state.get("verified_gmail_jobs", [])
     review_queue = state.get("review_queue", [])
     archived_queue = state.get("archived_queue", [])
+
+    # Normalize historical "Submitted" statuses to "Applied"
+    for a in apps:
+        if a.get("status") == "Submitted":
+            a["status"] = "Applied"
 
     # Combine review queue sources
     queue_source_map = {}
@@ -49,7 +55,9 @@ def sync_dashboard():
 
         unique_queue.append(g)
 
-    # Compute status counts
+    # Compute status counts and stale applications (> 28 days)
+    today = datetime.strptime("2026-08-21", "%Y-%m-%d")
+
     status_counts = {
         "all": len(apps),
         "Applied": 0,
@@ -61,17 +69,36 @@ def sync_dashboard():
         "Archived": 0
     }
 
+    stale_count = 0
+
     for a in apps:
         st = a.get("status", "Applied")
+        if st == "Submitted": st = "Applied"
         if st in status_counts:
             status_counts[st] += 1
         else:
             status_counts["Applied"] += 1
 
+        # Check date for 4-week alert (> 28 days)
+        sub_date_str = a.get("submission_date", "2026-08-12")
+        try:
+            sub_date = datetime.strptime(sub_date_str, "%Y-%m-%d")
+            days_elapsed = (today - sub_date).days
+            if days_elapsed >= 28 and st in ["Applied", "Interviewing"]:
+                stale_count += 1
+                a["is_stale"] = True
+                a["days_elapsed"] = days_elapsed
+            else:
+                a["is_stale"] = False
+                a["days_elapsed"] = days_elapsed
+        except Exception:
+            a["is_stale"] = False
+            a["days_elapsed"] = 0
+
     # Pass serialized JSON apps for dynamic client modal lookups
     apps_json_str = json.dumps(apps).replace("'", "&#39;")
 
-    print(f"Found {len(apps)} applications, {len(unique_queue)} review queue roles, and {len(archived_queue)} archived roles.")
+    print(f"Found {len(apps)} applications ({status_counts['Applied']} Applied), {stale_count} 4-week stale alerts, {len(unique_queue)} review queue roles, and {len(archived_queue)} archived roles.")
 
     # Generate HTML content
     html = f"""<!DOCTYPE html>
@@ -287,6 +314,21 @@ def sync_dashboard():
     .src-lever {{ background: rgba(255, 122, 89, 0.2); border: 1px solid #ff7a59; color: #fb923c; }}
     .src-default {{ background: rgba(148, 163, 184, 0.2); border: 1px solid #94a3b8; color: #cbd5e1; }}
 
+    /* 4-Week Stale Alert Badge */
+    .stale-alert-badge {{
+      background: rgba(251, 191, 36, 0.15);
+      border: 1px solid var(--accent-amber);
+      color: var(--accent-amber);
+      padding: 0.25rem 0.6rem;
+      border-radius: 0.35rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.35rem;
+    }}
+
     /* Status Selector Dropdown */
     .status-select {{
       background: rgba(15, 23, 42, 0.9);
@@ -311,6 +353,18 @@ def sync_dashboard():
       margin-right: 0.5rem;
     }}
     .btn-link:hover {{ text-decoration: underline; }}
+
+    .btn-no-response {{
+      background: transparent;
+      border: 1px solid var(--accent-amber);
+      color: var(--accent-amber);
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.35rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      margin-top: 0.25rem;
+    }}
+    .btn-no-response:hover {{ background: rgba(251, 191, 36, 0.2); }}
 
     .queue-grid {{
       display: grid;
@@ -474,7 +528,7 @@ def sync_dashboard():
     <!-- KPI Summary Cards -->
     <div class="kpi-grid">
       <div class="kpi-card">
-        <div class="kpi-label">Submitted Applications</div>
+        <div class="kpi-label">Applied Opportunities</div>
         <div class="kpi-value" style="color: var(--accent-green);">{status_counts["Applied"]}</div>
         <div class="kpi-subtext">Company Portals & 1-Click Package Builds</div>
       </div>
@@ -484,28 +538,28 @@ def sync_dashboard():
         <div class="kpi-subtext">Active Recruiter & Executive Panels</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Verified Review Queue</div>
-        <div class="kpi-value" style="color: var(--accent-amber);" id="queueBadge">{len(unique_queue)}</div>
-        <div class="kpi-subtext">Extracted from Live Email Alerts & Sweeps</div>
+        <div class="kpi-label">4-Week Follow-Up Alerts</div>
+        <div class="kpi-value" style="color: var(--accent-amber);">{stale_count}</div>
+        <div class="kpi-subtext">Applied &gt;28 Days Ago — Action Required</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Average Match Score</div>
-        <div class="kpi-value" style="color: var(--accent-purple);">97.8%</div>
-        <div class="kpi-subtext">Executive Capability Fit</div>
+        <div class="kpi-label">Verified Review Queue</div>
+        <div class="kpi-value" style="color: var(--accent-purple);" id="queueBadge">{len(unique_queue)}</div>
+        <div class="kpi-subtext">Extracted from Live Email Alerts & Sweeps</div>
       </div>
     </div>
 
     <!-- Controls & Status Filter Bar -->
     <div class="controls-bar">
       <div class="tabs-group">
-        <button class="tab-btn active" onclick="filterTab('all')">All Roles ({len(apps)})</button>
-        <button class="tab-btn" onclick="filterTab('applied')">Applied ({status_counts['Applied']})</button>
-        <button class="tab-btn" onclick="filterTab('interviewing')">Interviewing ({status_counts['Interviewing']})</button>
-        <button class="tab-btn" onclick="filterTab('negotiating')">Negotiating ({status_counts['Negotiating']})</button>
-        <button class="tab-btn" onclick="filterTab('i withdrew')">Withdrew ({status_counts['I Withdrew']})</button>
-        <button class="tab-btn" onclick="filterTab('not selected')">Not Selected ({status_counts['Not Selected']})</button>
-        <button class="tab-btn" onclick="filterTab('no response')">No Response ({status_counts['No Response']})</button>
-        <button class="tab-btn" onclick="filterTab('archived')">Archived ({status_counts['Archived']})</button>
+        <button class="tab-btn active" onclick="filterTab('all', this)">All Roles ({len(apps)})</button>
+        <button class="tab-btn" onclick="filterTab('applied', this)">Applied ({status_counts['Applied']})</button>
+        <button class="tab-btn" onclick="filterTab('interviewing', this)">Interviewing ({status_counts['Interviewing']})</button>
+        <button class="tab-btn" onclick="filterTab('negotiating', this)">Negotiating ({status_counts['Negotiating']})</button>
+        <button class="tab-btn" onclick="filterTab('i withdrew', this)">Withdrew ({status_counts['I Withdrew']})</button>
+        <button class="tab-btn" onclick="filterTab('not selected', this)">Not Selected ({status_counts['Not Selected']})</button>
+        <button class="tab-btn" onclick="filterTab('no response', this)">No Response ({status_counts['No Response']})</button>
+        <button class="tab-btn" onclick="filterTab('archived', this)">Archived ({status_counts['Archived']})</button>
       </div>
       <input type="text" id="searchInput" class="search-box" placeholder="Search company, title, source..." onkeyup="filterSearch()">
     </div>
@@ -526,7 +580,7 @@ def sync_dashboard():
               <th>Lifecycle Status</th>
               <th>Location & Comp</th>
               <th>Match</th>
-              <th>Date</th>
+              <th>Applied Date</th>
               <th>Actions & Details</th>
             </tr>
           </thead>
@@ -543,7 +597,10 @@ def sync_dashboard():
         date = a.get("submission_date", "2026-08-12")
         url = a.get("job_url", "")
         status = a.get("status", "Applied")
+        if status == "Submitted": status = "Applied"
         source = a.get("source", "LinkedIn")
+        is_stale = a.get("is_stale", False)
+        days_elapsed = a.get("days_elapsed", 0)
         
         folder_name = co.replace(' ', '%20').replace('.', '')
         
@@ -557,10 +614,21 @@ def sync_dashboard():
         url_btn = f'<a href="{url}" class="btn-link" target="_blank" onclick="event.stopPropagation()">🔗 Job Posting</a>' if url else ''
         folder_btn = f'<a href="file:///P:/Job%20Search/{folder_name}/" class="btn-link" target="_blank" onclick="event.stopPropagation()">📁 Package Folder</a>'
 
+        stale_html = ""
+        if is_stale:
+            stale_html = f"""
+            <div class="stale-alert-badge">
+              ⚠️ 4+ Weeks ({days_elapsed}d) — Follow Up Needed
+            </div>
+            <div>
+              <button class="btn-no-response" onclick="event.stopPropagation(); updateJobStatus('{app_id}', 'No Response')">{{YOUR_NAME}} No Response</button>
+            </div>
+            """
+
         status_options = ["Applied", "Interviewing", "Negotiating", "I Withdrew", "Not Selected", "No Response", "Archived"]
         select_html = f'<select class="status-select" onclick="event.stopPropagation()" onchange="updateJobStatus(\'{app_id}\', this.value)">'
         for opt in status_options:
-            sel = "selected" if opt == status else ""
+            sel = "selected" if opt.lower() == status.lower() else ""
             select_html += f'<option value="{opt}" {sel}>{opt}</option>'
         select_html += '</select>'
 
@@ -569,6 +637,7 @@ def sync_dashboard():
               <td>
                 <div class="company-name">{co}</div>
                 <div class="role-title">{title}</div>
+                {stale_html}
               </td>
               <td><span class="source-badge {src_class}">{source}</span></td>
               <td>{select_html}</td>
@@ -846,12 +915,11 @@ def sync_dashboard():
     const APPS_DATA = {apps_json_str};
     let currentFilter = 'all';
     let currentAppDetailId = null;
-    let pendingModalContext = null;
 
-    function filterTab(status) {{
-      currentFilter = status;
+    function filterTab(status, btnElement) {{
+      currentFilter = status.toLowerCase();
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
+      if (btnElement) btnElement.classList.add('active');
       filterSearch();
     }}
 
@@ -861,7 +929,8 @@ def sync_dashboard():
       let visibleCount = 0;
 
       rows.forEach(row => {{
-        const rowStatus = row.getAttribute('data-status');
+        let rowStatus = (row.getAttribute('data-status') || '').toLowerCase().trim();
+        if (rowStatus === 'submitted') rowStatus = 'applied';
         const text = row.innerText.toLowerCase();
 
         const matchesTab = (currentFilter === 'all') || (rowStatus === currentFilter);
@@ -888,7 +957,7 @@ def sync_dashboard():
         const data = await res.json();
         if (data.status === 'success') {{
           showToast(`✅ Status updated to <strong>${{newStatus}}</strong>`);
-          setTimeout(() => window.location.reload(), 1200);
+          setTimeout(() => window.location.reload(), 1000);
         }}
       }} catch (err) {{
         showToast('❌ Failed to update status.');
@@ -1140,7 +1209,7 @@ def sync_dashboard():
         const data = await res.json();
         if (data.status === 'success') {{
           showToast('💾 Interview round saved.');
-          setTimeout(() => window.location.reload(), 1200);
+          setTimeout(() => window.location.reload(), 1000);
         }}
       }} catch (err) {{
         showToast('❌ Error saving interview round.');
