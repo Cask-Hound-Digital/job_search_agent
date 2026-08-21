@@ -153,26 +153,67 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 if confirmed_skills:
                     save_new_approved_skills(confirmed_skills)
 
-                # Construct dynamic application payload
-                payload = {
-                    "company": company,
-                    "folder": folder_name,
-                    "role": title,
-                    "headline": f"{title.upper()} | GLOBAL DIGITAL EXPERIENCE & AI LEADER",
-                    "summary": "Executive web technology and digital experience leader with 18+ years leading enterprise web strategy, digital product operations, and cross-functional teams. Proven track record turning corporate web channels into high-velocity demand generation and revenue engines. Expert in evaluating emerging AI technologies (Claude Code, ChatGPT, CoPilot, GEO/AEO), modernizing legacy digital architectures, and managing strategic vendor/partner relationships.",
-                    "areas_of_expertise": [
+                # Determine role family to dynamically tailor resume content
+                t_low = title.lower()
+                
+                if "product manager" in t_low or "talent technology" in t_low or "product management" in t_low:
+                    role_headline = f"{title.upper()} | HR TECH, INTERNAL PLATFORMS & PRODUCT LEADER"
+                    role_summary = f"Accomplished Product & Technology Leader with 18+ years directing enterprise web platforms, internal talent systems, digital workflow modernization, and cross-functional technology teams. Proven track record managing complex software roadmaps, user experience (UX) architectures, and data-driven platform operations. Expert in stakeholder alignment, Agile delivery cadences, AI technology integration (Claude, ChatGPT, CoPilot), and scaling product capabilities."
+                    role_expertise = [
+                        ["Digital Product & HR Technology Strategy: ", "Internal Platform Roadmaps, Talent Systems Modernization, Product Lifecycle Management, Agile / Scrum Frameworks."],
+                        ["User Experience & Workflow Engineering: ", "Employee & Candidate UX Design, Automated Workflow Engineering, Intranet / Enterprise Portal Architecture, System Usability."],
+                        ["AI Activation & Product Innovation: ", "AI Assistant Integration (Claude, ChatGPT, CoPilot), Automated Operations, Data & Analytics Governance."],
+                        ["Cross-Functional Stakeholder Governance: ", "Engineering & Product Alignment, Executive Steering Committees, Strategic Vendor Management, Team Coaching."]
+                    ]
+                    role_tm_bullets = [
+                        ["Enterprise Web & Internal Platform Leadership: ", f"Led global web marketing and platform product management for {{MOST_RECENT_COMPANY}}'s enterprise operations, directing a 13+ person team (Product, Development, DevOps, QA, BA) to own core digital systems."],
+                        ["Digital Workflow Modernization & Automation: ", "Directed the end-to-end modernization of internal product intake and content publishing workflows onto {{HEADLESS_CMS}} CMS, establishing automated governance and accelerating delivery cadences by 30%."],
+                        ["User Experience (UX) & Conversion Optimization: ", "Owned product analytics and UX experimentation roadmaps, executing 40+ annual testing cycles across self-serve portals to increase user engagement and workflow completion rates by 42%."],
+                        ["AI Technology Integration & Engineering Velocity: ", "Championed AI tools (Claude, ChatGPT, CoPilot) across product planning and development, streamlining requirement definitions and reducing operational cycle times."],
+                        ["Multi-National System Architecture & Integration: ", "Directed enterprise platform integrations across 34 countries, unifying analytics ({{ANALYTICS_PLATFORM}}, GTM) and marketing systems ({{MARKETING_AUTOMATION_TOOL}}, {{TAG_MANAGEMENT_TOOL}}) to ensure high-availability performance."]
+                    ]
+                elif "digital marketing" in t_low or "growth" in t_low or "marketing director" in t_low:
+                    role_headline = f"{title.upper()} | GLOBAL DEMAND GEN, CRO & PERFORMANCE MARKETING LEADER"
+                    role_summary = f"Executive Digital Marketing & Growth Leader with 18+ years driving multi-channel demand generation, enterprise web strategy, conversion rate optimization (CRO), and AI-first marketing transformation. Proven track record turning corporate digital properties into high-velocity customer acquisition engines. Expert in performance analytics ({{ANALYTICS_PLATFORM}}, GTM), generative engine optimization (GEO/AEO), paid media strategy, and cross-functional team leadership."
+                    role_expertise = [
+                        ["Global Digital Marketing & Demand Generation: ", "Multi-Channel Customer Acquisition, Full-Funnel Growth Strategy, Brand & Content Operations, Campaign Execution."],
+                        ["Conversion Rate Optimization (CRO) & CX: ", "High-Velocity A/B & Multivariate Testing, Checkout & Landing Page Funnel Velocity, {{ANALYTICS_PLATFORM}} / GTM Data Attribution."],
+                        ["AI-First Marketing & GEO/AEO Dominance: ", "Generative Engine Optimization (GEO/AEO), AI Content Operations (Claude, ChatGPT), Personalization Engines."],
+                        ["Executive Leadership & Revenue Growth: ", "Cross-Disciplinary Team Management (13+ Dev, Marketing, SEO), Budget Management ($1M+), Commercial Pipeline Growth."]
+                    ]
+                    role_tm_bullets = [
+                        ["Global Demand Generation & Web Marketing Leadership: ", f"Directed global digital marketing and web operations for {{MOST_RECENT_COMPANY}}'s B2B and B2C enterprise portfolios, managing a 13+ person team to own the corporate web channel as the primary demand generation and revenue engine."],
+                        ["High-Velocity CRO & Funnel Optimization: ", "Owned global CRO testing roadmap, executing 40+ annual A/B and multivariate tests across pricing and campaign landing pages, increasing digital trial signups by 42% and web-sourced pipeline contribution by 35%."],
+                        ["AI-First Marketing Transformation & GEO Dominance: ", "Pioneered Generative Engine Optimization (GEO/AEO) strategies to structure brand content for AI assistants, increasing search visibility by 40% and driving a +15% uplift in organic demo conversions."],
+                        ["Multi-National Platform & Analytics Operations: ", "Directed enterprise platform migration across 34 countries and 14 languages, integrating {{MARKETING_AUTOMATION_TOOL}}, {{TAG_MANAGEMENT_TOOL}}, GTM, and {{ANALYTICS_PLATFORM}} to reduce page load times by 40% and boost organic sessions by 10%."],
+                        ["Cross-Functional Governance & Growth Execution: ", "Established a unified collaboration model for marketing, SEO, design, and engineering teams, streamlining campaign launches and elevating ROI across all digital channels."]
+                    ]
+                else:
+                    role_headline = f"{title.upper()} | GLOBAL DIGITAL EXPERIENCE & AI LEADER"
+                    role_summary = f"Executive web technology and digital experience leader with 18+ years leading enterprise web strategy, digital product operations, and cross-functional teams. Proven track record turning corporate web channels into high-velocity demand generation and revenue engines. Expert in evaluating emerging AI technologies (Claude Code, ChatGPT, CoPilot, GEO/AEO), modernizing legacy digital architectures, and managing strategic vendor/partner relationships."
+                    role_expertise = [
                         ["Enterprise Web Strategy & Architecture: ", "Global Web Operations, CMS Governance ({{HEADLESS_CMS}}, {{ENTERPRISE_CMS}}, WordPress, Drupal), Next-Gen DXP Modernization, Multi-National Site Performance."],
                         ["AI Activation & Digital Innovation: ", "Generative Engine Optimization (GEO/AEO), AI-Assisted Workflows (Claude, ChatGPT, CoPilot), Automated Personalization & Analytics."],
                         ["Conversion Rate Optimization (CRO): ", "High-Velocity A/B Testing Roadmaps, Customer Experience (CX) Architecture, Multi-Site Funnel Velocity, {{ANALYTICS_PLATFORM}} / GTM Data Governance."],
                         ["Executive Leadership & Governance: ", "Cross-Disciplinary Team Management (13+ Dev, DevOps, QA, BA, SEO), ROI & Business Case Governance, Strategic Partner Management."]
-                    ],
-                    "trend_micro_bullets": [
+                    ]
+                    role_tm_bullets = [
                         ["Global Web Strategy & Operations Leadership: ", f"Led global web marketing and digital operations for {{MOST_RECENT_COMPANY}}'s enterprise B2B and B2C portfolios, managing a {{TEAM_SIZE_PLACEHOLDER}} (Development, DevOps, QA, BA, SEO) to own the corporate web channel as the primary demand generation and pipeline engine."],
                         ["Next-Gen DXP Discovery & Decision-Making: ", "Led discovery, architectural evaluation, ROI analysis, and executive vendor decision-making for a next-generation Digital Experience Platform (DXP) to replace legacy Adobe Experience Manager ({{ENTERPRISE_CMS}}), aligning C-suite stakeholders around modern API architecture and TCO optimization."],
                         ["TrendAI Redesign & {{HEADLESS_CMS}} CMS Platform Migration: ", "Organized and executed the end-to-end redesign and platform migration of the TrendAI website onto {{HEADLESS_CMS}} CMS, establishing structured content models, modern headless workflows, and rapid publishing cadences."],
                         ["AI-First Innovation & GEO/AEO Integration: ", "Championed AI technologies (Claude, ChatGPT, CoPilot, LLMs) and Generative Engine Optimization (GEO/AEO), driving a 40% increase in brand search presence and a +15% uplift in organic demo/trial conversions."],
                         ["Multi-National Platform Modernization & Performance: ", "Directed enterprise web platform migration across 34 countries and 14 languages, integrating {{MARKETING_AUTOMATION_TOOL}}, {{TAG_MANAGEMENT_TOOL}}, GTM, {{PERFORMANCE_TOOL}}, {{SEARCH_TOOL}}, and {{ANALYTICS_PLATFORM}} to reduce page load times by 40%, boost organic sessions by 10%, and drive 15% pipeline growth."]
-                    ],
+                    ]
+
+                # Construct dynamic application payload
+                payload = {
+                    "company": company,
+                    "folder": folder_name,
+                    "role": title,
+                    "headline": role_headline,
+                    "summary": role_summary,
+                    "areas_of_expertise": role_expertise,
+                    "trend_micro_bullets": role_tm_bullets,
                     "{{PREVIOUS_COMPANY_2}}_bullets": [
                         ["Digital Product Strategy & Storefront Management: ", "Oversaw end-to-end business management and product lifecycle for mobile app software distributor in {{YOUR_CITY_STATE}}, designing web architecture and checkout funnels for mobile app stores (Sprint) that increased e-commerce checkout conversion rate by +34%."],
                         ["Go-To-Market & Executive Alignment: ", "Executed product strategy across online and on-device stores, defining functional requirements, wireframes, and customer use cases to drive a 30% increase in product-led engagement."]
@@ -181,13 +222,13 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                         ["Digital Marketing & Revenue Optimization: ", "Directed corporate e-commerce and web marketing (SEO, SEM, email, marketplaces) at {{PREVIOUS_COMPANY_3}} in {{YOUR_CITY_STATE}}, testing offers and UX flows to sustain 35%+ annual online sales growth."]
                     ],
                     "cover_letter": {
-                        "date": "August 12, 2026",
+                        "date": datetime.now().strftime("%B %d, %Y"),
                         "recipient": f"Executive Selection Committee & Leadership Team\n{company}\nCorporate Office / Remote Executive Team",
                         "salutation": f"Dear {company} Selection Committee,",
                         "paragraphs": [
-                            f"I am writing to express my strong enthusiasm for the {title} position at {company}. With over 18 years of experience leading enterprise digital strategy, digital transformation roadmaps, technology modernization, and cross-functional technology teams, I connect directly with your mission to build and scale high-performing digital channels.",
+                            f"I am writing to express my strong enthusiasm for the {title} position at {company}. With over 18 years of experience leading enterprise digital strategy, digital product operations, technology modernization, and cross-functional technology teams, I connect directly with your mission to build and scale high-performing digital capabilities.",
                             "Throughout my tenure as {{YOUR_MOST_RECENT_TITLE}} at {{MOST_RECENT_COMPANY}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I built a high-performing global organization of 13+ cross-functional specialists (development, DevOps, QA, BA, SEO). I owned our corporate web channel as the primary demand generation engine, directing a 34-country {{ENTERPRISE_CMS}} 6.x migration that reduced page load times by 40% while leading the discovery, ROI evaluation, and decision-making for a next-gen DXP platform to replace legacy {{ENTERPRISE_CMS}}. Additionally, I organized and executed the TrendAI site redesign and migration to {{HEADLESS_CMS}} CMS, while pioneering Generative Engine Optimization (GEO/AEO) strategies that increased search visibility by 40% and lifted organic demo conversions by +15%.",
-                            "Prior to {{MOST_RECENT_COMPANY}}, I served as {{YOUR_PREVIOUS_TITLE_1}} at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefront software development across web and mobile partner channels (Sprint), boosting checkout conversion rates by +34%. My background combines executive digital consulting, deep technical fluency across enterprise MarTech ecosystems, and a proven track record leading cross-disciplinary teams through organizational change.",
+                            "Prior to {{MOST_RECENT_COMPANY}}, I served as {{YOUR_PREVIOUS_TITLE_1}} at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefront software development across web and mobile partner channels (Sprint), boosting checkout conversion rates by +34%. My background combines executive digital consulting, deep technical fluency across enterprise MarTech/Tech ecosystems, and a proven track record leading cross-disciplinary teams through organizational change.",
                             f"Thank you for your time and consideration. I welcome the opportunity to discuss how my background in digital strategy, AI innovation, and executive leadership will drive immediate value for {company}."
                         ]
                     }

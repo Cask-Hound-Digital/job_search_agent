@@ -715,7 +715,7 @@ NEO_SECURITY_PAYLOAD = {
 
 
 if __name__ == '__main__':
-    payload_file = os.path.join(r".", "current_payload.json")
+    payload_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "current_payload.json")
     
     parser = argparse.ArgumentParser(description="Master Application Package Generator for {{YOUR_FULL_NAME}}")
     parser.add_argument("--job", choices=["databricks", "sixflags", "grafana", "neosecurity", "{{TARGET_COMPANY_6}}", "{{TARGET_COMPANY_3}}", "{{TARGET_COMPANY_2}}_fvp", "active"], default="active", help="Select target job payload")
@@ -738,6 +738,6 @@ if __name__ == '__main__':
         build_package({{TARGET_COMPANY_6}}_PAYLOAD)
     elif args.job == "{{TARGET_COMPANY_3}}":
         build_package({{TARGET_COMPANY_3}}_PAYLOAD)
-    elif args.job == "{{TARGET_COMPANY_2}}_fvp" or args.job == "active":
+    elif args.job == "{{TARGET_COMPANY_2}}_fvp":
         build_package({{TARGET_COMPANY_2}}_FVP_PAYLOAD)
 
