@@ -7,6 +7,7 @@ import os
 import sys
 import argparse
 import json
+from datetime import datetime
 import docx
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -633,6 +634,46 @@ NEO_SECURITY_PAYLOAD = {
 }
 
 
+TWENTYFOUR_SEVEN_PAYLOAD = {
+    "company": "24 Seven Talent",
+    "folder": "24 Seven Talent",
+    "role": "VP of Digital & Growth",
+    "headline": "VP OF DIGITAL & GROWTH | DTC E-COMMERCE, AMAZON & PERFORMANCE MARKETING LEADER",
+    "summary": "Executive Digital & E-Commerce Leader with 18+ years directing end-to-end digital growth, direct-to-consumer (DTC) storefronts, Amazon marketplace operations, paid media acquisition, and CRM/retention platforms. Proven track record owning P&L performance, scaling omnichannel revenue, and leading cross-functional teams across digital marketing, CRO, and digital transformation. Expert in customer acquisition velocity, social commerce, data-driven personalization ({{ANALYTICS_PLATFORM}}/GTM), and AI-first marketing innovation.",
+    "areas_of_expertise": [
+        ("DTC E-Commerce & Amazon Marketplace Growth: ", "End-to-End Digital Storefront Ownership, Amazon & Marketplace Sales Optimization, Social Commerce, Subscription & Retention Funnels."),
+        ("Paid Media & Multi-Channel Customer Acquisition: ", "Paid Search, Paid Social, CRM & Email Lifecycle Marketing, Partnership Marketing, Customer Lifetime Value (LTV / CAC)."),
+        ("Conversion Rate Optimization (CRO) & Personalization: ", "Checkout Conversion Velocity, High-Yield Landing Page A/B Testing, {{ANALYTICS_PLATFORM}} Data Governance, Generative Engine Optimization (GEO/AEO)."),
+        ("Executive Leadership & Omnichannel Strategy: ", "P&L Growth Management, Cross-Disciplinary Team Leadership (13+ Dev, Marketing, Media), Budget Allocation ($1M+), Omnichannel Brand Scale.")
+    ],
+    "trend_micro_bullets": [
+        ("Global Digital Growth & E-Commerce Leadership: ", "Directed global digital marketing and web growth for {{MOST_RECENT_COMPANY}}'s B2B and consumer portfolios ({{MOST_RECENT_EMPLOYMENT_DATES}}), managing a 13+ person team to own digital storefronts as primary acquisition and revenue engines."),
+        ("Paid Media, Performance Analytics & CRO Velocity: ", "Owned CRO experimentation roadmap across acquisition funnels, executing 40+ annual A/B tests across checkout flows and landing pages, increasing digital conversions by 42% and pipeline contribution by 35%."),
+        ("AI-First Marketing & GEO/AEO Dominance: ", "Pioneered Generative Engine Optimization (GEO/AEO) strategies to structure brand content for AI assistants, driving a 40% increase in brand search presence and a +15% uplift in organic conversions."),
+        ("Multi-National Platform & Data Operations: ", "Spearheaded enterprise platform modernization across 34 countries and 14 languages, integrating {{MARKETING_AUTOMATION_TOOL}}, {{TAG_MANAGEMENT_TOOL}}, GTM, and {{ANALYTICS_PLATFORM}} to reduce page load times by 40% and elevate customer journey tracking."),
+        ("Cross-Functional Executive Governance: ", "Unified technology, performance media, creative, and analytics teams to streamline campaign launches and maximize return on ad spend (ROAS) across all digital channels.")
+    ],
+    "{{PREVIOUS_COMPANY_2}}_bullets": [
+        ("E-Commerce Storefront & Mobile App Operations: ", "Managed web product lifecycle and digital storefront operations for {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, designing UX flows and checkout funnels for partner channels (Sprint) that boosted e-commerce conversion rates by +34%."),
+        ("Go-To-Market & UX Functional Specification: ", "Defined functional requirements, wireframes, and customer use cases across web and mobile app products, driving a 30% increase in product engagement.")
+    ],
+    "{{PREVIOUS_COMPANY_3}}_bullets": [
+        ("Digital Revenue & Sales Growth: ", "Directed corporate e-commerce and web marketing at {{PREVIOUS_COMPANY_3}} in {{YOUR_CITY_STATE}}, optimizing web architecture and checkout flows to sustain 35%+ annual online sales growth.")
+    ],
+    "cover_letter": {
+        "date": datetime.now().strftime("%B %d, %Y"),
+        "recipient": "Executive Search Committee & Senior Leadership\n24 Seven Talent / Personal Care Client\nRemote Executive Office | USA (Req: VP of Digital & Growth)",
+        "salutation": "Dear Executive Search Committee,",
+        "paragraphs": [
+            "I am writing to express my strong enthusiasm for the VP of Digital & Growth position with 24 Seven Talent representing your premier personal care client. With over 18 years of experience leading end-to-end digital growth, DTC e-commerce storefronts, Amazon marketplace operations, paid media acquisition, and cross-functional performance teams, I connect directly with your mission to own and scale the digital business end to end.",
+            "Throughout my 18-year tenure as {{YOUR_MOST_RECENT_TITLE}} at {{MOST_RECENT_COMPANY}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I built a high-performing global organization of 13+ cross-functional specialists. I owned our corporate web properties and digital storefronts as primary acquisition engines, directing CRO testing roadmaps that increased digital conversion rates by 42% and executing a 34-country platform modernization that reduced load times by 40%. Additionally, I pioneered Generative Engine Optimization (GEO/AEO) strategies that boosted search visibility by 40% while integrating AI workflows (Claude, ChatGPT, CoPilot) to accelerate campaign velocity by 30%.",
+            "Prior to {{MOST_RECENT_COMPANY}}, I served as {{YOUR_PREVIOUS_TITLE_1}} at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefront software development across web and mobile partner channels (Sprint), boosting checkout conversion rates by +34%. My background combines hands-on builder discipline with executive P&L leadership across DTC storefronts, marketplace ecosystems (Amazon), paid media performance (SEM/Social), and CRM lifecycle retention.",
+            "Thank you for your time and consideration. I welcome the opportunity to discuss how my background in digital growth, e-commerce scale, and executive leadership will drive immediate revenue expansion for your personal care brand."
+        ]
+    }
+}
+
+
 {{TARGET_COMPANY_3}}_PAYLOAD = {
     "company": "{{TARGET_COMPANY_3}}",
     "folder": "{{TARGET_COMPANY_3}}",
@@ -718,7 +759,7 @@ if __name__ == '__main__':
     payload_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "current_payload.json")
     
     parser = argparse.ArgumentParser(description="Master Application Package Generator for {{YOUR_FULL_NAME}}")
-    parser.add_argument("--job", choices=["databricks", "sixflags", "grafana", "neosecurity", "{{TARGET_COMPANY_6}}", "{{TARGET_COMPANY_3}}", "{{TARGET_COMPANY_2}}_fvp", "active"], default="active", help="Select target job payload")
+    parser.add_argument("--job", choices=["databricks", "sixflags", "grafana", "neosecurity", "{{TARGET_COMPANY_6}}", "{{TARGET_COMPANY_3}}", "{{TARGET_COMPANY_2}}_fvp", "24seven", "active"], default="active", help="Select target job payload")
     args = parser.parse_args()
 
     if os.path.exists(payload_file) and args.job == "active":
@@ -738,6 +779,8 @@ if __name__ == '__main__':
         build_package({{TARGET_COMPANY_6}}_PAYLOAD)
     elif args.job == "{{TARGET_COMPANY_3}}":
         build_package({{TARGET_COMPANY_3}}_PAYLOAD)
+    elif args.job == "24seven":
+        build_package(TWENTYFOUR_SEVEN_PAYLOAD)
     elif args.job == "{{TARGET_COMPANY_2}}_fvp":
         build_package({{TARGET_COMPANY_2}}_FVP_PAYLOAD)
 
