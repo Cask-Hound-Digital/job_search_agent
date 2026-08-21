@@ -584,7 +584,7 @@ def sync_dashboard():
         <button class="tab-btn" onclick="filterTab('i withdrew', this)">Withdrew ({status_counts['I Withdrew']})</button>
         <button class="tab-btn" onclick="filterTab('not selected', this)">Not Selected ({status_counts['Not Selected']})</button>
         <button class="tab-btn" onclick="filterTab('no response', this)">No Response ({status_counts['No Response']})</button>
-        <button class="tab-btn" onclick="filterTab('archived', this)">Archived ({status_counts['Archived']})</button>
+        <button class="tab-btn" onclick="filterTab('archived', this)">Archived ({status_counts['Archived'] + len(archived_queue)})</button>
       </div>
       <input type="text" id="searchInput" class="search-box" placeholder="Search company, title, source..." onkeyup="filterSearch()">
     </div>
@@ -771,7 +771,7 @@ def sync_dashboard():
     </div>
 
     <!-- Archived Opportunities Queue -->
-    <div class="panel-container">
+    <div class="panel-container" id="archivedQueuePanel">
       <div class="section-title">
         <span>Archived Queue ({len(archived_queue)} Items)</span>
         <span class="section-badge">Archived Opportunities</span>
@@ -780,11 +780,20 @@ def sync_dashboard():
 """
 
     for item in archived_queue:
-        co = item.get("company_name", item.get("company", "Archived Company")).strip()
+        raw_co = item.get("company_name", item.get("company", "Archived Company")).strip()
+        co = raw_co.split(" - ")[0].strip() if " - " in raw_co else raw_co
         title = item.get("audited_role_title", item.get("title", "Executive Role")).strip()
         url = item.get("url", "#")
         source = item.get("source", "LinkedIn")
         arch_date = item.get("archived_date", "2026-08-21")
+        reason = item.get("archive_reason", "Candidate Feedback")
+        notes = item.get("archive_notes", "")
+
+        src_class = "src-default"
+        if "linkedin" in source.lower(): src_class = "src-linkedin"
+        elif "indeed" in source.lower(): src_class = "src-indeed"
+
+        notes_html = f'<div style="font-size:0.78rem; color:#cbd5e1; margin-top:0.2rem;"><strong>Notes:</strong> {notes}</div>' if notes else ''
         
         html += f"""
         <div class="queue-card">
@@ -793,9 +802,12 @@ def sync_dashboard():
               <div class="company-name">{co}</div>
               <div class="role-title">{title}</div>
             </div>
-            <span class="source-badge src-default">{source}</span>
+            <span class="source-badge {src_class}">{source}</span>
           </div>
-          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Archived on {arch_date}</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem; line-height: 1.4;">
+            <div><strong style="color: var(--accent-amber);">Archived ({arch_date}):</strong> {reason}</div>
+            {notes_html}
+          </div>
           <div style="display: flex; gap: 0.5rem; justify-content: space-between; align-items: center;">
             <a href="{url}" class="btn-link" target="_blank">🔗 View Posting</a>
             <div style="display: flex; gap: 0.4rem;">
@@ -836,6 +848,7 @@ def sync_dashboard():
           <button type="button" class="archive-chip-btn" onclick="selectArchiveChip(this, 'Wrong Role Scope / Family')">🎯 Wrong Role Scope / Family</button>
           <button type="button" class="archive-chip-btn" onclick="selectArchiveChip(this, 'Contract / 1099 Role')">📝 Contract / 1099 Role</button>
           <button type="button" class="archive-chip-btn" onclick="selectArchiveChip(this, 'Poor Culture / Glassdoor')">🏛️ Poor Culture / Glassdoor</button>
+          <button type="button" class="archive-chip-btn" onclick="selectArchiveChip(this, 'Posting Closed / No Longer Accepting')">🚫 Posting Closed / No Longer Accepting</button>
           <button type="button" class="archive-chip-btn" onclick="selectArchiveChip(this, 'General Removal')">📦 General Removal</button>
         </div>
 
@@ -1148,6 +1161,13 @@ def sync_dashboard():
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       if (btnElement) btnElement.classList.add('active');
       filterSearch();
+
+      if (currentFilter === 'archived') {{
+        const panel = document.getElementById('archivedQueuePanel');
+        if (panel) {{
+          panel.scrollIntoView({{ behavior: 'smooth' }});
+        }}
+      }}
     }}
 
     function filterSearch() {{

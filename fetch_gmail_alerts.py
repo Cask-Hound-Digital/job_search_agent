@@ -227,6 +227,9 @@ def fetch_and_filter_all_job_alerts():
             seen_keys.add(dedup_key)
 
             is_valid, reason = evaluate_job_criteria(j['title'], j['email_subject'])
+            if is_valid and is_rejected_by_rules(j['title'], j['url']):
+                is_valid = False
+                reason = "Filtered out by candidate rejection rules"
             
             source = "LinkedIn"
             if "indeed.com" in j['url']: source = "Indeed"
