@@ -21,6 +21,9 @@ def sync_dashboard():
     review_queue = state.get("review_queue", [])
     archived_queue = state.get("archived_queue", [])
 
+    # Sort applications by submission_date descending (newest applied date first)
+    apps.sort(key=lambda x: str(x.get("submission_date", "1970-01-01")), reverse=True)
+
     # Normalize historical "Submitted" statuses to "Applied"
     for a in apps:
         if a.get("status") == "Submitted":
