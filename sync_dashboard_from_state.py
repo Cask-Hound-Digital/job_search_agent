@@ -768,6 +768,10 @@ def sync_dashboard():
         elif "greenhouse" in source.lower(): src_class = "src-greenhouse"
         elif "lever" in source.lower(): src_class = "src-lever"
 
+        clean_co = re.sub(r'[\r\n\t]+', ' ', co).replace("'", "\\'").replace('"', '&quot;').strip()
+        clean_title = re.sub(r'[\r\n\t]+', ' ', title).replace("'", "\\'").replace('"', '&quot;').strip()
+        clean_url = re.sub(r'[\r\n\t]+', '', url).replace("'", "\\'").strip()
+
         html += f"""
         <div class="queue-card" id="{card_id}">
           <div class="card-header">
@@ -784,8 +788,8 @@ def sync_dashboard():
           <div style="display: flex; gap: 0.5rem; justify-content: space-between; align-items: center;">
             <a href="{url}" class="btn-link" target="_blank">🔗 View Posting</a>
             <div style="display: flex; gap: 0.4rem;">
-              <button class="btn-archive" onclick="openArchiveReasonModal('{co.replace("'", "\\'")}', '{title.replace("'", "\\'")}', '{url}')">📦 Archive</button>
-              <button class="btn-apply" id="btn-apply-{card_id}" onclick="triggerApply('{card_id}', '{co.replace("'", "\\'")}', '{title.replace("'", "\\'")}', '{url}')">⚡ Apply & Build Package</button>
+              <button class="btn-archive" onclick="openArchiveReasonModal('{clean_co}', '{clean_title}', '{clean_url}')">📦 Archive</button>
+              <button class="btn-apply" id="btn-apply-{card_id}" onclick="triggerApply('{card_id}', '{clean_co}', '{clean_title}', '{clean_url}')">⚡ Apply & Build Package</button>
             </div>
           </div>
         </div>
@@ -817,6 +821,10 @@ def sync_dashboard():
         src_class = "src-default"
         if "linkedin" in source.lower(): src_class = "src-linkedin"
         elif "indeed" in source.lower(): src_class = "src-indeed"
+
+        clean_co = re.sub(r'[\r\n\t]+', ' ', co).replace("'", "\\'").replace('"', '&quot;').strip()
+        clean_title = re.sub(r'[\r\n\t]+', ' ', title).replace("'", "\\'").replace('"', '&quot;').strip()
+        clean_url = re.sub(r'[\r\n\t]+', '', url).replace("'", "\\'").strip()
 
         notes_html = f'<div style="font-size:0.78rem; color:#cbd5e1; margin-top:0.2rem;"><strong>Notes:</strong> {notes}</div>' if notes else ''
         
