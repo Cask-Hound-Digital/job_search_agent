@@ -684,9 +684,12 @@ def sync_dashboard():
 
     <!-- Verified Email Review Queue -->
     <div class="panel-container">
-      <div class="section-title">
-        <span>Verified Review Queue</span>
-        <span class="section-badge" id="queueCountBadge">{len(unique_queue)} Opportunities</span>
+      <div class="section-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span>Verified Review Queue</span>
+          <span class="section-badge" id="queueCountBadge">{len(unique_queue)} Opportunities</span>
+        </div>
+        <button class="btn-secondary" id="btnAuditClosedQueue" style="font-size: 0.83rem; padding: 0.45rem 1rem;" onclick="runClosedJobAudit()">🔍 Audit & Prune Closed Postings</button>
       </div>
 
       <!-- Manual Job URL Ingestion Form -->
@@ -1192,6 +1195,38 @@ def sync_dashboard():
       }});
 
       document.getElementById('roleCount').innerText = `${{visibleCount}} Roles Showing`;
+    }}
+
+    async function runClosedJobAudit() {{
+      const btn = document.getElementById('btnAuditClosedQueue');
+      if (btn) {{
+        btn.disabled = true;
+        btn.innerHTML = '🔄 Auditing Queue URLs...';
+      }}
+      showToast('🔄 Auditing review queue URLs for expired/closed postings...');
+      try {{
+        const res = await fetch('http://localhost:5000/api/audit_closed_queue', {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }}
+        }});
+        const data = await res.json();
+        if (data.status === 'success') {{
+          showToast('✅ Queue audit complete! Closed postings auto-archived.');
+          setTimeout(() => window.location.reload(), 1200);
+        }} else {{
+          showToast(`❌ Error: ${{data.message || 'Audit failed'}}`);
+          if (btn) {{
+            btn.disabled = false;
+            btn.innerHTML = '🔍 Audit & Prune Closed Postings';
+          }}
+        }}
+      }} catch (err) {{
+        showToast('❌ Server error during queue audit.');
+        if (btn) {{
+          btn.disabled = false;
+          btn.innerHTML = '🔍 Audit & Prune Closed Postings';
+        }}
+      }}
     }}
 
     async function addManualJobUrl() {{

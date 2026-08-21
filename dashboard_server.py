@@ -528,6 +528,20 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode('utf-8'))
 
+        elif self.path == '/api/audit_closed_queue':
+            try:
+                subprocess.run([PYTHON_EXE, "audit_closed_queue_roles.py"], cwd=BASE_DIR)
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "success", "message": "Closed queue audit completed successfully."}).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode('utf-8'))
+
         elif self.path == '/api/add_queue_url':
             content_length = int(self.headers.get('Content-Length', 0))
             post_data = self.rfile.read(content_length)
