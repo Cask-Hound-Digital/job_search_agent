@@ -690,6 +690,46 @@ NEO_SECURITY_PAYLOAD = {
 }
 
 
+CERIFI_PAYLOAD = {
+    "company": "CeriFi",
+    "folder": "CeriFi",
+    "role": "Manager Website & Conversion Optimization",
+    "headline": "MANAGER, WEBSITE & CONVERSION OPTIMIZATION | CRO, {{ANALYTICS_PLATFORM}} & WEB GROWTH LEADER",
+    "summary": "Executive Web Strategy & Conversion Rate Optimization (CRO) Leader with 18+ years managing enterprise web properties, A/B testing frameworks, digital storefronts, and cross-functional technology teams. Proven track record owning corporate web channels as primary demand generation and revenue engines at {{MOST_RECENT_COMPANY}} (42% conversion rate lift, 40% page load reduction), {{PREVIOUS_COMPANY_2}} (+34% e-commerce checkout lift), and {{PREVIOUS_COMPANY_3}} (+35% annual online sales growth). Expert in website experimentation roadmaps, checkout/landing page funnel velocity, {{ANALYTICS_PLATFORM}}/GTM data governance, generative engine optimization (GEO/AEO), and modern headless CMS platforms ({{HEADLESS_CMS}}, {{ENTERPRISE_CMS}}).",
+    "areas_of_expertise": [
+        ("Website Architecture & Funnel Optimization: ", "Global Website Ecosystem Management, Landing Page Velocity, CMS Governance ({{HEADLESS_CMS}}, {{ENTERPRISE_CMS}}, WordPress, Drupal), Multi-National Site Performance."),
+        ("Conversion Rate Optimization (CRO) & Analytics: ", "High-Yield A/B & Multivariate Testing, {{ANALYTICS_PLATFORM}} & GTM Event Tracking, Heatmapping & User Journey Attribution, Checkout Funnel Lift."),
+        ("AI Activation & Digital Innovation: ", "Generative Engine Optimization (GEO/AEO), AI Coding & Tool Integration (Claude, ChatGPT, CoPilot), Automated Personalization."),
+        ("Cross-Functional Leadership & Governance: ", "Team Management (13+ Dev, DevOps, QA, BA, SEO), Agile Sprint Execution, Budget Management ($1M+), Strategic Partner Management.")
+    ],
+    "trend_micro_bullets": [
+        ("Global Website & CRO Operations Leadership: ", "Led global web marketing development for {{MOST_RECENT_COMPANY}}'s enterprise B2B and consumer portfolios ({{MOST_RECENT_EMPLOYMENT_DATES}}), managing a 13+ person team to own the corporate web channel as the primary demand generation engine."),
+        ("High-Velocity Conversion Rate Optimization (CRO): ", "Owned CRO experimentation roadmap across global web properties, executing 40+ annual A/B and multivariate tests across pricing and campaign landing pages, increasing digital trial signups by 42% and web-sourced pipeline by 35%."),
+        ("AI-First Marketing Transformation & GEO Dominance: ", "Pioneered Generative Engine Optimization (GEO/AEO) strategies to structure brand content for AI search tools, increasing search visibility by 40% and driving a +15% uplift in organic demo conversions."),
+        ("Multi-National Platform & Analytics Operations: ", "Directed enterprise platform migration across 34 countries and 14 languages, integrating {{MARKETING_AUTOMATION_TOOL}}, {{TAG_MANAGEMENT_TOOL}}, GTM, and {{ANALYTICS_PLATFORM}} to reduce page load times by 40% and elevate customer journey tracking."),
+        ("Cross-Functional Governance & Growth Execution: ", "Established a unified collaboration model for marketing, SEO, design, and engineering teams, streamlining campaign launches and elevating ROI across all digital channels.")
+    ],
+    "{{PREVIOUS_COMPANY_2}}_bullets": [
+        ("E-Commerce Storefront & Mobile App Operations: ", "Managed web product lifecycle and digital storefront operations for {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, designing UX flows and checkout funnels for partner channels (Sprint) that boosted e-commerce conversion rates by +34%."),
+        ("Go-To-Market & UX Functional Specification: ", "Defined functional requirements, wireframes, and customer use cases across web and mobile app products, driving a 30% increase in product engagement.")
+    ],
+    "{{PREVIOUS_COMPANY_3}}_bullets": [
+        ("Digital Revenue & Sales Growth: ", "Directed corporate e-commerce and web marketing at {{PREVIOUS_COMPANY_3}} in {{YOUR_CITY_STATE}}, optimizing web architecture and checkout flows to sustain 35%+ annual online sales growth.")
+    ],
+    "cover_letter": {
+        "date": datetime.now().strftime("%B %d, %Y"),
+        "recipient": "Selection Committee & Digital Leadership\nCeriFi\nRemote Executive Office | USA (Req: Manager, Website & Conversion Optimization)",
+        "salutation": "Dear CeriFi Selection Committee,",
+        "paragraphs": [
+            "I am writing to express my strong enthusiasm for the Manager, Website & Conversion Optimization position at CeriFi. With over 18 years of experience leading enterprise website strategy, conversion rate optimization (CRO), {{ANALYTICS_PLATFORM}} analytics governance, and cross-functional technology teams, I connect directly with CeriFi's mission to optimize digital user journeys, drive checkout conversion velocity, and elevate website performance.",
+            "Throughout my 18-year tenure as {{YOUR_MOST_RECENT_TITLE}} at {{MOST_RECENT_COMPANY}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I built a high-performing global organization of 13+ cross-functional specialists. I owned our corporate web channel as the primary demand generation engine, directing CRO experimentation roadmaps that increased digital conversion rates by 42% and executing a 34-country platform modernization that reduced load times by 40%. Additionally, I pioneered Generative Engine Optimization (GEO/AEO) strategies that boosted search visibility by 40% while integrating AI workflows (Claude, ChatGPT, CoPilot) to accelerate campaign velocity by 30%.",
+            "Prior to {{MOST_RECENT_COMPANY}}, I served as {{YOUR_PREVIOUS_TITLE_1}} at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}} (+34% checkout conversion lift) and E-Commerce Manager at {{PREVIOUS_COMPANY_3}} in {{YOUR_CITY_STATE}} (+35% annual online sales growth). My background combines hands-on CRO testing discipline, deep {{ANALYTICS_PLATFORM}}/GTM data governance, and executive leadership to maximize digital customer acquisition.",
+            "Thank you for your time and consideration. I welcome the opportunity to discuss how my background in website optimization, CRO leadership, and analytics governance will drive immediate growth for CeriFi."
+        ]
+    }
+}
+
+
 TWENTYFOUR_SEVEN_PAYLOAD = {
     "company": "24 Seven Talent",
     "folder": "24 Seven Talent",
@@ -815,7 +855,7 @@ if __name__ == '__main__':
     payload_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "current_payload.json")
     
     parser = argparse.ArgumentParser(description="Master Application Package Generator for {{YOUR_FULL_NAME}}")
-    parser.add_argument("--job", choices=["databricks", "sixflags", "grafana", "neosecurity", "{{TARGET_COMPANY_6}}", "{{TARGET_COMPANY_3}}", "{{TARGET_COMPANY_2}}_fvp", "24seven", "active"], default="active", help="Select target job payload")
+    parser.add_argument("--job", choices=["databricks", "sixflags", "grafana", "neosecurity", "{{TARGET_COMPANY_6}}", "{{TARGET_COMPANY_3}}", "{{TARGET_COMPANY_2}}_fvp", "24seven", "cerifi", "active"], default="active", help="Select target job payload")
     args = parser.parse_args()
 
     if os.path.exists(payload_file) and args.job == "active":
@@ -837,6 +877,8 @@ if __name__ == '__main__':
         build_package({{TARGET_COMPANY_3}}_PAYLOAD)
     elif args.job == "24seven":
         build_package(TWENTYFOUR_SEVEN_PAYLOAD)
+    elif args.job == "cerifi":
+        build_package(CERIFI_PAYLOAD)
     elif args.job == "{{TARGET_COMPANY_2}}_fvp":
         build_package({{TARGET_COMPANY_2}}_FVP_PAYLOAD)
 
