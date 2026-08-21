@@ -406,19 +406,60 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
             try:
                 data = json.loads(post_data.decode('utf-8'))
                 job_url = data.get('url', '').strip()
+                reason_category = data.get('reason_category', 'General Removal').strip()
+                custom_notes = data.get('custom_notes', '').strip()
+
                 u_clean = job_url.split('?')[0].lower() if job_url else ""
+                to_archive = []
+
                 if os.path.exists(STATE_FILE):
                     with open(STATE_FILE, 'r', encoding='utf-8') as sf:
                         state_data = json.load(sf)
                     rq = state_data.get("review_queue", [])
+                    gmail_jobs = state_data.get("verified_gmail_jobs", [])
                     archived = state_data.setdefault("archived_queue", [])
-                    to_archive = [j for j in rq if j.get("url", "").split('?')[0].lower() == u_clean]
+                    
+                    # Find matching items across review_queue and verified_gmail_jobs
+                    to_archive = [j for j in rq + gmail_jobs if j.get("url", "").split('?')[0].lower() == u_clean]
+                    
                     state_data["review_queue"] = [j for j in rq if j.get("url", "").split('?')[0].lower() != u_clean]
+                    state_data["verified_gmail_jobs"] = [j for j in gmail_jobs if j.get("url", "").split('?')[0].lower() != u_clean]
+                    
                     for item in to_archive:
-                        item["archived_date"] = "2026-08-21"
+                        item["archived_date"] = datetime.now().strftime("%Y-%m-%d")
+                        item["archive_reason"] = reason_category
+                        item["archive_notes"] = custom_notes
                         archived.append(item)
+                        
                     with open(STATE_FILE, 'w', encoding='utf-8') as sf:
                         json.dump(state_data, sf, indent=2)
+
+                # Save reason entry into rejection_rules.json learning database
+                REJECTION_RULES_FILE = os.path.join(BASE_DIR, "rejection_rules.json")
+                try:
+                    if os.path.exists(REJECTION_RULES_FILE):
+                        with open(REJECTION_RULES_FILE, 'r', encoding='utf-8') as rf:
+                            rr_data = json.load(rf)
+                    else:
+                        rr_data = {"last_updated": datetime.now().strftime("%Y-%m-%d"), "rejection_reasons": [], "hard_negative_keywords": [], "hard_excluded_locations": []}
+                    
+                    rr_reasons = rr_data.setdefault("rejection_reasons", [])
+                    for item in to_archive:
+                        rr_reasons.append({
+                            "id": f"REJ-{len(rr_reasons) + 1:03d}",
+                            "company": item.get("company_name", item.get("company", "")),
+                            "title": item.get("audited_role_title", item.get("title", "")),
+                            "url": item.get("url", ""),
+                            "reason_category": reason_category,
+                            "custom_notes": custom_notes,
+                            "timestamp": datetime.now().strftime("%Y-%m-%d")
+                        })
+                    rr_data["last_updated"] = datetime.now().strftime("%Y-%m-%d")
+                    with open(REJECTION_RULES_FILE, 'w', encoding='utf-8') as rf:
+                        json.dump(rr_data, rf, indent=2)
+                except Exception as rr_err:
+                    print(f"[REJECTION RULES SAVE WARNING] {rr_err}")
+
                 subprocess.run([PYTHON_EXE, "sync_dashboard_from_state.py"], cwd=BASE_DIR)
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json')

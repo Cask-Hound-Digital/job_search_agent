@@ -52,6 +52,30 @@ DFW_LOCATIONS = [
     "frisco", "richardson", "{{YOUR_CITY}}", "texas", "tx"
 ]
 
+REJECTION_RULES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rejection_rules.json")
+
+def is_rejected_by_rules(title, url, location=""):
+    if not os.path.exists(REJECTION_RULES_FILE):
+        return False
+    try:
+        with open(REJECTION_RULES_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        keywords = [k.lower() for k in data.get("hard_negative_keywords", [])]
+        locs = [l.lower() for l in data.get("hard_excluded_locations", [])]
+        
+        t_lower = (title or "").lower()
+        l_lower = (location or "").lower()
+
+        for kw in keywords:
+            if kw and kw in t_lower:
+                return True
+        for loc in locs:
+            if loc and loc in l_lower:
+                return True
+    except Exception:
+        pass
+    return False
+
 def clean_url(url):
     if "linkedin.com" in url:
         url = url.replace('/comm/jobs/view/', '/jobs/view/').split('?')[0].split('#')[0]

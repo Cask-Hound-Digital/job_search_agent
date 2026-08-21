@@ -426,6 +426,28 @@ def sync_dashboard():
     }}
     .btn-delete-perm:hover {{ background: rgba(244, 63, 94, 0.2); }}
 
+    .archive-chip-btn {{
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--panel-border);
+      color: var(--text-muted);
+      padding: 0.6rem 0.85rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-align: left;
+      transition: all 0.2s ease;
+    }}
+    .archive-chip-btn:hover {{
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }}
+    .archive-chip-btn.active {{
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }}
+
     /* Modal Backdrop & Content */
     .modal-backdrop {{
       position: fixed;
@@ -737,7 +759,7 @@ def sync_dashboard():
           <div style="display: flex; gap: 0.5rem; justify-content: space-between; align-items: center;">
             <a href="{url}" class="btn-link" target="_blank">🔗 View Posting</a>
             <div style="display: flex; gap: 0.4rem;">
-              <button class="btn-archive" onclick="archiveQueueJob('{url}')">📦 Archive</button>
+              <button class="btn-archive" onclick="openArchiveReasonModal('{co.replace("'", "\\'")}', '{title.replace("'", "\\'")}', '{url}')">📦 Archive</button>
               <button class="btn-apply" id="btn-apply-{card_id}" onclick="triggerApply('{card_id}', '{co.replace("'", "\\'")}', '{title.replace("'", "\\'")}', '{url}')">⚡ Apply & Build Package</button>
             </div>
           </div>
@@ -791,6 +813,43 @@ def sync_dashboard():
     <footer>
       <p>Job Search Agent System | Candidate: {{YOUR_FULL_NAME}} | Export Storage: P:\\Job Search\\</p>
     </footer>
+  </div>
+
+  <!-- Archive Reason & Negative Preference Modal -->
+  <div id="archiveReasonModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-content" style="max-width: 580px;">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">📦 Archive Opportunity</h3>
+          <div class="modal-subtitle" id="archiveModalSubTitle">Company — Role Title</div>
+        </div>
+        <button class="modal-close-btn" onclick="closeArchiveModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1.25rem; line-height:1.4;">
+          Select a reason below to auto-train our negative filtering engine and exclude similar irrelevant roles from future search sweeps:
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.6rem; margin-bottom:1.25rem;">
+          <button type="button" class="archive-chip-btn active" onclick="selectArchiveChip(this, 'Comp Under $225k Target')">💰 Comp Under $225k Target</button>
+          <button type="button" class="archive-chip-btn" onclick="selectArchiveChip(this, 'Onsite / Non-Preferred Hybrid City Location')">📍 Onsite / Non-Preferred Hybrid City Location</button>
+          <button type="button" class="archive-chip-btn" onclick="selectArchiveChip(this, 'Wrong Role Scope / Family')">🎯 Wrong Role Scope / Family</button>
+          <button type="button" class="archive-chip-btn" onclick="selectArchiveChip(this, 'Contract / 1099 Role')">📝 Contract / 1099 Role</button>
+          <button type="button" class="archive-chip-btn" onclick="selectArchiveChip(this, 'Poor Culture / Glassdoor')">🏛️ Poor Culture / Glassdoor</button>
+          <button type="button" class="archive-chip-btn" onclick="selectArchiveChip(this, 'General Removal')">📦 General Removal</button>
+        </div>
+
+        <div class="form-group" style="margin-bottom:1.5rem;">
+          <label class="form-label">Optional Specific Feedback Notes</label>
+          <input type="text" id="archiveCustomNotes" class="form-input" placeholder="e.g. Requires 5 days onsite in Chicago / Title is junior coordinator..." />
+        </div>
+
+        <div style="display:flex; gap:0.75rem; justify-content:flex-end;">
+          <button class="btn-secondary" onclick="closeArchiveModal()">Cancel</button>
+          <button class="btn-primary" onclick="confirmArchiveWithReason()">📦 Archive & Train Engine</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Candidate Skill Verification Modal -->
@@ -1159,12 +1218,71 @@ def sync_dashboard():
       }}
     }}
 
-    async function archiveQueueJob(jobUrl) {{
+    let pendingArchiveData = null;
+    let selectedArchiveReason = 'Comp Under $225k Target';
+
+    function openArchiveReasonModal(company, title, jobUrl) {{
+      pendingArchiveData = {{ company, title, jobUrl }};
+      selectedArchiveReason = 'Comp Under $225k Target';
+      document.getElementById('archiveModalSubTitle').innerText = `${{company}} — ${{title}}`;
+      document.getElementById('archiveCustomNotes').value = '';
+      
+      const chipBtns = document.querySelectorAll('.archive-chip-btn');
+      chipBtns.forEach((btn, idx) => {{
+        if (idx === 0) btn.classList.add('active');
+        else btn.classList.remove('active');
+      }});
+
+      document.getElementById('archiveReasonModal').style.display = 'flex';
+    }}
+
+    function closeArchiveModal() {{
+      document.getElementById('archiveReasonModal').style.display = 'none';
+      pendingArchiveData = null;
+    }}
+
+    function selectArchiveChip(btnElement, reasonText) {{
+      document.querySelectorAll('.archive-chip-btn').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
+      selectedArchiveReason = reasonText;
+    }}
+
+    async function confirmArchiveWithReason() {{
+      if (!pendingArchiveData) return;
+      const {{ jobUrl }} = pendingArchiveData;
+      const customNotes = document.getElementById('archiveCustomNotes').value.trim();
+
+      closeArchiveModal();
+      showToast('📦 Archiving opportunity & training engine...');
+
       try {{
         const res = await fetch('http://localhost:5000/api/archive_queue', {{
           method: 'POST',
           headers: {{ 'Content-Type': 'application/json' }},
-          body: JSON.stringify({{ url: jobUrl }})
+          body: JSON.stringify({{
+            url: jobUrl,
+            reason_category: selectedArchiveReason,
+            custom_notes: customNotes
+          }})
+        }});
+        const data = await res.json();
+        if (data.status === 'success') {{
+          showToast(`📦 Opportunity archived (Reason: <strong>${{selectedArchiveReason}}</strong>). Engine updated!`);
+          setTimeout(() => window.location.reload(), 1200);
+        }} else {{
+          showToast(`❌ Error: ${{data.message || 'Archive failed'}}`);
+        }}
+      }} catch (err) {{
+        showToast('❌ Error archiving job.');
+      }}
+    }}
+
+    async function archiveQueueJob(jobUrl, reasonCategory = 'General Removal', customNotes = '') {{
+      try {{
+        const res = await fetch('http://localhost:5000/api/archive_queue', {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }},
+          body: JSON.stringify({{ url: jobUrl, reason_category: reasonCategory, custom_notes: customNotes }})
         }});
         const data = await res.json();
         if (data.status === 'success') {{
