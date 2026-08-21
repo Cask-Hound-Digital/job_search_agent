@@ -492,12 +492,18 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
             try:
                 data = json.loads(post_data.decode('utf-8'))
                 raw_url = data.get('url', '').strip()
-                if not raw_url:
-                    raise Exception("URL cannot be empty.")
-
                 clean_url = raw_url.split('?')[0].strip()
-                company_name = "Target Company"
+
+                # Domain fallback guess
+                try:
+                    domain = urllib.parse.urlparse(clean_url).netloc
+                    d_parts = domain.replace('www.', '').split('.')
+                    company_name = [p for p in d_parts if p.lower() not in ['jobs','careers','com','net','org','explore','boards','www','hc','sites']][-1].capitalize()
+                except Exception:
+                    company_name = "Target Company"
+
                 role_title = "Executive Opportunity"
+                location_str = "100% Remote / Preferred Hybrid City Hybrid"
                 source = "Company Portal"
 
                 if "linkedin.com" in clean_url.lower():
@@ -514,7 +520,7 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 # Attempt to fetch title via urllib
                 try:
                     req = urllib.request.Request(clean_url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'})
-                    html_content = urllib.request.urlopen(req, timeout=5).read().decode('utf-8', errors='ignore')
+                    html_content = urllib.request.urlopen(req, timeout=10).read().decode('utf-8', errors='ignore')
                     m_title = re.search(r'<title[^>]*>(.*?)</title>', html_content, re.IGNORECASE | re.DOTALL)
                     if m_title:
                         page_title = m_title.group(1).strip()
@@ -525,14 +531,19 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                             company_name = parts[0].strip()
                             rest = parts[1]
                             role_title = rest.split(" in ")[0].split(" | ")[0].strip()
-                        elif " - " in page_title:
-                            parts = page_title.split(" - ")
-                            role_title = parts[0].strip()
-                            company_name = parts[1].split(" | ")[0].strip()
                         elif " | " in page_title:
-                            parts = page_title.split(" | ")
-                            role_title = parts[0].strip()
-                            company_name = parts[1].strip()
+                            parts = [p.strip() for p in page_title.split("|")]
+                            role_title = parts[0]
+                            if len(parts) >= 3:
+                                location_str = parts[1]
+                                company_name = parts[2]
+                            elif len(parts) >= 2:
+                                company_name = parts[1]
+                        elif " - " in page_title:
+                            parts = [p.strip() for p in page_title.split("-")]
+                            role_title = parts[0]
+                            if len(parts) >= 2:
+                                company_name = parts[1].split("|")[0].strip()
                         else:
                             role_title = page_title[:60]
                 except Exception as fetch_err:
@@ -545,7 +556,7 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                     "title": role_title,
                     "url": clean_url,
                     "source": source,
-                    "location": "100% Remote / Preferred Hybrid City Hybrid",
+                    "location": location_str,
                     "added_via": "Manual Candidate Ingestion",
                     "date_added": "2026-08-21"
                 }

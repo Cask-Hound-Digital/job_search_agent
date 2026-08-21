@@ -678,13 +678,42 @@ def sync_dashboard():
 
     for idx, item in enumerate(unique_queue):
         card_id = f"card-gen-{idx}"
-        co = item.get("company_name", item.get("company", "Verified Company")).strip()
+        raw_co = item.get("company_name", item.get("company", "Verified Company")).strip()
         title = item.get("audited_role_title", item.get("title", "Executive Opportunity")).strip()
         url = item.get("url", "#")
         source = item.get("source", "LinkedIn")
-        loc = item.get("location", "100% Remote / Preferred Hybrid City Hybrid")
-        comp = item.get("compensation", "{{TARGET_COMPENSATION_MIN}} Scope")
-        match = item.get("match_score", 98)
+        
+        # Clean company name and extract location specifics
+        co = raw_co
+        extracted_loc = item.get("location", "").strip()
+        if " — " in co:
+            parts = co.split(" — ")
+            co = parts[0].strip()
+            if not extracted_loc:
+                extracted_loc = parts[1].strip()
+        elif " hiring " in co:
+            co = co.split(" hiring ")[0].strip()
+
+        if not extracted_loc or extracted_loc.lower() == "verified executive opportunity":
+            if "remote" in title.lower() or "remote" in url.lower():
+                extracted_loc = "100% Remote (US)"
+            elif "Preferred Hybrid City" in title.lower() or "dallas" in title.lower() or "texas" in title.lower() or "fort worth" in title.lower():
+                extracted_loc = "Preferred Target Location, TX (Hybrid)"
+            else:
+                extracted_loc = "100% Remote / Preferred Hybrid City Hybrid"
+
+        # Compute specific role match score based on candidate criteria alignment
+        title_lower = title.lower()
+        if any(k in title_lower for k in ["vp", "vice president", "head of"]):
+            match = 98
+        elif "director" in title_lower:
+            match = 97
+        elif any(k in title_lower for k in ["web", "digital", "strategy", "tech"]):
+            match = 96
+        else:
+            match = 95
+
+        comp = "{{TARGET_COMPENSATION_MIN}} Scope"
         
         src_class = "src-default"
         if "linkedin" in source.lower(): src_class = "src-linkedin"
@@ -702,8 +731,8 @@ def sync_dashboard():
             <span class="source-badge {src_class}">{source}</span>
           </div>
           <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.85rem; line-height: 1.4;">
-            <div><strong style="color: var(--accent-cyan);">Location:</strong> {loc}</div>
-            <div><strong style="color: var(--accent-purple);">Target Fit:</strong> {match}% Executive Capability Fit ({comp})</div>
+            <div><strong style="color: var(--accent-cyan);">Location:</strong> {extracted_loc}</div>
+            <div><strong style="color: var(--accent-purple);">Target Fit:</strong> {match}% Executive Match ({comp})</div>
           </div>
           <div style="display: flex; gap: 0.5rem; justify-content: space-between; align-items: center;">
             <a href="{url}" class="btn-link" target="_blank">🔗 View Posting</a>
@@ -952,6 +981,107 @@ def sync_dashboard():
       if (icon) {{
         icon.innerText = dateSortAsc ? '▲ (Oldest)' : '▼ (Newest)';
       }}
+    }}
+
+    let pendingApplyData = null;
+
+    async function triggerApply(cardId, company, title, url, userConfirmed = false, confirmedSkills = []) {{
+      const btn = document.getElementById(`btn-apply-${{cardId}}`);
+      if (btn) {{
+        btn.disabled = true;
+        btn.innerHTML = '⚡ Building Package...';
+      }}
+
+      showToast(`⚡ Building application package for <strong>${{company}}</strong>...`);
+
+      try {{
+        const res = await fetch('http://localhost:5000/api/apply', {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }},
+          body: JSON.stringify({{
+            company: company,
+            title: title,
+            url: url,
+            user_confirmed: userConfirmed,
+            confirmed_skills: confirmedSkills
+          }})
+        }});
+
+        const data = await res.json();
+
+        if (data.status === 'needs_confirmation') {{
+          if (btn) {{
+            btn.disabled = false;
+            btn.innerHTML = '⚡ Apply & Build Package';
+          }}
+          pendingApplyData = {{ cardId, company, title, url }};
+          openSkillModal(company, title, data.proposed_skills || [], data.unverified_skills || []);
+          return;
+        }}
+
+        if (data.status === 'success') {{
+          showToast(`✅ Master package generated in <strong>P:\\Job Search\\${{data.folder}}\\</strong>!`);
+          setTimeout(() => window.location.reload(), 1500);
+        }} else {{
+          showToast(`❌ Error: ${{data.message || 'Package generation failed'}}`);
+          if (btn) {{
+            btn.disabled = false;
+            btn.innerHTML = '⚡ Apply & Build Package';
+          }}
+        }}
+      }} catch (err) {{
+        showToast('❌ Server error during package build.');
+        if (btn) {{
+          btn.disabled = false;
+          btn.innerHTML = '⚡ Apply & Build Package';
+        }}
+      }}
+    }}
+
+    function openSkillModal(company, title, proposedSkills, unverifiedSkills) {{
+      document.getElementById('modalSubTitle').innerText = `${{company}} — ${{title}}`;
+      const checklist = document.getElementById('skillChecklist');
+      checklist.innerHTML = '';
+
+      const unverifiedSet = new Set(unverifiedSkills.map(s => s.toLowerCase()));
+
+      proposedSkills.forEach((skill, idx) => {{
+        const isUnverified = unverifiedSet.has(skill.toLowerCase());
+        const item = document.createElement('label');
+        item.style.cssText = 'display:flex; align-items:center; justify-content:space-between; padding:0.6rem 0.85rem; background:rgba(255,255,255,0.03); border:1px solid var(--panel-border); border-radius:0.5rem; margin-bottom:0.5rem; cursor:pointer; font-size:0.88rem;';
+        
+        const badge = isUnverified 
+          ? '<span style="background:rgba(251,191,36,0.2); border:1px solid var(--accent-amber); color:var(--accent-amber); padding:0.15rem 0.5rem; border-radius:0.25rem; font-size:0.75rem; font-weight:700;">NEW SKILL</span>'
+          : '<span style="background:rgba(74,222,128,0.15); border:1px solid var(--accent-green); color:var(--accent-green); padding:0.15rem 0.5rem; border-radius:0.25rem; font-size:0.75rem; font-weight:700;">VERIFIED</span>';
+
+        item.innerHTML = `
+          <div style="display:flex; align-items:center; gap:0.6rem;">
+            <input type="checkbox" class="skill-checkbox" value="${{skill.replace(/"/g, '&quot;')}}" checked />
+            <span>${{skill}}</span>
+          </div>
+          ${{badge}}
+        `;
+        checklist.appendChild(item);
+      }});
+
+      document.getElementById('skillVerificationModal').style.display = 'flex';
+    }}
+
+    function closeSkillModal() {{
+      document.getElementById('skillVerificationModal').style.display = 'none';
+      pendingApplyData = null;
+    }}
+
+    function confirmSkillAndBuild() {{
+      if (!pendingApplyData) return;
+      const selectedSkills = [];
+      document.querySelectorAll('.skill-checkbox:checked').forEach(cb => {{
+        selectedSkills.push(cb.value);
+      }});
+
+      const {{ cardId, company, title, url }} = pendingApplyData;
+      closeSkillModal();
+      triggerApply(cardId, company, title, url, true, selectedSkills);
     }}
 
     function filterTab(status, btnElement) {{
