@@ -92,10 +92,12 @@ def audit_queue():
         raw_title = j.get("title", "")
         email_subj = j.get("email_subject", "")
 
-        print(f"[{idx+1}/{len(gmail_jobs)}] Fetching page title for {url}...")
-        page_title = fetch_page_title(url)
+        print(f"[{idx+1}/{len(gmail_jobs)}] Fetching page content for {url}...")
+        html = fetch_page_content(url)
+        page_title_match = re.search(r'<title>(.*?)</title>', html, re.IGNORECASE | re.DOTALL) if html else None
+        page_title = page_title_match.group(1).strip() if page_title_match else ""
 
-        company, real_role = extract_company_and_role_from_title(page_title, raw_title, email_subj)
+        company, real_role = extract_company_and_role_from_title(page_title, raw_title, email_subj, url, html)
 
         # Sanitize "{{YOUR_NAME}}" or generic mistakes
         if company.lower() in ["{{YOUR_NAME}}", "your job alert", "job alert", "linkedin"]:
