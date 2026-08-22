@@ -58,7 +58,17 @@ def extract_company_and_role_from_title(page_title, raw_title="", email_subject=
         company = match_gh.group(2).strip()
         return company, role
 
-    # 5. Paylocity / ATS Portals
+    # 5. Breezy HR Format: "Role at Company"
+    if "breezy.hr" in url:
+        match_br = re.search(r'^(.*?)\s+at\s+(.*)', og_title or pt, re.IGNORECASE)
+        if match_br:
+            role = match_br.group(1).strip()
+            company = match_br.group(2).strip()
+            if company.lower() == "hip":
+                company = "HIP (HIP Creative)"
+            return company, role
+
+    # 6. Paylocity / ATS Portals
     if "paylocity.com" in url:
         payloc_co = re.search(r'at\s+([A-Z0-9\s,&.-]+?)(?:\.|<|\n|\s+is\s+seeking)', html, re.IGNORECASE) if html else None
         company = payloc_co.group(1).strip() if payloc_co else "CeriFi"
