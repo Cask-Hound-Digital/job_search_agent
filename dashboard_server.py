@@ -592,18 +592,7 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 raw_url = data.get('url', '').strip()
                 clean_url = raw_url.split('?')[0].strip()
 
-                # Domain fallback guess
-                try:
-                    domain = urllib.parse.urlparse(clean_url).netloc
-                    d_parts = domain.replace('www.', '').split('.')
-                    company_name = [p for p in d_parts if p.lower() not in ['jobs','careers','com','net','org','explore','boards','www','hc','sites']][-1].capitalize()
-                except Exception:
-                    company_name = "Target Company"
-
-                role_title = "Executive Opportunity"
-                location_str = "100% Remote / Preferred Hybrid City Hybrid"
                 source = "Company Portal"
-
                 if "linkedin.com" in clean_url.lower():
                     source = "LinkedIn"
                 elif "indeed.com" in clean_url.lower():
@@ -614,38 +603,32 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                     source = "Lever"
                 elif "builtin.com" in clean_url.lower():
                     source = "BuiltIn"
+                elif "breezy.hr" in clean_url.lower():
+                    source = "Breezy HR"
 
-                # Attempt to fetch title via urllib
-                try:
-                    req = urllib.request.Request(clean_url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'})
-                    html_content = urllib.request.urlopen(req, timeout=10).read().decode('utf-8', errors='ignore')
-                    m_title = re.search(r'<title[^>]*>(.*?)</title>', html_content, re.IGNORECASE | re.DOTALL)
-                    if m_title:
-                        page_title = m_title.group(1).strip()
-                        page_title = re.sub(r'\s+', ' ', page_title)
-                        
-                        if " hiring " in page_title:
-                            parts = page_title.split(" hiring ")
-                            company_name = parts[0].strip()
-                            rest = parts[1]
-                            role_title = rest.split(" in ")[0].split(" | ")[0].strip()
-                        elif " | " in page_title:
-                            parts = [p.strip() for p in page_title.split("|")]
-                            role_title = parts[0]
-                            if len(parts) >= 3:
-                                location_str = parts[1]
-                                company_name = parts[2]
-                            elif len(parts) >= 2:
-                                company_name = parts[1]
-                        elif " - " in page_title:
-                            parts = [p.strip() for p in page_title.split("-")]
-                            role_title = parts[0]
-                            if len(parts) >= 2:
-                                company_name = parts[1].split("|")[0].strip()
-                        else:
-                            role_title = page_title[:60]
-                except Exception as fetch_err:
-                    print(f"[MANUAL URL FETCH WARNING] {fetch_err}")
+                # Synchronously fetch page content and extract ground-truth company & role title
+                from audit_and_fix_queue_companies import fetch_page_content, extract_company_and_role_from_title
+                
+                html_content = fetch_page_content(clean_url)
+                page_title_match = re.search(r'<title[^>]*>(.*?)</title>', html_content, re.IGNORECASE | re.DOTALL) if html_content else None
+                page_title = page_title_match.group(1).strip() if page_title_match else ""
+
+                company_name, role_title = extract_company_and_role_from_title(page_title, raw_title="Executive Opportunity", email_subject="", url=clean_url, html=html_content)
+
+                if not company_name or company_name.lower() in ["hr", "linkedin", "recsolu", "paylocity", "target company", "verified employer"]:
+                    try:
+                        domain = urllib.parse.urlparse(clean_url).netloc
+                        d_parts = domain.replace('www.', '').split('.')
+                        filtered_parts = [p for p in d_parts if p.lower() not in ['jobs','careers','com','net','org','explore','boards','www','hc','sites','hr','recsolu']]
+                        if filtered_parts:
+                            company_name = filtered_parts[-1].capitalize()
+                    except Exception:
+                        company_name = "Target Company"
+
+                if not role_title or role_title.lower() == "executive opportunity":
+                    role_title = page_title[:60] if page_title else "Executive Opportunity"
+
+                today_str = datetime.now().strftime("%Y-%m-%d")
 
                 # Build new queue entry
                 new_entry = {
@@ -654,9 +637,9 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                     "title": role_title,
                     "url": clean_url,
                     "source": source,
-                    "location": location_str,
+                    "location": "100% Remote / Preferred Hybrid City Hybrid",
                     "added_via": "Manual Candidate Ingestion",
-                    "date_added": "2026-08-21"
+                    "date_added": today_str
                 }
 
                 if os.path.exists(STATE_FILE):
@@ -664,10 +647,11 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                         state_data = json.load(sf)
                     rq = state_data.setdefault("review_queue", [])
                     u_lower = clean_url.lower()
-                    if not any(j.get("url", "").split('?')[0].lower() == u_lower for j in rq):
-                        rq.insert(0, new_entry)
-                        with open(STATE_FILE, 'w', encoding='utf-8') as sf:
-                            json.dump(state_data, sf, indent=2)
+                    # Remove existing if present to move to top
+                    state_data["review_queue"] = [j for j in rq if j.get("url", "").split('?')[0].lower() != u_lower]
+                    state_data["review_queue"].insert(0, new_entry)
+                    with open(STATE_FILE, 'w', encoding='utf-8') as sf:
+                        json.dump(state_data, sf, indent=2)
 
                 subprocess.run([PYTHON_EXE, "sync_dashboard_from_state.py"], cwd=BASE_DIR)
                 self.send_response(200)
