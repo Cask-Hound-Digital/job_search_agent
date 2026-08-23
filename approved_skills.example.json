@@ -1,6 +1,5 @@
 {
-  "last_updated": "2026-08-20",
-  "candidate": "{{YOUR_FULL_NAME}}",
+  "last_updated": "2026-08-22",
   "approved_skills": [
     "Enterprise Web Strategy & Architecture",
     "Headless CMS Architecture ({{HEADLESS_CMS}}, WordPress, Drupal)",
@@ -14,12 +13,10 @@
     "Global Web Ecosystem Management",
     "Cross-Functional Team Leadership",
     "Agile Program Management & Budgeting",
-    "Core Web Vitals & Performance Optimization"
-  ],
-  "approved_categories": [
-    "Enterprise Web Strategy & Architecture",
-    "AI Activation & Digital Innovation",
-    "Conversion Rate Optimization (CRO) & Analytics",
-    "Executive Leadership & Governance"
+    "Core Web Vitals & Performance Optimization",
+    "AWS",
+    "CI/CD",
+    "DEVOPS",
+    "DevOps"
   ]
 }
