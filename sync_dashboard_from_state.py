@@ -1636,4 +1636,52 @@ def sync_dashboard():
         followup_notes: document.getElementById('intFollowupNotes').value
       }};
 
-     
+      try {{
+        const res = await fetch('http://localhost:5000/api/save_interview', {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }},
+          body: JSON.stringify({{ app_id: currentAppDetailId, interview: intObj }})
+        }});
+        const data = await res.json();
+        if (data.status === 'success') {{
+          showToast('💾 Interview round saved.');
+          setTimeout(() => window.location.reload(), 1000);
+        }}
+      }} catch (err) {{
+        showToast('❌ Error saving interview round.');
+      }}
+    }}
+
+    function showToast(htmlMsg) {{
+      const toast = document.getElementById('toastNotification');
+      const msg = document.getElementById('toastMessage');
+      if (toast && msg) {{
+        msg.innerHTML = htmlMsg;
+        toast.style.display = 'block';
+        setTimeout(() => {{ toast.style.display = 'none'; }}, 4000);
+      }}
+    }}
+  </script>
+
+  <div id="toastNotification" style="display:none; position:fixed; bottom:2rem; right:2rem; background:#0f172a; border:1px solid var(--accent-blue); padding:1rem 1.5rem; border-radius:0.75rem; color:#fff; box-shadow:0 10px 30px rgba(0,0,0,0.5); z-index:10000;">
+    <div id="toastMessage"></div>
+  </div>
+</body>
+</html>
+"""
+
+    with open(INDEX_FILE, 'w', encoding='utf-8') as f:
+        f.write(html)
+
+    print(f"Saved updated dashboard HTML to {INDEX_FILE}.")
+
+    os.makedirs(os.path.dirname(PRIMARY_DASHBOARD), exist_ok=True)
+    shutil.copy(INDEX_FILE, PRIMARY_DASHBOARD)
+    print(f"Copied live dashboard to {PRIMARY_DASHBOARD}.")
+
+    if os.path.exists(os.path.dirname(SECONDARY_DASHBOARD)):
+        shutil.copy(INDEX_FILE, SECONDARY_DASHBOARD)
+        print(f"Copied live dashboard mirror to {SECONDARY_DASHBOARD}.")
+
+if __name__ == '__main__':
+    sync_dashboard()
