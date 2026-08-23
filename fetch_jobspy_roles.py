@@ -163,9 +163,4 @@ def run_jobspy_scraper():
             try:
                 from sync_dashboard_from_state import sync_dashboard
                 sync_dashboard()
-            except Exception as sync_err:
-                print(f"  Warning syncing dashboard: {sync_err}")
-    print("=========================================================")
-
-if __name__ == '__main__':
-    run_jobspy_scraper()
+            except Excepti

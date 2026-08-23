@@ -298,6 +298,3 @@ def fetch_and_filter_all_job_alerts():
     except Exception as e:
         print(f"Error in deep fetch Gmail alerts: {e}")
         return []
-
-if __name__ == '__main__':
-    fetch_and_filter_all_job_alerts()

@@ -189,6 +189,10 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                         ["Multi-National Platform Modernization & Performance: ", "Directed enterprise web platform migration across 34 countries and 14 languages, integrating {{MARKETING_AUTOMATION_TOOL}}, {{TAG_MANAGEMENT_TOOL}}, GTM, {{PERFORMANCE_TOOL}}, {{SEARCH_TOOL}}, and {{ANALYTICS_PLATFORM}} to reduce page load times by 40%, boost organic sessions by 10%, and drive 15% pipeline growth."]
                     ]
 
+                # Weave candidate-confirmed skills directly into areas_of_expertise if provided
+                if confirmed_skills:
+                    role_expertise.insert(0, ["Technical Stack & Target Core Skills: ", ", ".join(confirmed_skills)])
+
                 # Construct dynamic application payload
                 payload = {
                     "company": company,

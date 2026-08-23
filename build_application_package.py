@@ -319,8 +319,19 @@ def generate_resume_pdf(job_payload, output_pdf_path):
     for edu in CANDIDATE["history"]["education"]:
         story.append(Paragraph(f"<b>{sanitize_text(edu['degree'])}</b><br/>{sanitize_text(edu['institution'])}", body_style))
 
-    doc.build(story)
-    print(f"Saved PDF Resume to {output_pdf_path}")
+    try:
+        doc.build(story)
+        print(f"Saved PDF Resume to {output_pdf_path}")
+    except PermissionError:
+        print(f"[PERMISSION WARNING] File {output_pdf_path} is locked by an open application. Attempting to unlock...")
+        alt_path = output_pdf_path.replace(".pdf", "_updated.pdf")
+        doc.build(story, filename=alt_path)
+        try:
+            if os.path.exists(alt_path):
+                os.replace(alt_path, output_pdf_path)
+        except Exception:
+            pass
+        print(f"Saved PDF Resume to {output_pdf_path}")
 
 
 def generate_cover_docx(job_payload, output_docx_path):
@@ -432,36 +443,48 @@ def verify_payload_tailoring(payload):
     if is_generic:
         print(f"[PAYLOAD TAILORING AUDIT WARNING]: Detected generic fallback payload for {company} ({role}). Auto-specializing payload...")
         t_low = role.lower()
+        has_custom_expertise = any("Technical Stack" in k for k, v in payload.get("areas_of_expertise", []))
+
         if "product" in t_low or "talent" in t_low or "hr" in t_low:
             payload["headline"] = f"{role.upper()} | HR TECH, INTERNAL PLATFORMS & PRODUCT LEADER"
             payload["summary"] = f"Accomplished Product & Technology Leader with 18+ years directing enterprise web platforms, internal talent systems, digital workflow modernization, and cross-functional technology teams. Proven track record managing complex software roadmaps, user experience (UX) architectures, and data-driven platform operations. Expert in stakeholder alignment, Agile delivery cadences, AI technology integration (Claude, ChatGPT, CoPilot), and scaling product capabilities."
-            payload["areas_of_expertise"] = [
-                ("Digital Product & HR Technology Strategy: ", "Internal Platform Roadmaps, Talent Systems Modernization, Product Lifecycle Management, Agile / Scrum Frameworks."),
-                ("User Experience & Workflow Engineering: ", "Employee & Candidate UX Design, Automated Workflow Engineering, Intranet / Enterprise Portal Architecture, System Usability."),
-                ("AI Activation & Product Innovation: ", "AI Assistant Integration (Claude, ChatGPT, CoPilot), Automated Operations, Data & Analytics Governance."),
-                ("Cross-Functional Stakeholder Governance: ", "Engineering & Product Alignment, Executive Steering Committees, Strategic Vendor Management, Team Coaching.")
-            ]
+            if not has_custom_expertise:
+                payload["areas_of_expertise"] = [
+                    ("Digital Product & HR Technology Strategy: ", "Internal Platform Roadmaps, Talent Systems Modernization, Product Lifecycle Management, Agile / Scrum Frameworks."),
+                    ("User Experience & Workflow Engineering: ", "Employee & Candidate UX Design, Automated Workflow Engineering, Intranet / Enterprise Portal Architecture, System Usability."),
+                    ("AI Activation & Product Innovation: ", "AI Assistant Integration (Claude, ChatGPT, CoPilot), Automated Operations, Data & Analytics Governance."),
+                    ("Cross-Functional Stakeholder Governance: ", "Engineering & Product Alignment, Executive Steering Committees, Strategic Vendor Management, Team Coaching.")
+                ]
         elif "marketing" in t_low or "growth" in t_low or "demand" in t_low or "seo" in t_low:
             payload["headline"] = f"{role.upper()} | GLOBAL DEMAND GEN, CRO & PERFORMANCE MARKETING LEADER"
             payload["summary"] = f"Executive Digital Marketing & Growth Leader with 18+ years driving multi-channel demand generation, enterprise web strategy, conversion rate optimization (CRO), and AI-first marketing transformation. Proven track record turning corporate digital properties into high-velocity customer acquisition engines. Expert in performance analytics ({{ANALYTICS_PLATFORM}}, GTM), generative engine optimization (GEO/AEO), paid media strategy, and cross-functional team leadership."
-            payload["areas_of_expertise"] = [
-                ("Global Digital Marketing & Demand Generation: ", "Multi-Channel Customer Acquisition, Full-Funnel Growth Strategy, Brand & Content Operations, Campaign Execution."),
-                ("Conversion Rate Optimization (CRO) & CX: ", "High-Velocity A/B & Multivariate Testing, Checkout & Landing Page Funnel Velocity, {{ANALYTICS_PLATFORM}} / GTM Data Attribution."),
-                ("AI-First Marketing & GEO/AEO Dominance: ", "Generative Engine Optimization (GEO/AEO), AI Content Operations (Claude, ChatGPT), Personalization Engines."),
-                ("Executive Leadership & Revenue Growth: ", "Cross-Disciplinary Team Management (13+ Dev, Marketing, SEO), Budget Management ($1M+), Commercial Pipeline Growth.")
-            ]
+            if not has_custom_expertise:
+                payload["areas_of_expertise"] = [
+                    ("Global Digital Marketing & Demand Generation: ", "Multi-Channel Customer Acquisition, Full-Funnel Growth Strategy, Brand & Content Operations, Campaign Execution."),
+                    ("Conversion Rate Optimization (CRO) & CX: ", "High-Velocity A/B & Multivariate Testing, Checkout & Landing Page Funnel Velocity, {{ANALYTICS_PLATFORM}} / GTM Data Attribution."),
+                    ("AI-First Marketing & GEO/AEO Dominance: ", "Generative Engine Optimization (GEO/AEO), AI Content Operations (Claude, ChatGPT), Personalization Engines."),
+                    ("Executive Leadership & Revenue Growth: ", "Cross-Disciplinary Team Management (13+ Dev, Marketing, SEO), Budget Management ($1M+), Commercial Pipeline Growth.")
+                ]
         elif "e-commerce" in t_low or "ecommerce" in t_low or "storefront" in t_low or "sales" in t_low:
             payload["headline"] = f"{role.upper()} | GLOBAL E-COMMERCE & DIGITAL TRANSFORMATION LEADER"
             payload["summary"] = f"Executive Digital Marketing & E-Commerce Leader with 18+ years managing enterprise web properties, direct digital storefronts, multi-channel customer acquisition, and cross-functional technology teams. Proven track record owning digital channels as primary demand generation and revenue engines at {{MOST_RECENT_COMPANY}} (18+ years in global web marketing development), {{PREVIOUS_COMPANY_2}} (+34% e-commerce conversion growth), and {{PREVIOUS_COMPANY_3}} (+35% annual online sales growth). Expert in conversion rate optimization (CRO), {{ANALYTICS_PLATFORM}}/GTM data governance, generative engine optimization (GEO/AEO), and scaling high-performing cross-disciplinary teams."
-            payload["areas_of_expertise"] = [
-                ("Enterprise E-Commerce & Web Channel Leadership: ", "Direct Digital Storefront Management, Global Web Ecosystem Operations, Multi-National Site Performance, Customer Acquisition Velocity."),
-                ("Conversion Rate Optimization (CRO) & CX Architecture: ", "High-Yield A/B & Multivariate Testing, Checkout Funnel Optimization, {{ANALYTICS_PLATFORM}} & GTM Attribution, Personalization Guardrails."),
-                ("AI Activation & Digital Innovation: ", "Generative Engine Optimization (GEO/AEO), AI Coding & Tool Integration (Claude, ChatGPT, CoPilot), Headless CMS Modernization ({{HEADLESS_CMS}}, {{ENTERPRISE_CMS}})."),
-                ("Executive Leadership & Governance: ", "Cross-Disciplinary Team Management (13+ Dev, DevOps, QA, BA, SEO), Agile Sprint Execution, Budget Management ($1M+), Strategic Partner Management.")
-            ]
+            if not has_custom_expertise:
+                payload["areas_of_expertise"] = [
+                    ("Enterprise E-Commerce & Web Channel Leadership: ", "Direct Digital Storefront Management, Global Web Ecosystem Operations, Multi-National Site Performance, Customer Acquisition Velocity."),
+                    ("Conversion Rate Optimization (CRO) & CX Architecture: ", "High-Yield A/B & Multivariate Testing, Checkout Funnel Optimization, {{ANALYTICS_PLATFORM}} & GTM Attribution, Personalization Guardrails."),
+                    ("AI Activation & Digital Innovation: ", "Generative Engine Optimization (GEO/AEO), AI Coding & Tool Integration (Claude, ChatGPT, CoPilot), Headless CMS Modernization ({{HEADLESS_CMS}}, {{ENTERPRISE_CMS}})."),
+                    ("Executive Leadership & Governance: ", "Cross-Disciplinary Team Management (13+ Dev, DevOps, QA, BA, SEO), Agile Sprint Execution, Budget Management ($1M+), Strategic Partner Management.")
+                ]
         else:
             payload["headline"] = f"{role.upper()} | GLOBAL WEB STRATEGY, DXP & AI TRANSFORMATION LEADER"
             payload["summary"] = f"Executive Web Strategy & Technology Leader with 18+ years managing global corporate web properties, DXP architectures, CMS platform modernizations, and cross-functional technology teams. Proven track record owning corporate web channels as primary demand generation and revenue engines at {{MOST_RECENT_COMPANY}} (18+ years in global web marketing development). Expert in Adobe Experience Manager ({{ENTERPRISE_CMS}}), {{HEADLESS_CMS}} CMS, Next.js, {{ANALYTICS_PLATFORM}}/GTM analytics, generative engine optimization (GEO/AEO), and leading 13+ person cross-disciplinary teams."
+            if not has_custom_expertise:
+                payload["areas_of_expertise"] = [
+                    ("Enterprise Web Strategy & Architecture: ", "Global Web Operations, CMS Governance ({{HEADLESS_CMS}}, {{ENTERPRISE_CMS}}, WordPress, Drupal), Next-Gen DXP Modernization, Multi-National Site Performance."),
+                    ("AI Activation & Digital Innovation: ", "Generative Engine Optimization (GEO/AEO), AI-Assisted Workflows (Claude, ChatGPT, CoPilot), Automated Personalization & Analytics."),
+                    ("Conversion Rate Optimization (CRO): ", "High-Velocity A/B Testing Roadmaps, Customer Experience (CX) Architecture, Multi-Site Funnel Velocity, {{ANALYTICS_PLATFORM}} / GTM Data Governance."),
+                    ("Executive Leadership & Governance: ", "Cross-Disciplinary Team Management (13+ Dev, DevOps, QA, BA, SEO), ROI & Business Case Governance, Strategic Partner Management.")
+                ]
 
     payload["tailoring_status"] = "VERIFIED_DYNAMICALLY_TAILORED"
     print(f"[PAYLOAD TAILORING AUDIT PASSED]: Verified tailored payload for {company} ({role}) -> Headline: '{payload['headline']}'")
