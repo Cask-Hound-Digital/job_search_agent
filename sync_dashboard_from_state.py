@@ -1090,7 +1090,7 @@ def sync_dashboard():
 
     let pendingApplyData = null;
 
-    async function triggerApply(cardId, company, title, url, userConfirmed = false, confirmedSkills = []) {{
+    async function triggerApply(cardId, company, title, url, userConfirmed = false, confirmedSkills = [], rejectedSkills = []) {{
       const btn = document.getElementById(`btn-apply-${{cardId}}`);
       if (btn) {{
         btn.disabled = true;
@@ -1108,7 +1108,8 @@ def sync_dashboard():
             title: title,
             url: url,
             user_confirmed: userConfirmed,
-            confirmed_skills: confirmedSkills
+            confirmed_skills: confirmedSkills,
+            rejected_skills: rejectedSkills
           }})
         }});
 
@@ -1150,24 +1151,52 @@ def sync_dashboard():
 
       const unverifiedSet = new Set(unverifiedSkills.map(s => s.toLowerCase()));
 
-      proposedSkills.forEach((skill, idx) => {{
-        const isUnverified = unverifiedSet.has(skill.toLowerCase());
+      // Section A: Approved Baseline Skills
+      const baselineTitle = document.createElement('div');
+      baselineTitle.style.cssText = 'font-size:0.8rem; font-weight:700; color:var(--accent-cyan); text-transform:uppercase; margin-bottom:0.5rem; margin-top:0.25rem;';
+      baselineTitle.innerText = '✅ Pre-Approved Baseline Profile Skills';
+      checklist.appendChild(baselineTitle);
+
+      proposedSkills.forEach((skill) => {{
         const item = document.createElement('label');
         item.style.cssText = 'display:flex; align-items:center; justify-content:space-between; padding:0.6rem 0.85rem; background:rgba(255,255,255,0.03); border:1px solid var(--panel-border); border-radius:0.5rem; margin-bottom:0.5rem; cursor:pointer; font-size:0.88rem;';
         
-        const badge = isUnverified 
-          ? '<span style="background:rgba(251,191,36,0.2); border:1px solid var(--accent-amber); color:var(--accent-amber); padding:0.15rem 0.5rem; border-radius:0.25rem; font-size:0.75rem; font-weight:700;">NEW SKILL</span>'
-          : '<span style="background:rgba(74,222,128,0.15); border:1px solid var(--accent-green); color:var(--accent-green); padding:0.15rem 0.5rem; border-radius:0.25rem; font-size:0.75rem; font-weight:700;">VERIFIED</span>';
-
         item.innerHTML = `
           <div style="display:flex; align-items:center; gap:0.6rem;">
-            <input type="checkbox" class="skill-checkbox" value="${{skill.replace(/"/g, '&quot;')}}" checked />
+            <input type="checkbox" class="skill-checkbox baseline-skill" value="${{skill.replace(/"/g, '&quot;')}}" checked />
             <span>${{skill}}</span>
           </div>
-          ${{badge}}
+          <span style="background:rgba(74,222,128,0.15); border:1px solid var(--accent-green); color:var(--accent-green); padding:0.15rem 0.5rem; border-radius:0.25rem; font-size:0.72rem; font-weight:700;">APPROVED BASELINE</span>
         `;
         checklist.appendChild(item);
       }});
+
+      // Section B: Job Description Extracted Skills
+      if (unverifiedSkills && unverifiedSkills.length > 0) {{
+        const jdTitle = document.createElement('div');
+        jdTitle.style.cssText = 'font-size:0.8rem; font-weight:700; color:var(--accent-amber); text-transform:uppercase; margin-top:1.25rem; margin-bottom:0.35rem;';
+        jdTitle.innerText = '🌟 New Skills & Tools Extracted From Target Job Description';
+        checklist.appendChild(jdTitle);
+
+        const jdNotice = document.createElement('div');
+        jdNotice.style.cssText = 'font-size:0.78rem; color:var(--text-muted); margin-bottom:0.65rem;';
+        jdNotice.innerText = 'Check any skills you possess to include in this tailored resume payload. Unchecked items will be added to your Never-Use list.';
+        checklist.appendChild(jdNotice);
+
+        unverifiedSkills.forEach((skill) => {{
+          const item = document.createElement('label');
+          item.style.cssText = 'display:flex; align-items:center; justify-content:space-between; padding:0.6rem 0.85rem; background:rgba(251,191,36,0.06); border:1px solid rgba(251,191,36,0.3); border-radius:0.5rem; margin-bottom:0.5rem; cursor:pointer; font-size:0.88rem;';
+          
+          item.innerHTML = `
+            <div style="display:flex; align-items:center; gap:0.6rem;">
+              <input type="checkbox" class="skill-checkbox jd-unverified-skill" data-skill-name="${{skill.replace(/"/g, '&quot;')}}" value="${{skill.replace(/"/g, '&quot;')}}" />
+              <span style="font-weight:600; color:#fbbf24;">${{skill}}</span>
+            </div>
+            <span style="background:rgba(251,191,36,0.2); border:1px solid var(--accent-amber); color:var(--accent-amber); padding:0.15rem 0.5rem; border-radius:0.25rem; font-size:0.72rem; font-weight:700;">NEW FROM JD</span>
+          `;
+          checklist.appendChild(item);
+        }});
+      }}
 
       document.getElementById('skillVerificationModal').style.display = 'flex';
     }}
@@ -1180,13 +1209,22 @@ def sync_dashboard():
     function confirmSkillAndBuild() {{
       if (!pendingApplyData) return;
       const selectedSkills = [];
+      const rejectedSkills = [];
+
       document.querySelectorAll('.skill-checkbox:checked').forEach(cb => {{
         selectedSkills.push(cb.value);
       }});
 
+      document.querySelectorAll('.jd-unverified-skill:not(:checked)').forEach(cb => {{
+        const skillName = cb.getAttribute('data-skill-name');
+        if (skillName) rejectedSkills.push(skillName);
+      }});
+
       const {{ cardId, company, title, url }} = pendingApplyData;
       closeSkillModal();
-      triggerApply(cardId, company, title, url, true, selectedSkills);
+      
+      showToast(`⚡ Building application package & training engine...`);
+      triggerApply(cardId, company, title, url, true, selectedSkills, rejectedSkills);
     }}
 
     function filterTab(status, btnElement) {{

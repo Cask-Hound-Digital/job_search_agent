@@ -101,39 +101,14 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 if not folder_name:
                     folder_name = "Target Company"
 
-                # Define proposed skills for this application
-                proposed_skills_list = [
-                    "Enterprise Web Strategy & Architecture",
-                    "Global Web Operations",
-                    "CMS Governance ({{HEADLESS_CMS}}, {{ENTERPRISE_CMS}}, WordPress, Drupal)",
-                    "Next-Gen DXP Modernization",
-                    "Multi-National Site Performance",
-                    "Generative Engine Optimization (GEO/AEO)",
-                    "AI-Assisted Workflows (Claude, ChatGPT, CoPilot)",
-                    "Automated Personalization & Analytics",
-                    "High-Velocity A/B Testing Roadmaps",
-                    "Customer Experience (CX) Architecture",
-                    "Multi-Site Funnel Velocity",
-                    "{{ANALYTICS_PLATFORM}} / GTM Data Governance",
-                    "Cross-Disciplinary Team Management (13+ Dev, DevOps, QA, BA, SEO)",
-                    "ROI & Business Case Governance",
-                    "Strategic Partner Management"
-                ]
+                # Extract baseline approved skills and new unverified skills directly from target job posting
+                from extract_jd_skills import extract_skills_from_url_or_text, save_approved_skills, save_rejected_skills
 
-                # Check against approved skills database
-                skills_data = get_approved_skills_data()
-                approved_set = set(s.lower() for s in skills_data.get("approved_skills", []))
-                
-                # Check for unverified skills if not explicitly user_confirmed
-                unverified = []
-                for sk in proposed_skills_list:
-                    # Check if skill substring is in approved set
-                    if not any(app_s in sk.lower() or sk.lower() in app_s for app_s in approved_set):
-                        unverified.append(sk)
+                proposed_skills_list, unverified_skills = extract_skills_from_url_or_text(url=job_url)
 
                 # Always prompt candidate for skill confirmation unless user_confirmed is True
                 if not user_confirmed:
-                    print(f"[SKILL VERIFICATION REQUIRED] Prompting candidate for {company} ({title})...")
+                    print(f"[SKILL VERIFICATION REQUIRED] Prompting candidate for {company} ({title})... JD Skills Found: {unverified_skills}")
                     self.send_response(200)
                     self.send_header('Content-Type', 'application/json')
                     self._set_cors_headers()
@@ -144,15 +119,23 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                         "title": title,
                         "url": job_url,
                         "proposed_skills": proposed_skills_list,
-                        "unverified_skills": unverified,
+                        "unverified_skills": unverified_skills,
                         "message": "Candidate confirmation required before generating package."
                     }
                     self.wfile.write(json.dumps(res).encode('utf-8'))
                     return
 
-                # If confirmed or no unverified skills, learn newly confirmed skills
+                # Read rejected skills sent from candidate modal
+                rejected_skills = data.get('rejected_skills', [])
+
+                # Save newly confirmed skills to approved database
                 if confirmed_skills:
-                    save_new_approved_skills(confirmed_skills)
+                    save_approved_skills(confirmed_skills)
+
+                # Permanently save unchecked unverified skills to rejected database
+                if rejected_skills:
+                    save_rejected_skills(rejected_skills)
+                    print(f"[LEARNING ENGINE] Added {len(rejected_skills)} rejected skills to Never-Use database: {rejected_skills}")
 
                 # Determine role family to dynamically tailor resume content
                 t_low = title.lower()
