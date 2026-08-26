@@ -626,7 +626,8 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                     "source": source,
                     "location": "100% Remote / Preferred Hybrid City Hybrid",
                     "added_via": "Manual Candidate Ingestion",
-                    "date_added": today_str
+                    "date_added": today_str,
+                    "time_scraped": datetime.now().isoformat()
                 }
 
                 if os.path.exists(STATE_FILE):

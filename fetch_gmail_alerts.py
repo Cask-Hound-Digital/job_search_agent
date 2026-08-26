@@ -36,6 +36,7 @@ TARGET_TITLES = [
     "vp, digital", "vp of digital", "vp, experience", "vp of experience", "vp - seo", "vp of seo", "vp, web", "vp of web", "vice president, digital", "vice president, ecommerce", "vp, product and ux",
     "fractional vp", "fractional vp of digital", "fractional vp, digital product", "digital product", "web operations",
     "digital transformation advisor", "transformation advisor", "digital transformation",
+    "ai transformation owner", "ai transformation", "ai agent manager", "ai agent engineering", "building ai agents", "ai agent lead", "ai operations lead", "director of ai operations", "manager ai automation", "agentic ai engineering", "head of ai transformation",
     "sr. web", "senior web", "senior manager, web", "senior manager of web", "senior manager, digital", "senior manager of digital",
     "web & ai", "web and ai"
 ]
@@ -242,7 +243,9 @@ def fetch_and_filter_all_job_alerts():
                 "email_subject": j['email_subject'],
                 "status": "Verified Match" if is_valid else "Rejected",
                 "filter_reason": reason,
-                "date": j['date']
+                "date": j['date'],
+                "date_added": datetime.now().strftime("%Y-%m-%d"),
+                "time_scraped": datetime.now().isoformat()
             }
 
             if is_valid:
@@ -257,29 +260,40 @@ def fetch_and_filter_all_job_alerts():
         # Save to state.json with Additive Queue Merging
         if os.path.exists(STATE_FILE):
             with open(STATE_FILE, 'r', encoding='utf-8') as f:
-                state_data = json.load(f)
+                fresh_state = json.load(f)
 
-            existing_queue = state_data.get("verified_gmail_jobs", [])
-            existing_urls = {j.get("url", "").split('?')[0].lower() for j in existing_queue if j.get("url")}
-            app_urls = {a.get("job_url", "").split('?')[0].lower() for a in state_data.get("applications", []) if a.get("job_url")}
+            review_queue = fresh_state.get("review_queue", [])
+            archived_queue = fresh_state.get("archived_queue", [])
+            applications = fresh_state.get("applications", [])
+
+            existing_urls = {j.get("url", "").split('?')[0].lower() for j in review_queue if j.get("url")}
+            arch_urls = {j.get("url", "").split('?')[0].lower() for j in archived_queue if j.get("url")}
+            app_urls = {a.get("job_url", "").split('?')[0].lower() for a in applications if a.get("job_url")}
 
             added_count = 0
             for v_job in valid_candidate_jobs:
                 u_clean = v_job["url"].split('?')[0].lower()
-                if u_clean not in existing_urls and u_clean not in app_urls:
-                    existing_queue.append(v_job)
+                if u_clean not in existing_urls and u_clean not in arch_urls and u_clean not in app_urls:
+                    review_queue.append(v_job)
                     existing_urls.add(u_clean)
                     added_count += 1
 
-            state_data["verified_gmail_jobs"] = existing_queue
-            state_data["review_queue"] = existing_queue
-            state_data["rejected_gmail_jobs"] = rejected_jobs
-            state_data["last_updated"] = "2026-08-14T12:00:00-05:00"
+            fresh_state["review_queue"] = review_queue
+            fresh_state["verified_gmail_jobs"] = review_queue
+            fresh_state["rejected_gmail_jobs"] = rejected_jobs
+            fresh_state["last_updated"] = datetime.now().strftime("%Y-%m-%d")
 
             with open(STATE_FILE, 'w', encoding='utf-8') as f:
-                json.dump(state_data, f, indent=2)
+                json.dump(fresh_state, f, indent=2)
 
-            print(f"Updated {STATE_FILE}: Added {added_count} new unique verified roles. Total queue count: {len(existing_queue)}.")
+            print(f"Updated {STATE_FILE}: Added {added_count} new unique verified roles. Total queue count: {len(review_queue)}.")
+
+            # Trigger instant mobile push notifications for fresh jobs (<24h)
+            try:
+                from send_job_alert import notify_fresh_jobs
+                notify_fresh_jobs(valid_candidate_jobs)
+            except Exception as notify_err:
+                print(f"Warning sending job push notifications: {notify_err}")
 
             # Automatically run JobSpy multi-board scraper, audit ground-truth titles, ensure server is running, and sync live browser dashboard
             try:

@@ -12,7 +12,14 @@ TARGET_TITLES = [
     "Director of Website Growth",
     "VP of Digital Experience",
     "Fractional VP of Digital Product",
-    "Digital Transformation Advisor"
+    "Digital Transformation Advisor",
+    "AI Transformation Owner",
+    "AI Agent Manager",
+    "Director of AI Operations",
+    "AI Operations Lead",
+    "Manager AI Automation",
+    "Agentic AI Engineering Lead",
+    "Head of AI Transformation"
 ]
 
 EXCLUDED_TITLES = [
@@ -119,6 +126,9 @@ def run_jobspy_scraper():
                             "status": "Verified Match",
                             "filter_reason": f"Passed JobSpy criteria check (Location: {location})",
                             "date": date_posted,
+                            "date_posted": date_posted,
+                            "date_added": datetime.now().strftime("%Y-%m-%d"),
+                            "time_scraped": datetime.now().isoformat(),
                             "audited_role_title": job_title,
                             "location": location
                         })
@@ -136,23 +146,24 @@ def run_jobspy_scraper():
         with open(STATE_FILE, 'r', encoding='utf-8') as f:
             state = json.load(f)
 
-        existing_queue = state.get("verified_gmail_jobs", [])
+        existing_queue = state.get("review_queue", [])
         existing_urls = {j.get("url", "").split('?')[0].lower() for j in existing_queue if j.get("url")}
+        arch_urls = {j.get("url", "").split('?')[0].lower() for j in state.get("archived_queue", []) if j.get("url")}
         apps_urls = {a.get("job_url", "").split('?')[0].lower() for a in state.get("applications", []) if a.get("job_url")}
 
         new_unique_jobs = []
         for j in all_scraped_jobs:
             u_clean = j["url"].split('?')[0].lower()
-            if u_clean not in existing_urls and u_clean not in apps_urls:
+            if u_clean not in existing_urls and u_clean not in arch_urls and u_clean not in apps_urls:
                 existing_urls.add(u_clean)
                 new_unique_jobs.append(j)
 
         print(f"  New Unique Multi-Board Roles Added: {len(new_unique_jobs)}")
 
         if new_unique_jobs:
-            state["verified_gmail_jobs"].extend(new_unique_jobs)
-            state["review_queue"].extend(new_unique_jobs)
-            state["last_updated"] = "2026-08-12T15:26:00-05:00"
+            state.setdefault("verified_gmail_jobs", []).extend(new_unique_jobs)
+            state.setdefault("review_queue", []).extend(new_unique_jobs)
+            state["last_updated"] = datetime.now().strftime("%Y-%m-%d")
 
             with open(STATE_FILE, 'w', encoding='utf-8') as f:
                 json.dump(state, f, indent=2)

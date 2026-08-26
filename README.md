@@ -29,6 +29,7 @@
 ### Key Capabilities
 - **Multi-Board Job Scraping**: Open-source scraper engine ([`fetch_jobspy_roles.py`](fetch_jobspy_roles.py)) extracting live listings from LinkedIn and Indeed with zero third-party API fees.
 - **Strict Location Guardrail Filtering**: Validates geographic location strings and remote flags (`is_remote=True`) to automatically filter out non-matching onsite postings.
+- **Instant Mobile Push Notifications**: Integrated Telegram Bot dispatcher ([`send_job_alert.py`](send_job_alert.py)) delivering real-time mobile alerts for `🔥 FRESH (<24H)` job postings directly to your phone.
 - **Silent Background API Server**: Local HTTP daemon server ([`dashboard_server.py`](dashboard_server.py)) running on `http://localhost:5000` with origin-validated CORS security.
 - **Responsive HTML Review Dashboard**: Interactive HTML dashboard ([`sync_dashboard_from_state.py`](sync_dashboard_from_state.py)) rendering live job queues with a 1-click **"⚡ Apply & Build Package"** button.
 - **ATS Master Document Builder**: Single document engine ([`build_application_package.py`](build_application_package.py)) generating single-column ATS PDF and DOCX resumes alongside 6-part hybrid cover letters.
@@ -108,10 +109,22 @@ pip install -r requirements.txt
 ```
 
 ### 4. Configure Environment Variables
-Copy `.env.example` to `.env` and fill in your candidate details:
+Copy `.env.example` to `.env` and fill in your credentials:
 ```bash
 cp .env.example .env
 ```
+
+#### Optional: Enable Instant Mobile Telegram Push Alerts
+1. Open Telegram and search for `@BotFather` to create a bot (`/newbot`). Copy the bot token.
+2. Search for `@userinfobot` on Telegram and tap **Start** to get your personal Chat ID.
+3. Open Telegram and send `/start` to your newly created bot so it has permission to send you messages.
+4. Add your secrets to `.env`:
+   ```env
+   TELEGRAM_BOT_TOKEN=your_bot_token_from_botfather
+   TELEGRAM_CHAT_ID=your_chat_id_from_userinfobot
+   ```
+   > [!IMPORTANT]
+   > Your `.env` file is git-ignored and local-only. Never commit or push secret API tokens or Chat IDs to public repositories.
 
 ---
 

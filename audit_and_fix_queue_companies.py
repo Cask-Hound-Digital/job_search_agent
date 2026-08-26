@@ -75,7 +75,30 @@ def extract_company_and_role_from_title(page_title, raw_title="", email_subject=
         role = og_title if og_title else (pt.split("-")[0].strip() if pt else raw_title)
         return company, role
 
-    # General Fallback
+def extract_posted_time_from_html(html):
+    if not html:
+        return "", ""
+
+    # 1. JSON-LD datePosted (ISO format)
+    m_jsonld = re.search(r'"datePosted"\s*:\s*"([^"]+)"', html, re.IGNORECASE)
+    if m_jsonld:
+        dp_raw = m_jsonld.group(1).strip()
+        return dp_raw, dp_raw
+
+    # 2. LinkedIn relative time span: posted-time-ago__text
+    m_rel = re.search(r'posted-time-ago__text[^>]*>\s*(.*?)\s*</', html, re.IGNORECASE | re.DOTALL)
+    if m_rel:
+        rel_text = re.sub(r'<[^>]+>', '', m_rel.group(1)).strip()
+        if rel_text:
+            return rel_text, rel_text
+
+    # 3. Early applicant tag
+    if "be an early applicant" in html.lower():
+        return "Be an early applicant (<24h)", "Be an early applicant (<24h)"
+
+    return "", ""
+
+# General Fallback
     parts = pt.split("|")[0].split("-")[0].strip() if pt else raw_title
     return "Verified Employer", parts if parts else raw_title
 
@@ -109,11 +132,18 @@ def audit_queue():
 
         company, real_role = extract_company_and_role_from_title(page_title, raw_title, email_subj, url, html)
 
+        # Extract posted date/time metadata from HTML
+        posted_raw, _ = extract_posted_time_from_html(html)
+        if posted_raw:
+            j["date_posted_raw"] = posted_raw
+
         # Sanitize "{{YOUR_NAME}}" or generic mistakes
         if company.lower() in ["{{YOUR_NAME}}", "your job alert", "job alert", "linkedin"]:
             company = "Verified Employer"
 
-        j["company_name"] = company
+        existing_co = j.get("company_name", "").strip()
+        if company != "Verified Employer" or not existing_co:
+            j["company_name"] = company
         j["audited_role_title"] = real_role if len(real_role) > 3 else raw_title
         j["page_title"] = page_title or ""
 

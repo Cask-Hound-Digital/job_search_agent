@@ -730,6 +730,65 @@ def sync_dashboard():
         url = item.get("url", "#")
         source = item.get("source", "LinkedIn")
         
+        # Differentiate Posted Date/Time vs Ingested/Scraped Time
+        date_posted_raw = str(item.get("date_posted_raw", item.get("date_posted", item.get("date", "")))).strip()
+        time_scraped_raw = str(item.get("time_scraped", item.get("timestamp", ""))).strip()
+        date_added_raw = str(item.get("date_added", "")).strip()
+
+        now = datetime.now()
+
+        # Check if posted time indicates freshness (<24h / early applicant / minutes / hours)
+        p_low = date_posted_raw.lower()
+        is_fresh_24h = False
+        if any(k in p_low for k in ["minute", "hour", "just now", "early applicant", "today", "1h", "2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "10h", "11h", "12h"]):
+            is_fresh_24h = True
+
+        posted_dt = None
+        if date_posted_raw and not is_fresh_24h:
+            try:
+                posted_dt = datetime.fromisoformat(date_posted_raw)
+            except Exception:
+                try:
+                    posted_dt = datetime.strptime(date_posted_raw[:10], "%Y-%m-%d")
+                except Exception:
+                    pass
+
+        if posted_dt:
+            hours_elapsed = (now - posted_dt).total_seconds() / 3600.0
+            if hours_elapsed <= 24.0:
+                is_fresh_24h = True
+
+        # Determine Posted display text
+        if date_posted_raw:
+            posted_display = date_posted_raw
+        elif posted_dt:
+            posted_display = posted_dt.strftime("%b %d, %Y")
+        elif date_added_raw:
+            posted_display = date_added_raw
+        else:
+            posted_display = now.strftime("%b %d, %Y")
+
+        # Determine Scraped / Ingested display text
+        scraped_dt = None
+        if time_scraped_raw:
+            try:
+                scraped_dt = datetime.fromisoformat(time_scraped_raw)
+            except Exception:
+                pass
+
+        if scraped_dt:
+            scraped_display = scraped_dt.strftime("%b %d, %Y %H:%M CT")
+        elif date_added_raw:
+            scraped_display = date_added_raw
+        else:
+            scraped_display = now.strftime("%b %d, %Y")
+
+        fresh_badge_html = ""
+        fresh_border_style = ""
+        if is_fresh_24h:
+            fresh_badge_html = '<span class="badge-fresh" style="background:#ef4444; color:#ffffff; font-weight:700; padding:0.25rem 0.55rem; border-radius:9999px; font-size:0.75rem; box-shadow:0 0 10px rgba(239,68,68,0.5); display:inline-flex; align-items:center; gap:0.25rem; margin-left:0.5rem;">🔥 FRESH (<24H)</span>'
+            fresh_border_style = "border-left: 4px solid #ef4444;"
+
         # Clean company name and extract location specifics
         co = raw_co
         extracted_loc = item.get("location", "").strip()
@@ -755,7 +814,7 @@ def sync_dashboard():
             match = 98
         elif "director" in title_lower:
             match = 97
-        elif any(k in title_lower for k in ["web", "digital", "strategy", "tech"]):
+        elif any(k in title_lower for k in ["web", "digital", "strategy", "tech", "ai"]):
             match = 96
         else:
             match = 95
@@ -772,16 +831,22 @@ def sync_dashboard():
         clean_title = re.sub(r'[\r\n\t]+', ' ', title).replace("'", "\\'").replace('"', '&quot;').strip()
         clean_url = re.sub(r'[\r\n\t]+', '', url).replace("'", "\\'").strip()
 
+        # Build date display lines
+        date_lines = f'<div><strong style="color: var(--accent-amber);">📅 Posted:</strong> {posted_display}</div>'
+        if scraped_display and scraped_display != posted_display:
+            date_lines += f'<div><strong style="color: var(--accent-cyan);">📥 Ingested:</strong> {scraped_display}</div>'
+
         html += f"""
-        <div class="queue-card" id="{card_id}">
+        <div class="queue-card" id="{card_id}" style="{fresh_border_style}">
           <div class="card-header">
             <div>
-              <div class="company-name">{co}</div>
+              <div class="company-name" style="display:flex; align-items:center; flex-wrap:wrap;">{co}{fresh_badge_html}</div>
               <div class="role-title">{title}</div>
             </div>
             <span class="source-badge {src_class}">{source}</span>
           </div>
           <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.85rem; line-height: 1.4;">
+            {date_lines}
             <div><strong style="color: var(--accent-cyan);">Location:</strong> {extracted_loc}</div>
             <div><strong style="color: var(--accent-purple);">Target Fit:</strong> {match}% Executive Match ({comp})</div>
           </div>
