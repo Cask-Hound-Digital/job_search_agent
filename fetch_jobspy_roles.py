@@ -60,20 +60,17 @@ def is_valid_location(loc_str, is_remote_query=True):
         return True
     l_lower = loc_str.lower()
 
+    # Reject explicitly labeled 100% Onsite / In-Office roles
+    if "onsite" in l_lower or "on-site" in l_lower or "in-office" in l_lower or "in office" in l_lower:
+        if "hybrid" not in l_lower and "remote" not in l_lower:
+            return False
+
     # If explicitly remote, allow
     if any(k in l_lower for k in ["remote", "work from home", "telecommute", "anywhere", "100% remote", "remote (us)", "remote - us"]):
         return True
 
-    # If Preferred Hybrid City local, allow
-    if any(re.search(rf'\b{Preferred Hybrid City}\b', l_lower) for Preferred Hybrid City in DFW_CITIES):
-        return True
-
     # Reject explicitly non-Preferred Hybrid City locations without remote tag
     if any(re.search(rf'\b{kw}\b', l_lower) for kw in NON_DFW_LOCATIONS):
-        return False
-
-    if is_remote_query:
-        # If searching remote and location is a specific non-Preferred Hybrid City place without 'remote', reject
         return False
 
     return True
