@@ -57,14 +57,9 @@ def sync_dashboard():
         seen_urls.add(url_clean)
         
         title = g.get("audited_role_title", g.get("title", "")).strip()
-        title_low = title.lower()
-        if not title or any(k in title_low for k in ["unsubscribe", "privacy policy", "project manager", "project management", "pmo manager", "technical project manager", "marketing operations", "marketing ops"]):
+        from config_loader import is_valid_target_title
+        if not title or not is_valid_target_title(title):
             continue
-
-        # Exclude IC Engineer / Engineering roles unless explicitly executive leadership (Director, VP, Head of)
-        if "engineer" in title_low or "engineering" in title_low:
-            if not any(exec_k in title_low for exec_k in ["director", "vp", "head of", "chief"]):
-                continue
 
         unique_queue.append(g)
 
@@ -830,12 +825,16 @@ def sync_dashboard():
             if hours_elapsed <= 24.0:
                 is_fresh_24h = True
 
-        if date_posted_raw:
+        if date_posted_raw and date_posted_raw.lower() not in ["posted on date", "unknown", "nan", "none", "null"]:
             posted_display = date_posted_raw
         elif posted_dt:
             posted_display = posted_dt.strftime("%b %d, %Y")
+        elif date_added_raw and len(date_added_raw) >= 10:
+            posted_display = date_added_raw[:10]
+        elif time_scraped_raw and len(time_scraped_raw) >= 10:
+            posted_display = time_scraped_raw[:10]
         else:
-            posted_display = "Unknown (Check listing)"
+            posted_display = datetime.now().strftime("%Y-%m-%d")
 
         co = raw_co
         extracted_loc = item.get("location", "").strip()

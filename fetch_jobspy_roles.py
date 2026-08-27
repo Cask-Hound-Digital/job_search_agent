@@ -92,18 +92,14 @@ def run_jobspy_scraper():
                         if not job_title or not job_url or len(job_title) < 3:
                             continue
 
-                        # Exclusion check
-                        t_lower = job_title.lower()
-                        if any(ex in t_lower for ex in EXCLUDED_TITLES):
+                        # Strict target title domain check
+                        from config_loader import is_valid_target_title
+                        if not is_valid_target_title(job_title):
+                            print(f"  [REJECTED TITLE UNRELATED] '{job_title}' at '{company}'")
                             continue
 
-                        # Exclude IC Engineer / Developer roles unless executive leadership
-                        if ("engineer" in t_lower or "engineering" in t_lower or "developer" in t_lower):
-                            if not any(exec_k in t_lower for exec_k in ["director", "vp", "head of", "chief"]):
-                                continue
-
                         # Location validation check
-                        if not is_valid_location(location, is_rem_query):
+                        if not is_valid_location(location, is_rem_query, job_title):
                             print(f"  [REJECTED LOCATION] '{job_title}' at '{company}' in '{location}'")
                             continue
 
@@ -115,8 +111,8 @@ def run_jobspy_scraper():
                             continue
 
                         dp_clean = str(date_posted).strip() if pd.notna(date_posted) else ""
-                        if dp_clean.lower() in ["nan", "none", "null"]:
-                            dp_clean = ""
+                        if not dp_clean or dp_clean.lower() in ["nan", "none", "null", "undefined"]:
+                            dp_clean = datetime.now().strftime("%Y-%m-%d")
 
                         clean_u = job_url.split('?')[0].strip()
 

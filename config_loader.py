@@ -51,3 +51,53 @@ def get_positive_keywords():
 
 def get_negative_keywords():
     return get_scoring_signals().get("negative_keywords", [])
+
+TARGET_DOMAIN_PHRASES = [
+    "digital experience",
+    "web marketing",
+    "web strategy",
+    "web operations",
+    "website growth",
+    "digital product",
+    "digital strategy",
+    "digital transformation",
+    "ai transformation",
+    "ai agent",
+    "ai operations",
+    "ai automation",
+    "agentic",
+    "ai solutions",
+    "product strategy",
+    "0-to-1",
+    "product innovation",
+    "chief of staff",
+    "digital marketing",
+    "web technology",
+    "growth marketing",
+    "growth operations",
+    "marketing technology",
+    "product & ai",
+    "product enablement",
+    "incubation"
+]
+
+def is_valid_target_title(title_str):
+    if not title_str:
+        return False
+    t_low = title_str.lower()
+
+    # Reject hard excluded keywords
+    for ex in get_excluded_titles():
+        if ex.lower() in t_low:
+            return False
+
+    # Check if title matches target domain phrases or target titles
+    for phrase in TARGET_DOMAIN_PHRASES:
+        if phrase in t_low:
+            return True
+
+    for target in get_target_titles():
+        if target.lower() in t_low:
+            return True
+
+    return False
