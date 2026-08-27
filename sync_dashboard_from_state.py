@@ -1906,7 +1906,7 @@ def sync_dashboard():
       document.getElementById('cfgPrimaryLocation').value = cand.primary_location || '';
       document.getElementById('cfgLocalCities').value = (cand.allowed_local_cities || []).join(', ');
 
-      document.getElementById('cfgTargetTitles').value = (matrix.target_titles || []).join('\n');
+      document.getElementById('cfgTargetTitles').value = (matrix.target_titles || []).join('\\n');
       document.getElementById('cfgExcludedTitles').value = (matrix.excluded_titles || []).join(', ');
 
       document.getElementById('cfgPositiveKeywords').value = (scoring.positive_keywords || []).join(', ');
@@ -1983,11 +1983,11 @@ def sync_dashboard():
           }});
           const data = await res.json();
           if (data.status === 'success') {{
-            showToast(`📄 Master resume '<strong>\${{file.name}}</strong>' uploaded successfully!`);
+            showToast(`📄 Master resume '<strong>\${{file.name}}</strong>' uploaded successfully!`.replace('\\$', '$'));
             document.getElementById('settingsStatusMsg').innerText = `Uploaded ${{file.name}}!`;
             openSettingsModal();
           }} else {{
-            showToast(`❌ Error: \${{data.message}}`);
+            showToast(`❌ Error: ${{data.message}}`);
           }}
         }} catch (err) {{
           showToast('❌ Error uploading resume.');
@@ -2001,7 +2001,7 @@ def sync_dashboard():
       msg.innerText = 'Saving configuration...';
 
       const targetTitlesList = document.getElementById('cfgTargetTitles').value
-        .split('\n')
+        .split(/[\\r\\n]+/)
         .map(s => s.trim())
         .filter(s => s.length > 0);
 
