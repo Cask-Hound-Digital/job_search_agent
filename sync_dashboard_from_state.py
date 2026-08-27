@@ -61,6 +61,11 @@ def sync_dashboard():
         if not title or any(k in title_low for k in ["unsubscribe", "privacy policy", "project manager", "project management", "pmo manager", "technical project manager", "marketing operations", "marketing ops"]):
             continue
 
+        # Exclude IC Engineer / Engineering roles unless explicitly executive leadership (Director, VP, Head of)
+        if "engineer" in title_low or "engineering" in title_low:
+            if not any(exec_k in title_low for exec_k in ["director", "vp", "head of", "chief"]):
+                continue
+
         unique_queue.append(g)
 
     # Sort unique_queue Newest First by true employer listing date / freshness

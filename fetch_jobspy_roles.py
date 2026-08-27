@@ -101,6 +101,11 @@ def run_jobspy_scraper():
                         if any(ex in t_lower for ex in EXCLUDED_TITLES):
                             continue
 
+                        # Exclude IC Engineer / Developer roles unless executive leadership
+                        if ("engineer" in t_lower or "engineering" in t_lower or "developer" in t_lower):
+                            if not any(exec_k in t_lower for exec_k in ["director", "vp", "head of", "chief"]):
+                                continue
+
                         # Location validation check
                         if not is_valid_location(location, is_rem_query):
                             print(f"  [REJECTED LOCATION] '{job_title}' at '{company}' in '{location}'")
