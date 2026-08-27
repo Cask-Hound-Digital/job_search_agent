@@ -37,6 +37,12 @@ def clean_url(url):
         url = url.split('&')[0].split('?')[0].split('#')[0]
     return url.rstrip('/')
 
+DFW_CITIES = [
+    "dallas", "fort worth", "{{YOUR_CITY}}", "irving", "{{YOUR_CITY}}", "plano", 
+    "frisco", "addison", "southlake", "mansfield", "lewisville", "grapevine", 
+    "richardson", "denton", "Preferred Hybrid City", "colleyville", "euless", "bedford", "texas", "tx"
+]
+
 NON_DFW_LOCATIONS = [
     "tampa", "florida", "fl", "miami", "orlando", "seattle", "wa", "boston", "ma",
     "chicago", "il", "atlanta", "ga", "los angeles", "san francisco", "san jose", "ca",
