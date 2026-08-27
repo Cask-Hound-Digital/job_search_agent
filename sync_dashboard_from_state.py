@@ -1627,6 +1627,10 @@ def sync_dashboard():
           showToast('💾 Application notes & follow-up saved.');
         }}
       }} catch (err) {{
+        showToast('❌ Error saving application details.');
+      }}
+    }}
+
     function sortReviewQueueCards(sortBy) {{
       const container = document.getElementById("queueContainer");
       if (!container) return;
