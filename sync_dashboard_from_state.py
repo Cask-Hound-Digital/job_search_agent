@@ -813,7 +813,7 @@ def sync_dashboard():
         posted_dt = None
         if date_posted_raw and not is_fresh_24h:
             try:
-                posted_dt = datetime.fromisoformat(date_posted_raw)
+                posted_dt = datetime.fromisoformat(date_posted_raw).replace(tzinfo=None)
             except Exception:
                 try:
                     posted_dt = datetime.strptime(date_posted_raw[:10], "%Y-%m-%d")
