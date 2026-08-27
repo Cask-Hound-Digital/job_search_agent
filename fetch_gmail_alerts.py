@@ -24,9 +24,6 @@ IMAP_SERVER = "imap.gmail.com"
 
 STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "state.json")
 
-# Candidate Expanded Target Title & Keyword Matrix
-TARGET_TITLES = [
-    "head of web", "head of digital", "head of web operations", "head of web marketing", "head of web development", "head of website growth", "head of growth",
 from config_loader import get_target_titles, get_excluded_titles, get_allowed_local_cities
 
 TARGET_TITLES = get_target_titles()
