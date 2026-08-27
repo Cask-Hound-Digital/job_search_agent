@@ -84,18 +84,26 @@ def notify_fresh_jobs(jobs_list):
 
         p_raw = str(job.get("date_posted_raw", job.get("date_posted", job.get("date", "")))).strip()
         p_low = p_raw.lower()
-        t_scraped = str(job.get("time_scraped", "")).strip()
+
+        # Require explicit posted date/time; ignore unknown/nan dates
+        if not p_raw or p_low in ["nan", "none", "null", "undefined"]:
+            continue
 
         is_fresh = False
         if any(k in p_low for k in ["minute", "hour", "just now", "early applicant", "today", "1h", "2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "10h", "11h", "12h"]):
             is_fresh = True
-        elif t_scraped:
+        else:
             try:
-                dt = datetime.fromisoformat(t_scraped)
+                dt = datetime.fromisoformat(p_raw)
                 if (now - dt).total_seconds() / 3600.0 <= 24.0:
                     is_fresh = True
             except Exception:
-                pass
+                try:
+                    dt = datetime.strptime(p_raw[:10], "%Y-%m-%d")
+                    if (now - dt).total_seconds() / 3600.0 <= 24.0:
+                        is_fresh = True
+                except Exception:
+                    pass
 
         if is_fresh:
             co = job.get("company_name", job.get("company", "Employer"))
