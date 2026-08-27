@@ -71,18 +71,105 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
             response = {"status": "running", "server": "Job Search Dashboard Server v1.0"}
             self.wfile.write(json.dumps(response).encode('utf-8'))
-        elif self.path == '/api/approved_skills':
+        elif self.path == '/api/get_config':
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self._set_cors_headers()
             self.end_headers()
-            self.wfile.write(json.dumps(get_approved_skills_data()).encode('utf-8'))
+            
+            config_file = os.path.join(BASE_DIR, "config.json")
+            cfg_data = {}
+            if os.path.exists(config_file):
+                try:
+                    with open(config_file, 'r', encoding='utf-8') as f:
+                        cfg_data = json.load(f)
+                except Exception as e:
+                    print(f"Error reading config.json: {e}")
+
+            resumes_dir = os.path.join(BASE_DIR, "resumes")
+            resume_files = []
+            if os.path.exists(resumes_dir):
+                for fname in os.listdir(resumes_dir):
+                    fpath = os.path.join(resumes_dir, fname)
+                    if os.path.isfile(fpath) and not fname.startswith('.'):
+                        mtime = datetime.fromtimestamp(os.path.getmtime(fpath)).strftime("%Y-%m-%d %H:%M")
+                        size_kb = round(os.path.getsize(fpath) / 1024.0, 1)
+                        resume_files.append({"filename": fname, "modified": mtime, "size_kb": size_kb})
+
+            resp = {"status": "success", "config": cfg_data, "resumes": resume_files}
+            self.wfile.write(json.dumps(resp).encode('utf-8'))
         else:
             self.send_response(404)
             self.end_headers()
 
     def do_POST(self):
-        if self.path == '/api/apply':
+        if self.path == '/api/save_config':
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                new_cfg = data.get('config', {})
+                config_file = os.path.join(BASE_DIR, "config.json")
+                with open(config_file, 'w', encoding='utf-8') as f:
+                    json.dump(new_cfg, f, indent=2)
+                
+                print("[SETTINGS ENGINE] Updated config.json from dashboard portal. Re-syncing dashboard...")
+                subprocess.run([PYTHON_EXE, "sync_dashboard_from_state.py"], cwd=BASE_DIR, check=False)
+                
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self._set_cors_headers()
+                self.end_headers()
+                res = {"status": "success", "message": "Settings updated & dashboard refreshed."}
+                self.wfile.write(json.dumps(res).encode('utf-8'))
+                return
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json')
+                self._set_cors_headers()
+                self.end_headers()
+                res = {"status": "error", "message": str(e)}
+                self.wfile.write(json.dumps(res).encode('utf-8'))
+                return
+
+        elif self.path == '/api/upload_resume':
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                import base64
+                data = json.loads(post_data.decode('utf-8'))
+                filename = data.get('filename', 'Master_Resume.pdf').strip()
+                file_b64 = data.get('file_b64', '')
+                
+                clean_name = re.sub(r'[^a-zA-Z0-9_.-]', '_', filename)
+                resumes_dir = os.path.join(BASE_DIR, "resumes")
+                os.makedirs(resumes_dir, exist_ok=True)
+                
+                target_path = os.path.join(resumes_dir, clean_name)
+                file_bytes = base64.b64decode(file_b64)
+                with open(target_path, 'wb') as f:
+                    f.write(file_bytes)
+
+                print(f"[ASSET ENGINE] Uploaded new master resume/document: '{clean_name}' ({len(file_bytes)} bytes)")
+                subprocess.run([PYTHON_EXE, "sync_dashboard_from_state.py"], cwd=BASE_DIR, check=False)
+
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self._set_cors_headers()
+                self.end_headers()
+                res = {"status": "success", "filename": clean_name, "message": f"Resume '{clean_name}' uploaded successfully."}
+                self.wfile.write(json.dumps(res).encode('utf-8'))
+                return
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json')
+                self._set_cors_headers()
+                self.end_headers()
+                res = {"status": "error", "message": str(e)}
+                self.wfile.write(json.dumps(res).encode('utf-8'))
+                return
+
+        elif self.path == '/api/apply':
             content_length = int(self.headers.get('Content-Length', 0))
             post_data = self.rfile.read(content_length)
             

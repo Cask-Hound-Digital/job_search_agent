@@ -584,10 +584,13 @@ def sync_dashboard():
     <header>
       <div>
         <h1 class="brand-title">Executive Job Search Dashboard</h1>
-        <p class="brand-subtitle">Candidate: {{YOUR_FULL_NAME}} | Target Compensation: {{TARGET_COMPENSATION_MIN}} | Preferred Hybrid City & Remote</p>
+        <p class="brand-subtitle">Candidate: {{YOUR_FULL_NAME}} | Target Baseline: {{TARGET_COMPENSATION_MIN}} | Preferred Hybrid City & Remote</p>
       </div>
-      <div class="header-badge">
-        <span class="status-dot"></span> Active Search Engine Running (Verified Live Target URLs)
+      <div style="display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap;">
+        <button class="btn-primary" style="font-size: 0.88rem; padding: 0.55rem 1.15rem; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));" onclick="openSettingsModal()">⚙️ Platform Settings</button>
+        <div class="header-badge">
+          <span class="status-dot"></span> Active Search Engine Running
+        </div>
       </div>
     </header>
 
@@ -1165,9 +1168,107 @@ def sync_dashboard():
           </div>
         </div>
 
+    <!-- Settings & Configuration Modal -->
+    <div id="settingsModal" class="modal-backdrop" style="display:none;">
+      <div class="modal-content" style="max-width: 900px;">
+        <div class="modal-header">
+          <div>
+            <h2 style="margin:0; font-size:1.3rem; color:#ffffff; font-weight:700;">⚙️ System Settings & Configuration Portal</h2>
+            <p style="margin:0.25rem 0 0 0; font-size:0.82rem; color:var(--text-muted);">Manage candidate baseline, target matrices, scoring signals, and master resume assets.</p>
+          </div>
+          <button class="btn-secondary" style="padding:0.3rem 0.75rem;" onclick="closeSettingsModal()">✕</button>
+        </div>
+
+        <div style="display:flex; border-bottom: 1px solid var(--panel-border); padding: 0 1.5rem;">
+          <button class="modal-tab-btn active" id="tabSetCandidate" onclick="switchSettingsTab('candidate')">👤 Candidate Profile</button>
+          <button class="modal-tab-btn" id="tabSetMatrix" onclick="switchSettingsTab('matrix')">🎯 Search Matrix & Titles</button>
+          <button class="modal-tab-btn" id="tabSetScoring" onclick="switchSettingsTab('scoring')">⚡ Vibe Coding & Signals</button>
+          <button class="modal-tab-btn" id="tabSetResumes" onclick="switchSettingsTab('resumes')">📄 Resume & Assets</button>
+        </div>
+
+        <div class="modal-body" style="padding: 1.5rem; overflow-y: auto; max-height: 65vh;">
+          <!-- Tab 1: Candidate Profile -->
+          <div id="secSetCandidate">
+            <div class="grid-2" style="margin-bottom: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Candidate Full Name</label>
+                <input type="text" id="cfgFullName" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Contact Email</label>
+                <input type="email" id="cfgEmail" class="form-input" />
+              </div>
+            </div>
+            <div class="grid-2" style="margin-bottom: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Minimum Salary Floor ($ USD)</label>
+                <input type="number" id="cfgMinSalary" class="form-input" step="5000" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Target Salary Baseline ($ USD)</label>
+                <input type="number" id="cfgTargetSalary" class="form-input" step="5000" />
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">Primary Location</label>
+                <input type="text" id="cfgPrimaryLocation" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Allowed Local Cities (Comma-separated)</label>
+                <input type="text" id="cfgLocalCities" class="form-input" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: Search Matrix -->
+          <div id="secSetMatrix" style="display:none;">
+            <div class="form-group">
+              <label class="form-label">Target Job Titles (One title per line)</label>
+              <textarea id="cfgTargetTitles" class="form-textarea" style="min-height:140px;"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Excluded Role Titles & Keywords (Comma or line-separated)</label>
+              <textarea id="cfgExcludedTitles" class="form-textarea" style="min-height:90px;"></textarea>
+            </div>
+          </div>
+
+          <!-- Tab 3: Scoring Signals -->
+          <div id="secSetScoring" style="display:none;">
+            <div class="form-group">
+              <label class="form-label">Positive Match Keywords & Vibe Coding Signals (Comma-separated)</label>
+              <textarea id="cfgPositiveKeywords" class="form-textarea" style="min-height:100px;"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Negative Rejection Keywords (Comma-separated)</label>
+              <textarea id="cfgNegativeKeywords" class="form-textarea" style="min-height:90px;"></textarea>
+            </div>
+          </div>
+
+          <!-- Tab 4: Resume & Asset Manager -->
+          <div id="secSetResumes" style="display:none;">
+            <div style="background: rgba(255,255,255,0.03); border: 1px dashed var(--accent-blue); border-radius: 0.75rem; padding: 1.5rem; text-align: center; margin-bottom: 1.5rem;">
+              <h3 style="margin:0 0 0.5rem 0; font-size:1.05rem; color:#ffffff;">📤 Upload or Replace Master Resume / Template</h3>
+              <p style="margin:0 0 1rem 0; font-size:0.82rem; color:var(--text-muted);">Select a PDF or DOCX file to save directly into your project's <code>resumes/</code> folder.</p>
+              <input type="file" id="resumeFileInput" accept=".pdf,.docx,.doc,.txt" style="display:none;" onchange="handleResumeUpload(this)" />
+              <button class="btn-primary" onclick="document.getElementById('resumeFileInput').click()">📁 Select Resume File to Upload</button>
+            </div>
+            <div>
+              <h4 style="margin:0 0 0.75rem 0; font-size:0.95rem; color:var(--accent-cyan);">Active Master Resumes in Project Directory</h4>
+              <div id="activeResumesList" style="font-size:0.85rem; color:var(--text-muted);">Loading resumes...</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="padding: 1.25rem 1.5rem; border-top: 1px solid var(--panel-border); display:flex; justify-content:space-between; align-items:center;">
+          <span id="settingsStatusMsg" style="font-size:0.85rem; color:var(--accent-green);"></span>
+          <div style="display:flex; gap:0.75rem;">
+            <button class="btn-secondary" onclick="closeSettingsModal()">Cancel</button>
+            <button class="btn-primary" onclick="saveSettingsConfig()">💾 Save Settings & Update Platform</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
   <script>
     const APPS_DATA = {apps_json_str};
@@ -1785,6 +1886,165 @@ def sync_dashboard():
         }}
       }} catch (err) {{
         showToast('❌ Error saving interview round.');
+      }}
+    }}
+
+    async function openSettingsModal() {{
+      document.getElementById('settingsModal').style.display = 'flex';
+      switchSettingsTab('candidate');
+      document.getElementById('settingsStatusMsg').innerText = 'Loading settings...';
+
+      try {{
+        const res = await fetch('http://localhost:5000/api/get_config');
+        const data = await res.json();
+        if (data.status === 'success') {{
+          const cfg = data.config || {{}};
+          const cand = cfg.candidate || {{}};
+          const matrix = cfg.search_matrix || {{}};
+          const scoring = cfg.scoring_signals || {{}};
+
+          document.getElementById('cfgFullName').value = cand.full_name || '';
+          document.getElementById('cfgEmail').value = cand.email || '';
+          document.getElementById('cfgMinSalary').value = cand.min_salary_floor || 200000;
+          document.getElementById('cfgTargetSalary').value = cand.target_salary_baseline || 225000;
+          document.getElementById('cfgPrimaryLocation').value = cand.primary_location || '';
+          document.getElementById('cfgLocalCities').value = (cand.allowed_local_cities || []).join(', ');
+
+          document.getElementById('cfgTargetTitles').value = (matrix.target_titles || []).join('\n');
+          document.getElementById('cfgExcludedTitles').value = (matrix.excluded_titles || []).join(', ');
+
+          document.getElementById('cfgPositiveKeywords').value = (scoring.positive_keywords || []).join(', ');
+          document.getElementById('cfgNegativeKeywords').value = (scoring.negative_keywords || []).join(', ');
+
+          renderResumesList(data.resumes || []);
+          document.getElementById('settingsStatusMsg').innerText = '';
+        }}
+      }} catch (err) {{
+        document.getElementById('settingsStatusMsg').innerText = 'Error loading settings.';
+      }}
+    }}
+
+    function closeSettingsModal() {{
+      document.getElementById('settingsModal').style.display = 'none';
+    }}
+
+    function switchSettingsTab(tabName) {{
+      ['Candidate', 'Matrix', 'Scoring', 'Resumes'].forEach(t => {{
+        const btn = document.getElementById('tabSet' + t);
+        const sec = document.getElementById('secSet' + t);
+        if (t.toLowerCase() === tabName.toLowerCase()) {{
+          if (btn) btn.classList.add('active');
+          if (sec) sec.style.display = 'block';
+        }} else {{
+          if (btn) btn.classList.remove('active');
+          if (sec) sec.style.display = 'none';
+        }}
+      }});
+    }}
+
+    function renderResumesList(resumes) {{
+      const container = document.getElementById('activeResumesList');
+      if (!container) return;
+      if (!resumes || resumes.length === 0) {{
+        container.innerHTML = '<p style="color:var(--text-muted);">No resumes found in resumes/ directory.</p>';
+        return;
+      }}
+      let html = '<ul style="list-style:none; padding:0; margin:0;">';
+      resumes.forEach(r => {{
+        html += `<li style="display:flex; justify-content:space-between; align-items:center; padding:0.55rem 0.75rem; background:rgba(255,255,255,0.03); border:1px solid var(--panel-border); border-radius:0.5rem; margin-bottom:0.4rem;">
+          <div><strong style="color:#ffffff;">📄 ${{r.filename}}</strong> <span style="font-size:0.75rem; color:var(--text-muted);">(${{r.size_kb}} KB)</span></div>
+          <div style="font-size:0.78rem; color:var(--accent-cyan);">Modified: ${{r.modified}}</div>
+        </li>`;
+      }});
+      html += '</ul>';
+      container.innerHTML = html;
+    }}
+
+    async function handleResumeUpload(input) {{
+      if (!input.files || input.files.length === 0) return;
+      const file = input.files[0];
+      const reader = new FileReader();
+      
+      document.getElementById('settingsStatusMsg').innerText = `Uploading ${{file.name}}...`;
+
+      reader.onload = async function(e) {{
+        const b64 = e.target.result.split(',')[1];
+        try {{
+          const res = await fetch('http://localhost:5000/api/upload_resume', {{
+            method: 'POST',
+            headers: {{ 'Content-Type': 'application/json' }},
+            body: JSON.stringify({{ filename: file.name, file_b64: b64 }})
+          }});
+          const data = await res.json();
+          if (data.status === 'success') {{
+            showToast(`📄 Master resume '<strong>\${{file.name}}</strong>' uploaded successfully!`);
+            document.getElementById('settingsStatusMsg').innerText = `Uploaded ${{file.name}}!`;
+            openSettingsModal();
+          }} else {{
+            showToast(`❌ Error: \${{data.message}}`);
+          }}
+        }} catch (err) {{
+          showToast('❌ Error uploading resume.');
+        }}
+      }};
+      reader.readAsDataURL(file);
+    }}
+
+    async function saveSettingsConfig() {{
+      const msg = document.getElementById('settingsStatusMsg');
+      msg.innerText = 'Saving configuration...';
+
+      const targetTitlesList = document.getElementById('cfgTargetTitles').value
+        .split('\n')
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+
+      const parseCommaList = (id) => document.getElementById(id).value
+        .split(',')
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+
+      const newConfig = {{
+        candidate: {{
+          full_name: document.getElementById('cfgFullName').value.trim(),
+          email: document.getElementById('cfgEmail').value.trim(),
+          min_salary_floor: parseFloat(document.getElementById('cfgMinSalary').value) || 200000,
+          target_salary_baseline: parseFloat(document.getElementById('cfgTargetSalary').value) || 225000,
+          workplace_preferences: ["Remote", "Hybrid"],
+          primary_location: document.getElementById('cfgPrimaryLocation').value.trim(),
+          allowed_local_cities: parseCommaList('cfgLocalCities')
+        }},
+        search_matrix: {{
+          target_titles: targetTitlesList,
+          excluded_titles: parseCommaList('cfgExcludedTitles')
+        }},
+        scoring_signals: {{
+          positive_keywords: parseCommaList('cfgPositiveKeywords'),
+          negative_keywords: parseCommaList('cfgNegativeKeywords')
+        }},
+        notifications: {{
+          telegram_enabled: true,
+          notify_fresh_only_24h: true,
+          require_explicit_date: true
+        }}
+      }};
+
+      try {{
+        const res = await fetch('http://localhost:5000/api/save_config', {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }},
+          body: JSON.stringify({{ config: newConfig }})
+        }});
+        const data = await res.json();
+        if (data.status === 'success') {{
+          showToast('⚙️ Settings saved & platform re-indexed!');
+          closeSettingsModal();
+          setTimeout(() => window.location.reload(), 1200);
+        }} else {{
+          msg.innerText = `Error: ${{data.message}}`;
+        }}
+      }} catch (err) {{
+        msg.innerText = 'Error saving settings.';
       }}
     }}
 
