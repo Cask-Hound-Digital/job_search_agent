@@ -549,6 +549,11 @@ def sync_dashboard():
       font-size: 0.88rem;
       outline: none;
     }}
+    .form-select option, select option {{
+      background-color: #0f172a !important;
+      color: #ffffff !important;
+      padding: 0.5rem;
+    }}
     .form-input:focus, .form-select:focus, .form-textarea:focus {{ border-color: var(--accent-blue); }}
     .form-textarea {{ min-height: 90px; resize: vertical; }}
 
