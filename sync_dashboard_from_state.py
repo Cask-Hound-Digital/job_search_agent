@@ -1174,7 +1174,7 @@ def sync_dashboard():
     </div>
 
     <!-- Settings & Configuration Modal -->
-    <div id="settingsModal" class="modal-backdrop" style="display:none;">
+    <div id="settingsModal" class="modal-backdrop" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(10,15,29,0.92); z-index:99999; align-items:center; justify-content:center;">
       <div class="modal-content" style="max-width: 900px;">
         <div class="modal-header">
           <div>
@@ -1927,7 +1927,7 @@ def sync_dashboard():
         alert('⚙️ Settings Modal element not found in DOM.');
         return;
       }}
-      m.style.display = 'flex';
+      m.style.setProperty('display', 'flex', 'important');
       try {{
         switchSettingsTab('candidate');
       }} catch(e) {{ console.error('switchSettingsTab error:', e); }}
