@@ -59,23 +59,37 @@ def sync_dashboard():
 
         unique_queue.append(g)
 
-    # Sort unique_queue Newest First by date_added / date
+    # Sort unique_queue Newest First by true employer listing date / freshness
     def get_queue_date_key(item):
-        d_added = item.get("date_added", "")
-        if d_added:
-            return d_added
-        d_raw = item.get("date", "")
-        if d_raw:
-            m = re.search(r'(\d{1,2}\s+[A-Za-z]{3}\s+\d{4})', d_raw)
-            if m:
-                try:
-                    dt = datetime.strptime(m.group(1), "%d %b %Y")
-                    return dt.strftime("%Y-%m-%d")
-                except Exception:
-                    pass
-            m_iso = re.search(r'(\d{4}-\d{2}-\d{2})', d_raw)
+        from datetime import timedelta
+        now = datetime.now()
+
+        # 1. Prefer date_posted_raw / date_posted
+        d_p = str(item.get("date_posted_raw", item.get("date_posted", ""))).strip()
+        if d_p and d_p.lower() not in ["nan", "none", "null", "undefined"]:
+            p_low = d_p.lower()
+            if any(k in p_low for k in ["minute", "hour", "just now", "early applicant", "today"]):
+                return "9999-99-99"  # Absolute top for today / fresh
+
+            m_days = re.search(r'(\d+)\s*days?\s*ago', p_low)
+            if m_days:
+                days = int(m_days.group(1))
+                dt = now - timedelta(days=days)
+                return dt.strftime("%Y-%m-%d")
+
+            m_iso = re.search(r'(\d{4}-\d{2}-\d{2})', d_p)
             if m_iso:
                 return m_iso.group(1)
+
+        # 2. Fallback to time_scraped / date_added
+        t_scraped = str(item.get("time_scraped", "")).strip()
+        if t_scraped:
+            return t_scraped[:10]
+
+        d_added = str(item.get("date_added", "")).strip()
+        if d_added:
+            return d_added
+
         return "1970-01-01"
 
     unique_queue.sort(key=get_queue_date_key, reverse=True)
@@ -714,10 +728,22 @@ def sync_dashboard():
         <button class="btn-secondary" id="btnAuditClosedQueue" style="font-size: 0.83rem; padding: 0.45rem 1rem;" onclick="runClosedJobAudit()">🔍 Audit & Prune Closed Postings</button>
       </div>
 
-      <!-- Manual Job URL Ingestion Form -->
-      <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
-        <input type="url" id="manualJobUrl" class="search-box" style="flex: 1; min-width: 320px;" placeholder="Paste job URL to parse & add to queue (LinkedIn, Greenhouse, Lever, Indeed, Company Portal)..." />
-        <button class="btn-primary" style="font-size: 0.88rem; padding: 0.55rem 1.25rem;" onclick="addManualJobUrl()">➕ Add & Parse Job URL</button>
+      <!-- Manual Job URL Ingestion & Queue Sort Controls -->
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap;">
+        <div style="display: flex; gap: 0.75rem; flex: 1; min-width: 320px;">
+          <input type="url" id="manualJobUrl" class="search-box" style="flex: 1;" placeholder="Paste job URL to parse & add to queue (LinkedIn, Greenhouse, Lever, Indeed, Company Portal)..." />
+          <button class="btn-primary" style="font-size: 0.88rem; padding: 0.55rem 1.25rem; white-space: nowrap;" onclick="addManualJobUrl()">➕ Add Job URL</button>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <label for="queueSortSelect" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Sort Queue:</label>
+          <select id="queueSortSelect" class="form-select" style="width: auto; padding: 0.45rem 0.85rem; font-size: 0.85rem; background: #1e293b; border-color: var(--accent-blue);" onchange="sortReviewQueueCards(this.value)">
+            <option value="freshest" selected>🔥 Freshest First (Default)</option>
+            <option value="oldest">⏳ Oldest First</option>
+            <option value="company">🏢 Company Name (A-Z)</option>
+            <option value="title">💼 Role Title (A-Z)</option>
+          </select>
+        </div>
       </div>
 
       <div class="queue-grid" id="queueContainer">
@@ -838,8 +864,12 @@ def sync_dashboard():
         if scraped_display and scraped_display != posted_display:
             date_lines += f'<div><strong style="color: var(--accent-cyan);">📥 Ingested:</strong> {scraped_display}</div>'
 
+        date_key_val = date_posted_raw if date_posted_raw else (posted_dt.strftime("%Y-%m-%d") if posted_dt else date_added_raw)
+        if is_fresh_24h:
+            date_key_val = "9999-99-99"
+
         html += f"""
-        <div class="queue-card" id="{card_id}" style="{fresh_border_style}">
+        <div class="queue-card" id="{card_id}" data-date-key="{date_key_val}" data-company="{clean_co}" data-title="{clean_title}" style="{fresh_border_style}">
           <div class="card-header">
             <div>
               <div class="company-name" style="display:flex; align-items:center; flex-wrap:wrap;">{co}{fresh_badge_html}</div>
@@ -1597,8 +1627,33 @@ def sync_dashboard():
           showToast('💾 Application notes & follow-up saved.');
         }}
       }} catch (err) {{
-        showToast('❌ Error saving application details.');
-      }}
+    function sortReviewQueueCards(sortBy) {{
+      const container = document.getElementById("queueContainer");
+      if (!container) return;
+      
+      const cards = Array.from(container.children);
+      cards.sort((a, b) => {{
+        const dateA = a.getAttribute("data-date-key") || "1970-01-01";
+        const dateB = b.getAttribute("data-date-key") || "1970-01-01";
+        const coA = (a.getAttribute("data-company") || "").toLowerCase();
+        const coB = (b.getAttribute("data-company") || "").toLowerCase();
+        const titleA = (a.getAttribute("data-title") || "").toLowerCase();
+        const titleB = (b.getAttribute("data-title") || "").toLowerCase();
+
+        if (sortBy === "freshest") {{
+          return dateB.localeCompare(dateA);
+        }} else if (sortBy === "oldest") {{
+          return dateA.localeCompare(dateB);
+        }} else if (sortBy === "company") {{
+          return coA.localeCompare(coB);
+        }} else if (sortBy === "title") {{
+          return titleA.localeCompare(titleB);
+        }}
+        return 0;
+      }});
+
+      cards.forEach(card => container.appendChild(card));
+      showToast('🔄 Queue sorted by: ' + sortBy);
     }}
 
     function renderInterviewRoundsList(interviews) {{
