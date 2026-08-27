@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import html
 import urllib.request
 import urllib.parse
 from datetime import datetime
@@ -29,12 +30,18 @@ def send_telegram_alert(company, title, url, location="100% Remote / Preferred H
     if not posted_clean or posted_clean.lower() in ["nan", "none", "null", "undefined"]:
         posted_clean = "Just now (<24h)"
 
+    # Escape HTML special characters
+    safe_company = html.escape(str(company))
+    safe_title = html.escape(str(title))
+    safe_location = html.escape(str(location))
+    safe_posted = html.escape(posted_clean)
+
     message = (
         f"🔥 <b>FRESH JOB ALERT (&lt;24H)</b>\n\n"
-        f"🏢 <b>Company:</b> {company}\n"
-        f"💼 <b>Role:</b> {title}\n"
-        f"📍 <b>Location:</b> {location}\n"
-        f"⏰ <b>Posted:</b> {posted_clean}\n\n"
+        f"🏢 <b>Company:</b> {safe_company}\n"
+        f"💼 <b>Role:</b> {safe_title}\n"
+        f"📍 <b>Location:</b> {safe_location}\n"
+        f"⏰ <b>Posted:</b> {safe_posted}\n\n"
         f"🔗 <a href='{url}'>View Posting on Job Board</a>\n"
         f"⚡ Open Dashboard on your PC to 1-Click Apply!"
     )
@@ -57,8 +64,29 @@ def send_telegram_alert(company, title, url, location="100% Remote / Preferred H
             print(f"[NOTIFY SUCCESS] Telegram alert sent for {company} — {title}")
             return True
     except Exception as e:
-        print(f"[NOTIFY ERROR] Telegram send failed: {e}")
-        return False
+        print(f"[NOTIFY RETRY] HTML alert failed: {e}. Retrying plain text...")
+        plain_message = (
+            f"🔥 FRESH JOB ALERT (<24H)\n\n"
+            f"Company: {company}\n"
+            f"Role: {title}\n"
+            f"Location: {location}\n"
+            f"Posted: {posted_clean}\n\n"
+            f"Link: {url}"
+        )
+        payload["text"] = plain_message
+        payload.pop("parse_mode", None)
+        try:
+            req = urllib.request.Request(
+                tg_url,
+                data=json.dumps(payload).encode("utf-8"),
+                headers={"Content-Type": "application/json"}
+            )
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                print(f"[NOTIFY SUCCESS] Plain text Telegram alert sent for {company} — {title}")
+                return True
+        except Exception as err2:
+            print(f"[NOTIFY ERROR] Telegram send failed: {err2}")
+            return False
 
 def notify_fresh_jobs(jobs_list):
     bot_token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
