@@ -1,8 +1,12 @@
 import json
 import os
 import re
+import sys
 from datetime import datetime
 import pandas as pd
+
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
 from jobspy import scrape_jobs
 
 STATE_FILE = r".\state.json"
