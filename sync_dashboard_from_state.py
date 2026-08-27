@@ -17,6 +17,9 @@ def sync_dashboard():
     with open(STATE_FILE, 'r', encoding='utf-8') as f:
         state = json.load(f)
 
+    from config_loader import CONFIG
+    config_json_str = json.dumps(CONFIG)
+
     apps = state.get("applications", [])
     gmail_jobs = state.get("verified_gmail_jobs", [])
     review_queue = state.get("review_queue", [])
@@ -1272,6 +1275,7 @@ def sync_dashboard():
 
   <script>
     const APPS_DATA = {apps_json_str};
+    const CONFIG_DATA = {config_json_str};
     let currentFilter = 'all';
     let currentAppDetailId = null;
     let dateSortAsc = true;
@@ -1889,38 +1893,40 @@ def sync_dashboard():
       }}
     }}
 
+    function populateSettingsForm(cfg) {{
+      if (!cfg) return;
+      const cand = cfg.candidate || {{}};
+      const matrix = cfg.search_matrix || {{}};
+      const scoring = cfg.scoring_signals || {{}};
+
+      document.getElementById('cfgFullName').value = cand.full_name || '';
+      document.getElementById('cfgEmail').value = cand.email || '';
+      document.getElementById('cfgMinSalary').value = cand.min_salary_floor || 200000;
+      document.getElementById('cfgTargetSalary').value = cand.target_salary_baseline || 225000;
+      document.getElementById('cfgPrimaryLocation').value = cand.primary_location || '';
+      document.getElementById('cfgLocalCities').value = (cand.allowed_local_cities || []).join(', ');
+
+      document.getElementById('cfgTargetTitles').value = (matrix.target_titles || []).join('\n');
+      document.getElementById('cfgExcludedTitles').value = (matrix.excluded_titles || []).join(', ');
+
+      document.getElementById('cfgPositiveKeywords').value = (scoring.positive_keywords || []).join(', ');
+      document.getElementById('cfgNegativeKeywords').value = (scoring.negative_keywords || []).join(', ');
+    }}
+
     async function openSettingsModal() {{
       document.getElementById('settingsModal').style.display = 'flex';
       switchSettingsTab('candidate');
-      document.getElementById('settingsStatusMsg').innerText = 'Loading settings...';
+      populateSettingsForm(CONFIG_DATA);
 
       try {{
         const res = await fetch('http://localhost:5000/api/get_config');
         const data = await res.json();
         if (data.status === 'success') {{
-          const cfg = data.config || {{}};
-          const cand = cfg.candidate || {{}};
-          const matrix = cfg.search_matrix || {{}};
-          const scoring = cfg.scoring_signals || {{}};
-
-          document.getElementById('cfgFullName').value = cand.full_name || '';
-          document.getElementById('cfgEmail').value = cand.email || '';
-          document.getElementById('cfgMinSalary').value = cand.min_salary_floor || 200000;
-          document.getElementById('cfgTargetSalary').value = cand.target_salary_baseline || 225000;
-          document.getElementById('cfgPrimaryLocation').value = cand.primary_location || '';
-          document.getElementById('cfgLocalCities').value = (cand.allowed_local_cities || []).join(', ');
-
-          document.getElementById('cfgTargetTitles').value = (matrix.target_titles || []).join('\n');
-          document.getElementById('cfgExcludedTitles').value = (matrix.excluded_titles || []).join(', ');
-
-          document.getElementById('cfgPositiveKeywords').value = (scoring.positive_keywords || []).join(', ');
-          document.getElementById('cfgNegativeKeywords').value = (scoring.negative_keywords || []).join(', ');
-
+          populateSettingsForm(data.config);
           renderResumesList(data.resumes || []);
-          document.getElementById('settingsStatusMsg').innerText = '';
         }}
       }} catch (err) {{
-        document.getElementById('settingsStatusMsg').innerText = 'Error loading settings.';
+        // Static fallback already rendered
       }}
     }}
 
