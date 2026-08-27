@@ -1172,108 +1172,9 @@ def sync_dashboard():
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Settings & Configuration Modal -->
-    <div id="settingsModal" class="modal-backdrop" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(10,15,29,0.92); z-index:99999; align-items:center; justify-content:center;">
-      <div class="modal-content" style="max-width: 900px;">
-        <div class="modal-header">
-          <div>
-            <h2 style="margin:0; font-size:1.3rem; color:#ffffff; font-weight:700;">⚙️ System Settings & Configuration Portal</h2>
-            <p style="margin:0.25rem 0 0 0; font-size:0.82rem; color:var(--text-muted);">Manage candidate baseline, target matrices, scoring signals, and master resume assets.</p>
-          </div>
-          <button class="btn-secondary" style="padding:0.3rem 0.75rem;" onclick="closeSettingsModal()">✕</button>
-        </div>
-
-        <div style="display:flex; border-bottom: 1px solid var(--panel-border); padding: 0 1.5rem;">
-          <button class="modal-tab-btn active" id="tabSetCandidate" onclick="switchSettingsTab('candidate')">👤 Candidate Profile</button>
-          <button class="modal-tab-btn" id="tabSetMatrix" onclick="switchSettingsTab('matrix')">🎯 Search Matrix & Titles</button>
-          <button class="modal-tab-btn" id="tabSetScoring" onclick="switchSettingsTab('scoring')">⚡ Vibe Coding & Signals</button>
-          <button class="modal-tab-btn" id="tabSetResumes" onclick="switchSettingsTab('resumes')">📄 Resume & Assets</button>
-        </div>
-
-        <div class="modal-body" style="padding: 1.5rem; overflow-y: auto; max-height: 65vh;">
-          <!-- Tab 1: Candidate Profile -->
-          <div id="secSetCandidate">
-            <div class="grid-2" style="margin-bottom: 1rem;">
-              <div class="form-group">
-                <label class="form-label">Candidate Full Name</label>
-                <input type="text" id="cfgFullName" class="form-input" />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Contact Email</label>
-                <input type="email" id="cfgEmail" class="form-input" />
-              </div>
-            </div>
-            <div class="grid-2" style="margin-bottom: 1rem;">
-              <div class="form-group">
-                <label class="form-label">Minimum Salary Floor ($ USD)</label>
-                <input type="number" id="cfgMinSalary" class="form-input" step="5000" />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Target Salary Baseline ($ USD)</label>
-                <input type="number" id="cfgTargetSalary" class="form-input" step="5000" />
-              </div>
-            </div>
-            <div class="grid-2">
-              <div class="form-group">
-                <label class="form-label">Primary Location</label>
-                <input type="text" id="cfgPrimaryLocation" class="form-input" />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Allowed Local Cities (Comma-separated)</label>
-                <input type="text" id="cfgLocalCities" class="form-input" />
-              </div>
-            </div>
-          </div>
-
-          <!-- Tab 2: Search Matrix -->
-          <div id="secSetMatrix" style="display:none;">
-            <div class="form-group">
-              <label class="form-label">Target Job Titles (One title per line)</label>
-              <textarea id="cfgTargetTitles" class="form-textarea" style="min-height:140px;"></textarea>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Excluded Role Titles & Keywords (Comma or line-separated)</label>
-              <textarea id="cfgExcludedTitles" class="form-textarea" style="min-height:90px;"></textarea>
-            </div>
-          </div>
-
-          <!-- Tab 3: Scoring Signals -->
-          <div id="secSetScoring" style="display:none;">
-            <div class="form-group">
-              <label class="form-label">Positive Match Keywords & Vibe Coding Signals (Comma-separated)</label>
-              <textarea id="cfgPositiveKeywords" class="form-textarea" style="min-height:100px;"></textarea>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Negative Rejection Keywords (Comma-separated)</label>
-              <textarea id="cfgNegativeKeywords" class="form-textarea" style="min-height:90px;"></textarea>
-            </div>
-          </div>
-
-          <!-- Tab 4: Resume & Asset Manager -->
-          <div id="secSetResumes" style="display:none;">
-            <div style="background: rgba(255,255,255,0.03); border: 1px dashed var(--accent-blue); border-radius: 0.75rem; padding: 1.5rem; text-align: center; margin-bottom: 1.5rem;">
-              <h3 style="margin:0 0 0.5rem 0; font-size:1.05rem; color:#ffffff;">📤 Upload or Replace Master Resume / Template</h3>
-              <p style="margin:0 0 1rem 0; font-size:0.82rem; color:var(--text-muted);">Select a PDF or DOCX file to save directly into your project's <code>resumes/</code> folder.</p>
-              <input type="file" id="resumeFileInput" accept=".pdf,.docx,.doc,.txt" style="display:none;" onchange="handleResumeUpload(this)" />
-              <button class="btn-primary" onclick="document.getElementById('resumeFileInput').click()">📁 Select Resume File to Upload</button>
-            </div>
-            <div>
-              <h4 style="margin:0 0 0.75rem 0; font-size:0.95rem; color:var(--accent-cyan);">Active Master Resumes in Project Directory</h4>
-              <div id="activeResumesList" style="font-size:0.85rem; color:var(--text-muted);">Loading resumes...</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="modal-footer" style="padding: 1.25rem 1.5rem; border-top: 1px solid var(--panel-border); display:flex; justify-content:space-between; align-items:center;">
-          <span id="settingsStatusMsg" style="font-size:0.85rem; color:var(--accent-green);"></span>
-          <div style="display:flex; gap:0.75rem;">
-            <button class="btn-secondary" onclick="closeSettingsModal()">Cancel</button>
-            <button class="btn-primary" onclick="saveSettingsConfig()">💾 Save Settings & Update Platform</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Settings & Configuration Modal moved to root body level -->
 
   <script>
     const APPS_DATA = {apps_json_str};
@@ -2098,6 +1999,108 @@ def sync_dashboard():
 
   <div id="toastNotification" style="display:none; position:fixed; bottom:2rem; right:2rem; background:#0f172a; border:1px solid var(--accent-blue); padding:1rem 1.5rem; border-radius:0.75rem; color:#fff; box-shadow:0 10px 30px rgba(0,0,0,0.5); z-index:10000;">
     <div id="toastMessage"></div>
+  </div>
+
+  <!-- Settings & Configuration Modal (Root Level) -->
+  <div id="settingsModal" class="modal-backdrop" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(10,15,29,0.92); z-index:99999; align-items:center; justify-content:center;">
+    <div class="modal-content" style="max-width: 900px;">
+      <div class="modal-header">
+        <div>
+          <h2 style="margin:0; font-size:1.3rem; color:#ffffff; font-weight:700;">⚙️ System Settings & Configuration Portal</h2>
+          <p style="margin:0.25rem 0 0 0; font-size:0.82rem; color:var(--text-muted);">Manage candidate baseline, target matrices, scoring signals, and master resume assets.</p>
+        </div>
+        <button class="btn-secondary" style="padding:0.3rem 0.75rem;" onclick="closeSettingsModal()">✕</button>
+      </div>
+
+      <div style="display:flex; border-bottom: 1px solid var(--panel-border); padding: 0 1.5rem;">
+        <button class="modal-tab-btn active" id="tabSetCandidate" onclick="switchSettingsTab('candidate')">👤 Candidate Profile</button>
+        <button class="modal-tab-btn" id="tabSetMatrix" onclick="switchSettingsTab('matrix')">🎯 Search Matrix & Titles</button>
+        <button class="modal-tab-btn" id="tabSetScoring" onclick="switchSettingsTab('scoring')">⚡ Vibe Coding & Signals</button>
+        <button class="modal-tab-btn" id="tabSetResumes" onclick="switchSettingsTab('resumes')">📄 Resume & Assets</button>
+      </div>
+
+      <div class="modal-body" style="padding: 1.5rem; overflow-y: auto; max-height: 65vh;">
+        <!-- Tab 1: Candidate Profile -->
+        <div id="secSetCandidate">
+          <div class="grid-2" style="margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Candidate Full Name</label>
+              <input type="text" id="cfgFullName" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contact Email</label>
+              <input type="email" id="cfgEmail" class="form-input" />
+            </div>
+          </div>
+          <div class="grid-2" style="margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Minimum Salary Floor ($ USD)</label>
+              <input type="number" id="cfgMinSalary" class="form-input" step="5000" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Target Salary Baseline ($ USD)</label>
+              <input type="number" id="cfgTargetSalary" class="form-input" step="5000" />
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">Primary Location</label>
+              <input type="text" id="cfgPrimaryLocation" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Allowed Local Cities (Comma-separated)</label>
+              <input type="text" id="cfgLocalCities" class="form-input" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Search Matrix -->
+        <div id="secSetMatrix" style="display:none;">
+          <div class="form-group">
+            <label class="form-label">Target Job Titles (One title per line)</label>
+            <textarea id="cfgTargetTitles" class="form-textarea" style="min-height:140px;"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Excluded Role Titles & Keywords (Comma or line-separated)</label>
+            <textarea id="cfgExcludedTitles" class="form-textarea" style="min-height:90px;"></textarea>
+          </div>
+        </div>
+
+        <!-- Tab 3: Scoring Signals -->
+        <div id="secSetScoring" style="display:none;">
+          <div class="form-group">
+            <label class="form-label">Positive Match Keywords & Vibe Coding Signals (Comma-separated)</label>
+            <textarea id="cfgPositiveKeywords" class="form-textarea" style="min-height:100px;"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Negative Rejection Keywords (Comma-separated)</label>
+            <textarea id="cfgNegativeKeywords" class="form-textarea" style="min-height:90px;"></textarea>
+          </div>
+        </div>
+
+        <!-- Tab 4: Resume & Asset Manager -->
+        <div id="secSetResumes" style="display:none;">
+          <div style="background: rgba(255,255,255,0.03); border: 1px dashed var(--accent-blue); border-radius: 0.75rem; padding: 1.5rem; text-align: center; margin-bottom: 1.5rem;">
+            <h3 style="margin:0 0 0.5rem 0; font-size:1.05rem; color:#ffffff;">📤 Upload or Replace Master Resume / Template</h3>
+            <p style="margin:0 0 1rem 0; font-size:0.82rem; color:var(--text-muted);">Select a PDF or DOCX file to save directly into your project's <code>resumes/</code> folder.</p>
+            <input type="file" id="resumeFileInput" accept=".pdf,.docx,.doc,.txt" style="display:none;" onchange="handleResumeUpload(this)" />
+            <button class="btn-primary" onclick="document.getElementById('resumeFileInput').click()">📁 Select Resume File to Upload</button>
+          </div>
+          <div>
+            <h4 style="margin:0 0 0.75rem 0; font-size:0.95rem; color:var(--accent-cyan);">Active Master Resumes in Project Directory</h4>
+            <div id="activeResumesList" style="font-size:0.85rem; color:var(--text-muted);">Loading resumes...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding: 1.25rem 1.5rem; border-top: 1px solid var(--panel-border); display:flex; justify-content:space-between; align-items:center;">
+        <span id="settingsStatusMsg" style="font-size:0.85rem; color:var(--accent-green);"></span>
+        <div style="display:flex; gap:0.75rem;">
+          <button class="btn-secondary" onclick="closeSettingsModal()">Cancel</button>
+          <button class="btn-primary" onclick="saveSettingsConfig()">💾 Save Settings & Update Platform</button>
+        </div>
+      </div>
+    </div>
   </div>
 </body>
 </html>
