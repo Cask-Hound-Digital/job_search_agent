@@ -56,8 +56,9 @@ def sync_dashboard():
             continue
         seen_urls.add(url_clean)
         
-        title = g.get("title", "").strip()
-        if not title or "unsubscribe" in title.lower() or "privacy policy" in title.lower():
+        title = g.get("audited_role_title", g.get("title", "")).strip()
+        title_low = title.lower()
+        if not title or any(k in title_low for k in ["unsubscribe", "privacy policy", "project manager", "project management", "pmo manager", "technical project manager"]):
             continue
 
         unique_queue.append(g)
