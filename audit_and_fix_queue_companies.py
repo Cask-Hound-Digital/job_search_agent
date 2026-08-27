@@ -153,6 +153,16 @@ def audit_queue():
         j["audited_role_title"] = real_role if len(real_role) > 3 else raw_title
         j["page_title"] = page_title or ""
 
+        # Post-audit location guardrail check
+        from fetch_jobspy_roles import is_valid_location
+        combined_check = f"{j['company_name']} | {j['audited_role_title']} | {page_title} | {url}"
+        if not is_valid_location(combined_check):
+            print(f" [REJECTED POST-AUDIT LOCATION] '{j['audited_role_title']}' at '{j['company_name']}'")
+            j['archive_reason'] = f"Strict Location Guardrail (Non-Preferred Hybrid City Onsite: {j['company_name']})"
+            j['archive_notes'] = 'Auto-pruned post-audit non-remote non-Preferred Hybrid City role'
+            state.setdefault("archived_queue", []).append(j)
+            continue
+
         audited_jobs.append(j)
 
     state["verified_gmail_jobs"] = audited_jobs

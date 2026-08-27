@@ -37,35 +37,36 @@ def clean_url(url):
         url = url.split('&')[0].split('?')[0].split('#')[0]
     return url.rstrip('/')
 
-DFW_CITIES = [
-    "dallas", "fort worth", "{{YOUR_CITY}}", "irving", "{{YOUR_CITY}}", "plano", 
-    "frisco", "addison", "southlake", "mansfield", "lewisville", "grapevine", 
-    "richardson", "denton", "Preferred Hybrid City", "colleyville", "euless", "bedford"
+NON_DFW_LOCATIONS = [
+    "tampa", "florida", "fl", "miami", "orlando", "seattle", "wa", "boston", "ma",
+    "chicago", "il", "atlanta", "ga", "los angeles", "san francisco", "san jose", "ca",
+    "new york", "ny", "nc", "charlotte", "raleigh", "denver", "co", "phoenix", "az",
+    "minneapolis", "mn", "detroit", "mi", "philadelphia", "pa", "london", "uk",
+    "canada", "paris", "france", "india", "australia", "singapore", "germany", "berlin", "tokyo"
 ]
 
-def is_valid_location(loc_str, is_remote_query):
+def is_valid_location(loc_str, is_remote_query=True):
     if not loc_str:
         return True
     l_lower = loc_str.lower()
-    
-    # Reject explicitly labeled onsite/on-site roles outside Preferred Hybrid City
-    if "onsite" in l_lower or "on-site" in l_lower or "in-office" in l_lower or "in office" in l_lower:
-        if not any(Preferred Hybrid City in l_lower for Preferred Hybrid City in DFW_CITIES):
-            return False
+
+    # If explicitly remote, allow
+    if any(k in l_lower for k in ["remote", "work from home", "telecommute", "anywhere", "100% remote", "remote (us)", "remote - us"]):
+        return True
+
+    # If Preferred Hybrid City local, allow
+    if any(re.search(rf'\b{Preferred Hybrid City}\b', l_lower) for Preferred Hybrid City in DFW_CITIES):
+        return True
+
+    # Reject explicitly non-Preferred Hybrid City locations without remote tag
+    if any(re.search(rf'\b{kw}\b', l_lower) for kw in NON_DFW_LOCATIONS):
+        return False
 
     if is_remote_query:
-        # If searching Remote, require "remote" OR reject non-Preferred Hybrid City cities if labeled hybrid
-        if "remote" in l_lower or "work from home" in l_lower or "telecommute" in l_lower or "anywhere" in l_lower or "united states" == l_lower or "us" == l_lower:
-            return True
-        # If it specifies a city and is NOT Preferred Hybrid City, reject
-        if any(Preferred Hybrid City in l_lower for Preferred Hybrid City in DFW_CITIES):
-            return True
-        # If it specifies another city (e.g. Austin, New York, Boston) without "remote", reject
+        # If searching remote and location is a specific non-Preferred Hybrid City place without 'remote', reject
         return False
-    else:
-        # Searching Dallas, TX: Must be Remote OR Preferred Hybrid City local
-        if "remote" in l_lower:
-            return True
+
+    return True
         if any(Preferred Hybrid City in l_lower for Preferred Hybrid City in DFW_CITIES):
             return True
         return False
