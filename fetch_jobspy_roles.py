@@ -14,13 +14,13 @@ TARGET_TITLES = [
     "VP of Digital Experience",
     "Fractional VP of Digital Product",
     "Digital Transformation Advisor",
-    "AI Transformation Owner",
+    "Target Role Title",
     "AI Agent Manager",
-    "Director of AI Operations",
+    "Target Role Title",
     "AI Operations Lead",
-    "Manager AI Automation",
-    "Agentic AI Engineering Lead",
-    "Head of AI Transformation"
+    "Target Role Title",
+    "Target Role Title",
+    "Target Role Title"
 ]
 
 EXCLUDED_TITLES = [

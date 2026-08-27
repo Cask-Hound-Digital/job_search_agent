@@ -150,6 +150,6 @@ def notify_fresh_jobs(jobs_list):
 if __name__ == '__main__':
     # Test notification helper
     test_co = "GitLab"
-    test_title = "AI Transformation Owner, Product & Design"
+    test_title = "Target Role Title, Product & Design"
     test_url = "https://job-boards.greenhouse.io/gitlab/jobs/8716179002"
     send_telegram_alert(test_co, test_title, test_url, "100% Remote (US)", "23 minutes ago")

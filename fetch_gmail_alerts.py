@@ -37,7 +37,7 @@ TARGET_TITLES = [
     "vp, digital", "vp of digital", "vp, experience", "vp of experience", "vp - seo", "vp of seo", "vp, web", "vp of web", "vice president, digital", "vice president, ecommerce", "vp, product and ux",
     "fractional vp", "fractional vp of digital", "fractional vp, digital product", "digital product", "web operations",
     "digital transformation advisor", "transformation advisor", "digital transformation",
-    "ai transformation owner", "ai transformation", "ai agent manager", "ai agent engineering", "building ai agents", "ai agent lead", "ai operations lead", "director of ai operations", "manager ai automation", "agentic ai engineering", "head of ai transformation",
+    "Target Role Title", "ai transformation", "ai agent manager", "ai agent engineering", "building ai agents", "ai agent lead", "ai operations lead", "Target Role Title", "Target Role Title", "agentic ai engineering", "Target Role Title",
     "sr. web", "senior web", "senior manager, web", "senior manager of web", "senior manager, digital", "senior manager of digital",
     "web & ai", "web and ai"
 ]
