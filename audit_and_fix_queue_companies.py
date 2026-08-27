@@ -123,6 +123,13 @@ def audit_queue():
 
         raw_title = j.get("title", "")
         email_subj = j.get("email_subject", "")
+        existing_co = j.get("company_name", "").strip()
+        existing_title = j.get("audited_role_title", "").strip()
+
+        # Skip HTTP re-fetch if job already has a ground-truth company name and title
+        if existing_co and existing_co != "Verified Employer" and existing_title and len(existing_co) > 1:
+            audited_jobs.append(j)
+            continue
 
         print(f"[{idx+1}/{len(gmail_jobs)}] Fetching page content for {url}...")
         html = fetch_page_content(url)
