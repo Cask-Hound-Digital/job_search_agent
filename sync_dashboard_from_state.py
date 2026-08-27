@@ -841,14 +841,19 @@ def sync_dashboard():
             else:
                 extracted_loc = "100% Remote / Preferred Hybrid City Hybrid"
 
-        # Compute specific role match score based on candidate criteria alignment
+        # Compute specific role match score based on candidate criteria alignment & vibe coding signals
         title_lower = title.lower()
+        full_text_lower = f"{title_lower} {str(item.get('description', '')).lower()}"
+        
+        pos_keywords = ["vibe coding", "prototyping", "ai-assisted", "automation", "api integration", "0-to-1", "martech", "web strategy"]
+        pos_hits = sum(1 for kw in pos_keywords if kw in full_text_lower)
+
         if any(k in title_lower for k in ["vp", "vice president", "head of"]):
-            match = 98
+            match = 98 + min(pos_hits, 1)
         elif "director" in title_lower:
-            match = 97
-        elif any(k in title_lower for k in ["web", "digital", "strategy", "tech", "ai"]):
-            match = 96
+            match = 97 + min(pos_hits, 2)
+        elif any(k in title_lower for k in ["web", "digital", "strategy", "tech", "ai", "product"]):
+            match = 96 + min(pos_hits, 2)
         else:
             match = 95
 

@@ -3,7 +3,9 @@ import re
 import json
 import urllib.request
 from datetime import datetime
-from config_loader import get_allowed_local_cities, get_min_salary_floor
+from config_loader import get_allowed_local_cities, get_min_salary_floor, get_excluded_titles
+
+EXCLUDED_TITLES = get_excluded_titles()
 
 STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "state.json")
 
@@ -96,6 +98,7 @@ def audit_compensation_and_workplace():
     clean_rq = []
     pruned_sal = 0
     pruned_workplace = 0
+    pruned_ic = 0
 
     print(f"Starting Compensation (<${MIN_SALARY_FLOOR:,.0f}) & Workplace Audit of {len(rq)} Queue Items...")
 
@@ -122,6 +125,15 @@ def audit_compensation_and_workplace():
             j['archive_notes'] = f"Pruned unwanted workplace role ({co} - {title} - {loc})"
             arch.append(j)
             pruned_workplace += 1
+            continue
+
+        # 3. Excluded IC Developer Titles check (unless leadership title present)
+        t_low = title.lower()
+        if any(ex.lower() in t_low for ex in EXCLUDED_TITLES) and not any(k in t_low for k in ["director", "vp", "head of", "vice president", "principal"]):
+            j['archive_reason'] = f"Excluded IC Developer Title ({title})"
+            j['archive_notes'] = f"Pruned pure IC developer role ({co} - {title})"
+            arch.append(j)
+            pruned_ic += 1
             continue
 
         clean_rq.append(j)

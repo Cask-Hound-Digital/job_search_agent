@@ -18,15 +18,34 @@
   },
   "search_matrix": {
     "target_titles": [
-      "Director of Product",
-      "VP of Engineering",
-      "Technical Program Manager"
+      "Director of Product Strategy",
+      "VP of Digital Marketing & Experience",
+      "Director of Marketing Technology & Operations",
+      "Head of Growth Operations"
     ],
     "excluded_titles": [
       "intern",
       "junior",
       "recruiter",
-      "sales manager"
+      "sales manager",
+      "software engineer",
+      "full stack"
+    ]
+  },
+  "scoring_signals": {
+    "positive_keywords": [
+      "vibe coding",
+      "rapid prototyping",
+      "AI-assisted",
+      "workflow automation",
+      "API integration",
+      "technical strategy"
+    ],
+    "negative_keywords": [
+      "write production code",
+      "5+ years Java",
+      "on-call rotation",
+      "CI/CD pipeline maintenance"
     ]
   },
   "notifications": {

@@ -42,3 +42,12 @@ def get_min_salary_floor():
 
 def get_primary_location():
     return get_candidate_config().get("primary_location", "Remote")
+
+def get_scoring_signals():
+    return CONFIG.get("scoring_signals", {})
+
+def get_positive_keywords():
+    return get_scoring_signals().get("positive_keywords", [])
+
+def get_negative_keywords():
+    return get_scoring_signals().get("negative_keywords", [])
