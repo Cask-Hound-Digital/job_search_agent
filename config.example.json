@@ -1,0 +1,37 @@
+{
+  "candidate": {
+    "full_name": "Your Full Name",
+    "email": "your_email@example.com",
+    "min_salary_floor": 150000,
+    "target_salary_baseline": 180000,
+    "workplace_preferences": [
+      "Remote",
+      "Hybrid"
+    ],
+    "primary_location": "City, State",
+    "allowed_local_cities": [
+      "city",
+      "nearby_city",
+      "state",
+      "state_abbreviation"
+    ]
+  },
+  "search_matrix": {
+    "target_titles": [
+      "Director of Product",
+      "VP of Engineering",
+      "Technical Program Manager"
+    ],
+    "excluded_titles": [
+      "intern",
+      "junior",
+      "recruiter",
+      "sales manager"
+    ]
+  },
+  "notifications": {
+    "telegram_enabled": true,
+    "notify_fresh_only_24h": true,
+    "require_explicit_date": true
+  }
+}

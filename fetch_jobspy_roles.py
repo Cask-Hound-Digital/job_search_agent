@@ -9,28 +9,15 @@ if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
 from jobspy import scrape_jobs
 
+from config_loader import get_target_titles, get_excluded_titles, get_allowed_local_cities, get_min_salary_floor, get_primary_location
+
 STATE_FILE = r".\state.json"
 
-TARGET_TITLES = [
-    "Director of Web Marketing",
-    "{{YOUR_TARGET_ROLE_1}}",
-    "Director of Website Growth",
-    "VP of Digital Experience",
-    "Fractional VP of Digital Product",
-    "Digital Transformation Advisor",
-    "Target Role Title",
-    "AI Agent Manager",
-    "Target Role Title",
-    "AI Operations Lead",
-    "Target Role Title",
-    "Target Role Title",
-    "Target Role Title"
-]
-
-EXCLUDED_TITLES = [
-    "nursing", "medical", "clinical", "sales director", "account executive", 
-    "wealth management", "financial advisor", "hardware", "qa director"
-]
+TARGET_TITLES = get_target_titles()
+EXCLUDED_TITLES = get_excluded_titles()
+ALLOWED_LOCAL_CITIES = get_allowed_local_cities()
+MIN_SALARY_FLOOR = get_min_salary_floor()
+PRIMARY_LOCATION = get_primary_location()
 
 def clean_url(url):
     if not url:
@@ -40,12 +27,6 @@ def clean_url(url):
     elif "indeed.com" in url or "builtin.com" in url or "greenhouse.io" in url or "lever.co" in url:
         url = url.split('&')[0].split('?')[0].split('#')[0]
     return url.rstrip('/')
-
-DFW_CITIES = [
-    "dallas", "fort worth", "{{YOUR_CITY}}", "irving", "{{YOUR_CITY}}", "plano", 
-    "frisco", "addison", "southlake", "mansfield", "lewisville", "grapevine", 
-    "richardson", "denton", "Preferred Hybrid City", "colleyville", "euless", "bedford", "texas", "tx"
-]
 
 NON_DFW_LOCATIONS = [
     "tampa", "florida", "fl", "miami", "orlando", "seattle", "wa", "boston", "ma",
@@ -69,7 +50,11 @@ def is_valid_location(loc_str, is_remote_query=True):
     if any(k in l_lower for k in ["remote", "work from home", "telecommute", "anywhere", "100% remote", "remote (us)", "remote - us"]):
         return True
 
-    # Reject explicitly non-Preferred Hybrid City locations without remote tag
+    # If local city match, allow
+    if any(re.search(rf'\b{city}\b', l_lower) for city in ALLOWED_LOCAL_CITIES):
+        return True
+
+    # Reject explicitly non-matching locations without remote tag
     if any(re.search(rf'\b{kw}\b', l_lower) for kw in NON_DFW_LOCATIONS):
         return False
 

@@ -27,32 +27,11 @@ STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "state.jso
 # Candidate Expanded Target Title & Keyword Matrix
 TARGET_TITLES = [
     "head of web", "head of digital", "head of web operations", "head of web marketing", "head of web development", "head of website growth", "head of growth",
-    "founding web", "founding growth", "founding marketer",
-    "director, web", "director of web", "director, digital", "director of digital", "e-commerce director", "director, ecommerce", "director of ecommerce",
-    "director of website growth", "director, website growth", "director of growth marketing", "director, growth marketing", "director, growth", "director of growth",
-    "director, ai", "director of ai", "director, analytics & web", "director of plg", "director, plg", "director, geo", "director of geo", "director, seo", "director of seo",
-    "engineering director, web", "director, web operations", "director of web strategy", "director, experience", "director of experience",
-    "senior director, web", "senior director of web", "senior director, digital", "senior director of digital",
-    "senior director, growth", "senior director of growth", "senior director, global marketing",
-    "vp, digital", "vp of digital", "vp, experience", "vp of experience", "vp - seo", "vp of seo", "vp, web", "vp of web", "vice president, digital", "vice president, ecommerce", "vp, product and ux",
-    "fractional vp", "fractional vp of digital", "fractional vp, digital product", "digital product", "web operations",
-    "digital transformation advisor", "transformation advisor", "digital transformation",
-    "Target Role Title", "ai transformation", "ai agent manager", "ai agent engineering", "building ai agents", "ai agent lead", "ai operations lead", "Target Role Title", "Target Role Title", "agentic ai engineering", "Target Role Title",
-    "sr. web", "senior web", "senior manager, web", "senior manager of web", "senior manager, digital", "senior manager of digital",
-    "web & ai", "web and ai"
-]
+from config_loader import get_target_titles, get_excluded_titles, get_allowed_local_cities
 
-EXCLUDED_TITLES = [
-    "software architecture", "enterprise architect", "cloud architect",
-    "infrastructure director", "qa director", "devops director",
-    "hardware director", "sales director", "account executive", "financial advisor",
-    "nursing director", "medical director", "clinical director", "wealth management", "rewards business partner"
-]
-
-DFW_LOCATIONS = [
-    "dallas", "fort worth", "Preferred Hybrid City", "{{YOUR_CITY}}", "irving", "plano",
-    "frisco", "richardson", "{{YOUR_CITY}}", "texas", "tx"
-]
+TARGET_TITLES = get_target_titles()
+EXCLUDED_TITLES = get_excluded_titles()
+DFW_LOCATIONS = get_allowed_local_cities()
 
 REJECTION_RULES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rejection_rules.json")
 
