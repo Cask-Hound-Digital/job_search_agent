@@ -70,10 +70,13 @@ def extract_company_and_role_from_title(page_title, raw_title="", email_subject=
 
     # 6. Paylocity / ATS Portals
     if "paylocity.com" in url:
-        payloc_co = re.search(r'at\s+([A-Z0-9\s,&.-]+?)(?:\.|<|\n|\s+is\s+seeking)', html, re.IGNORECASE) if html else None
         company = payloc_co.group(1).strip() if payloc_co else "CeriFi"
         role = og_title if og_title else (pt.split("-")[0].strip() if pt else raw_title)
         return company, role
+
+    # General Fallback
+    parts = pt.split("|")[0].split("-")[0].strip() if pt else raw_title
+    return "Verified Employer", parts if parts else raw_title
 
 def extract_posted_time_from_html(html):
     if not html:
@@ -97,10 +100,6 @@ def extract_posted_time_from_html(html):
         return "Be an early applicant (<24h)", "Be an early applicant (<24h)"
 
     return "", ""
-
-# General Fallback
-    parts = pt.split("|")[0].split("-")[0].strip() if pt else raw_title
-    return "Verified Employer", parts if parts else raw_title
 
 def audit_queue():
     if not os.path.exists(STATE_FILE):
