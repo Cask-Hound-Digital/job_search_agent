@@ -748,16 +748,4 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(json.dumps({"status": "success", "company": company_name, "title": role_title}).encode('utf-8'))
             except Exception as e:
-                self.send_response(500)
-                self._set_cors_headers()
-                self.end_headers()
-                self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode('utf-8'))
-
-        else:
-            self.send_response(404)
-            self.end_headers()
-
-if __name__ == '__main__':
-    print(f"Starting Job Search Dashboard API Server on http://localhost:{PORT}...")
-    server = ThreadedHTTPServer(('0.0.0.0', PORT), DashboardRequestHandler)
-    server.serve_forever()
+                self.send_response(5

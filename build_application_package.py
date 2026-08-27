@@ -865,43 +865,4 @@ TWENTYFOUR_SEVEN_PAYLOAD = {
         "recipient": "Executive Selection Committee & Digital Transformation Leadership\n{{TARGET_COMPANY_2}} / {{TARGET_COMPANY_1}}\nRemote Executive Office | USA (Job ID: 4449323011)",
         "salutation": "Dear Selection Committee,",
         "paragraphs": [
-            "I am writing to express my strong enthusiasm for the {{YOUR_TARGET_ROLE_5}} position at {{TARGET_COMPANY_1}} (via {{TARGET_COMPANY_2}}, Job ID: 4449323011). With over 18 years of experience leading enterprise digital transformation strategy, digital product management, technology modernization, and cross-functional technology teams, I connect directly with your mission to define, govern, and execute a multi-year digital transformation roadmap.",
-            "Throughout my 18-year tenure as {{YOUR_MOST_RECENT_TITLE}} at {{MOST_RECENT_COMPANY}} ({{MOST_RECENT_EMPLOYMENT_DATES}}), I built a high-performing global organization of 13+ cross-functional specialists (development, DevOps, QA, BA, SEO). I owned our corporate web channel as the primary demand generation engine, directing a 34-country {{ENTERPRISE_CMS}} 6.x migration that reduced page load times by 40% while leading the discovery, ROI evaluation, and decision-making for a next-gen DXP platform to replace legacy {{ENTERPRISE_CMS}}. Additionally, I organized and executed the TrendAI site redesign and migration to {{HEADLESS_CMS}} CMS, while pioneering Generative Engine Optimization (GEO/AEO) strategies that increased search visibility by 40% and lifted organic demo conversions by +15%.",
-            "Prior to {{MOST_RECENT_COMPANY}}, I served as {{YOUR_PREVIOUS_TITLE_1}} at {{PREVIOUS_COMPANY_2}} in {{YOUR_CITY_STATE}}, where I managed digital storefront software development across web and mobile partner channels (Sprint), boosting checkout conversion rates by +34%. My background combines executive digital consulting, deep technical fluency across enterprise MarTech/FinTech ecosystems, and a proven track record leading cross-disciplinary teams through organizational change.",
-            "Thank you for your time and consideration. I welcome the opportunity to discuss how my background in digital transformation, AI innovation, and executive leadership will drive immediate impact for the Digital Transformation Office."
-        ]
-    }
-}
-
-
-if __name__ == '__main__':
-    payload_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "current_payload.json")
-    
-    parser = argparse.ArgumentParser(description="Master Application Package Generator for {{YOUR_FULL_NAME}}")
-    parser.add_argument("--job", choices=["databricks", "sixflags", "grafana", "neosecurity", "{{TARGET_COMPANY_6}}", "{{TARGET_COMPANY_3}}", "{{TARGET_COMPANY_2}}_fvp", "24seven", "cerifi", "active"], default="active", help="Select target job payload")
-    args = parser.parse_args()
-
-    if os.path.exists(payload_file) and args.job == "active":
-        print(f"Loading active payload from {payload_file}...")
-        with open(payload_file, 'r', encoding='utf-8') as f:
-            active_payload = json.load(f)
-        build_package(active_payload)
-    elif args.job == "databricks":
-        build_package(DATABRICKS_PAYLOAD)
-    elif args.job == "sixflags":
-        build_package(SIXFLAGS_PAYLOAD)
-    elif args.job == "grafana":
-        build_package(GRAFANA_PAYLOAD)
-    elif args.job == "neosecurity":
-        build_package(NEO_SECURITY_PAYLOAD)
-    elif args.job == "{{TARGET_COMPANY_6}}":
-        build_package({{TARGET_COMPANY_6}}_PAYLOAD)
-    elif args.job == "{{TARGET_COMPANY_3}}":
-        build_package({{TARGET_COMPANY_3}}_PAYLOAD)
-    elif args.job == "24seven":
-        build_package(TWENTYFOUR_SEVEN_PAYLOAD)
-    elif args.job == "cerifi":
-        build_package(CERIFI_PAYLOAD)
-    elif args.job == "{{TARGET_COMPANY_2}}_fvp":
-        build_package({{TARGET_COMPANY_2}}_FVP_PAYLOAD)
-
+            "I am writing to express my strong enthusiasm for the {{YOUR_TARGET_ROLE_5}} position at {{TARGET_COMPANY_1}} (via {{TARGET_COMPANY_2}}, Job ID: 4449323011). With over 18 years of experience leading enterprise digital transformation strategy, digital product management, techn

@@ -144,11 +144,4 @@ def extract_skills_from_url_or_text(url="", html_text=""):
         if any(s_low == a or s_low in a for a in approved_lower):
             continue
         seen_unverified_keys.add(s_low)
-        unverified_skills.append(s_display)
-
-    return relevant_approved, unverified_skills
-
-if __name__ == '__main__':
-    app, unv = extract_skills_from_url_or_text('https://www.linkedin.com/jobs/view/4456390472/')
-    print('Approved Skills Count:', len(app))
-    print('Unverified JD Skills Found:', unv)
+        unverified_skills.append(s_dis
