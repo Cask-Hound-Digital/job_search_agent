@@ -58,7 +58,7 @@ def sync_dashboard():
         
         title = g.get("audited_role_title", g.get("title", "")).strip()
         title_low = title.lower()
-        if not title or any(k in title_low for k in ["unsubscribe", "privacy policy", "project manager", "project management", "pmo manager", "technical project manager"]):
+        if not title or any(k in title_low for k in ["unsubscribe", "privacy policy", "project manager", "project management", "pmo manager", "technical project manager", "marketing operations", "marketing ops"]):
             continue
 
         unique_queue.append(g)
