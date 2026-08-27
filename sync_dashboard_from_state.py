@@ -636,8 +636,10 @@ def sync_dashboard():
       <input type="text" id="searchInput" class="search-box" placeholder="Search company, title, source..." onkeyup="filterSearch()">
     </div>
 
-    <!-- Active Applications Table -->
-    <div class="panel-container">
+    <!-- Active Pipeline View Container (Shown by Default) -->
+    <div id="activePipelineView">
+      <!-- Active Applications Table -->
+      <div class="panel-container">
       <div class="section-title">
         <span>Active Applications & Lifecycle Summary</span>
         <span class="section-badge" id="roleCount">{len(apps)} Roles Showing</span>
@@ -911,12 +913,13 @@ def sync_dashboard():
     html += f"""
       </div>
     </div>
+    </div><!-- End activePipelineView -->
 
-    <!-- Archived Opportunities Queue -->
-    <div class="panel-container" id="archivedQueuePanel">
+    <!-- Archived Opportunities Repository (Hidden by Default, Active via Tab) -->
+    <div class="panel-container" id="archivedQueuePanel" style="display:none;">
       <div class="section-title">
-        <span>Archived Queue ({len(archived_queue)} Items)</span>
-        <span class="section-badge">Archived Opportunities</span>
+        <span>Archived Opportunities Repository ({len(archived_queue)} Roles)</span>
+        <span class="section-badge" style="background:rgba(239,68,68,0.15); border-color:var(--accent-red); color:var(--accent-red);">📦 Archived Vault</span>
       </div>
       <div class="queue-grid">
 """
@@ -1346,13 +1349,17 @@ def sync_dashboard():
       currentFilter = status.toLowerCase();
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       if (btnElement) btnElement.classList.add('active');
-      filterSearch();
+
+      const activePipelineView = document.getElementById('activePipelineView');
+      const archivedQueuePanel = document.getElementById('archivedQueuePanel');
 
       if (currentFilter === 'archived') {{
-        const panel = document.getElementById('archivedQueuePanel');
-        if (panel) {{
-          panel.scrollIntoView({{ behavior: 'smooth' }});
-        }}
+        if (activePipelineView) activePipelineView.style.display = 'none';
+        if (archivedQueuePanel) archivedQueuePanel.style.display = 'block';
+      }} else {{
+        if (activePipelineView) activePipelineView.style.display = 'block';
+        if (archivedQueuePanel) archivedQueuePanel.style.display = 'none';
+        filterSearch();
       }}
     }}
 
