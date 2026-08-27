@@ -767,10 +767,8 @@ def sync_dashboard():
             posted_display = date_posted_raw
         elif posted_dt:
             posted_display = posted_dt.strftime("%b %d, %Y")
-        elif date_added_raw:
-            posted_display = date_added_raw
         else:
-            posted_display = now.strftime("%b %d, %Y")
+            posted_display = "Unknown (Check listing)"
 
         # Determine Scraped / Ingested display text
         scraped_dt = None
