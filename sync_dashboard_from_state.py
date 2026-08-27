@@ -155,31 +155,27 @@ def sync_dashboard():
   <style>
     :root {{
       --bg-dark: #090d16;
-      --panel-bg: rgba(18, 26, 43, 0.75);
+      --panel-bg: #111827;
       --panel-border: rgba(255, 255, 255, 0.08);
-      --accent-navy: #1b365d;
-      --accent-blue: #38bdf8;
-      --accent-cyan: #22d3ee;
-      --accent-green: #4ade80;
-      --accent-purple: #c084fc;
-      --accent-amber: #fbbf24;
-      --accent-rose: #f43f5e;
-      --text-muted: #94a3b8;
-      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      --accent-navy: #1e293b;
+      --accent-blue: #0ea5e9;
+      --accent-cyan: #38bdf8;
+      --accent-green: #10b981;
+      --accent-purple: #a855f7;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --text-muted: #9ca3af;
+      --glass-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.4);
     }}
 
     * {{ box-sizing: border-box; margin: 0; padding: 0; }}
 
     body {{
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg-dark);
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(27, 54, 93, 0.3) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.15) 0px, transparent 50%);
-      background-attachment: fixed;
-      color: #f8fafc;
+      color: #f3f4f6;
       min-height: 100vh;
-      padding: 2rem;
+      padding: 1.75rem;
       line-height: 1.5;
     }}
 
@@ -189,8 +185,8 @@ def sync_dashboard():
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 2rem;
-      padding-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1.25rem;
       border-bottom: 1px solid var(--panel-border);
       flex-wrap: wrap;
       gap: 1rem;
@@ -198,61 +194,64 @@ def sync_dashboard():
 
     .brand-title {{
       font-family: 'Outfit', sans-serif;
-      font-size: 2rem;
+      font-size: 1.75rem;
       font-weight: 800;
-      background: linear-gradient(135deg, #ffffff 0%, #38bdf8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.02em;
+      color: #ffffff;
+      letter-spacing: -0.025em;
     }}
 
-    .brand-subtitle {{ color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem; }}
+    .brand-subtitle {{ color: var(--text-muted); font-size: 0.88rem; margin-top: 0.2rem; }}
 
     .header-badge {{
-      background: rgba(56, 189, 248, 0.1);
-      border: 1px solid rgba(56, 189, 248, 0.3);
+      background: rgba(14, 165, 233, 0.1);
+      border: 1px solid rgba(14, 165, 233, 0.25);
       color: var(--accent-blue);
-      padding: 0.5rem 1rem;
-      border-radius: 9999px;
-      font-size: 0.85rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: 0.5rem;
+      font-size: 0.82rem;
       font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.45rem;
     }}
 
     .status-dot {{
-      width: 8px; height: 8px;
+      width: 7px; height: 7px;
       background-color: var(--accent-green);
       border-radius: 50%;
-      box-shadow: 0 0 10px var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
     }}
 
-    .kpi-grid {{
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.25rem;
-      margin-bottom: 2rem;
-    }}
-
-    .kpi-card {{
+    /* Linear-Style Horizontal Metric Ticker */
+    .metric-ticker-bar {{
+      display: flex;
+      align-items: center;
       background: var(--panel-bg);
-      backdrop-filter: blur(16px);
       border: 1px solid var(--panel-border);
-      border-radius: 1rem;
-      padding: 1.25rem;
-      box-shadow: var(--glass-shadow);
+      border-radius: 0.75rem;
+      padding: 0.75rem 1.25rem;
+      margin-bottom: 1.5rem;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      font-variant-numeric: tabular-nums;
     }}
 
-    .kpi-label {{ color: var(--text-muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }}
-    .kpi-value {{ font-family: 'Outfit', sans-serif; font-size: 2.1rem; font-weight: 700; margin: 0.3rem 0; }}
-    .kpi-subtext {{ color: var(--text-muted); font-size: 0.8rem; }}
+    .ticker-item {{
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.88rem;
+    }}
+
+    .ticker-label {{ color: var(--text-muted); font-weight: 500; }}
+    .ticker-val {{ font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.1rem; color: #ffffff; }}
+    .ticker-divider {{ width: 1px; height: 16px; background: var(--panel-border); }}
 
     .controls-bar {{
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
       flex-wrap: wrap;
       gap: 1rem;
     }}
@@ -261,9 +260,9 @@ def sync_dashboard():
       display: flex;
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      padding: 0.35rem;
-      border-radius: 0.85rem;
-      gap: 0.35rem;
+      padding: 0.3rem;
+      border-radius: 0.65rem;
+      gap: 0.3rem;
       flex-wrap: wrap;
     }}
 
@@ -271,27 +270,29 @@ def sync_dashboard():
       background: transparent;
       border: none;
       color: var(--text-muted);
-      padding: 0.45rem 0.9rem;
+      padding: 0.45rem 0.85rem;
       font-size: 0.82rem;
       font-weight: 600;
-      border-radius: 0.5rem;
+      border-radius: 0.45rem;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
+      font-variant-numeric: tabular-nums;
     }}
 
+    .tab-btn:hover {{ color: #ffffff; background: rgba(255,255,255,0.03); }}
+
     .tab-btn.active {{
-      background: var(--accent-navy);
+      background: var(--accent-blue);
       color: #ffffff;
-      box-shadow: 0 4px 12px rgba(27, 54, 93, 0.4);
     }}
 
     .search-box {{
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: 0.75rem;
-      padding: 0.5rem 1rem;
+      border-radius: 0.6rem;
+      padding: 0.5rem 0.9rem;
       color: #ffffff;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       width: 280px;
       outline: none;
     }}
@@ -300,237 +301,268 @@ def sync_dashboard():
 
     .panel-container {{
       background: var(--panel-bg);
-      backdrop-filter: blur(16px);
       border: 1px solid var(--panel-border);
-      border-radius: 1.25rem;
-      padding: 1.5rem;
+      border-radius: 0.85rem;
+      padding: 1.25rem;
+      margin-bottom: 1.75rem;
       box-shadow: var(--glass-shadow);
-      margin-bottom: 2.5rem;
     }}
 
     .section-title {{
       font-family: 'Outfit', sans-serif;
-      font-size: 1.35rem;
+      font-size: 1.1rem;
       font-weight: 700;
+      color: #ffffff;
       margin-bottom: 1.25rem;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
       gap: 0.75rem;
     }}
 
     .section-badge {{
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--panel-border);
-      padding: 0.25rem 0.75rem;
-      border-radius: 9999px;
-      font-size: 0.8rem;
+      background: rgba(14, 165, 233, 0.12);
+      border: 1px solid rgba(14, 165, 233, 0.25);
       color: var(--accent-blue);
+      padding: 0.2rem 0.6rem;
+      border-radius: 0.4rem;
+      font-size: 0.75rem;
       font-weight: 600;
+      font-variant-numeric: tabular-nums;
     }}
 
-    .custom-table {{ width: 100%; border-collapse: collapse; margin-top: 0.5rem; }}
-    .custom-table th {{ text-align: left; padding: 0.85rem 1rem; color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--panel-border); }}
-    .custom-table td {{ padding: 1rem; border-bottom: 1px solid var(--panel-border); font-size: 0.9rem; vertical-align: middle; }}
-    
-    .app-row {{ cursor: pointer; transition: background 0.2s ease; }}
-    .app-row:hover {{ background: rgba(255, 255, 255, 0.03); }}
+    /* Split-Pane Layout Engine */
+    .split-pane-layout {{
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 1.25rem;
+      min-height: 600px;
+    }}
 
-    .company-name {{ font-weight: 700; font-size: 1rem; color: #ffffff; }}
-    .role-title {{ color: var(--accent-cyan); font-size: 0.9rem; font-weight: 600; }}
+    @media (max-width: 1024px) {{
+      .split-pane-layout {{ grid-template-columns: 1fr; }}
+    }}
 
-    /* Source Badges */
-    .source-badge {{
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.25rem 0.6rem;
-      border-radius: 0.35rem;
+    .queue-list-pane {{
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      max-height: 680px;
+      overflow-y: auto;
+      padding-right: 0.4rem;
+    }}
+
+    .queue-item-card {{
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--panel-border);
+      border-radius: 0.65rem;
+      padding: 0.85rem 1rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }}
+
+    .queue-item-card:hover {{
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.15);
+    }}
+
+    .queue-item-card.selected {{
+      background: rgba(14, 165, 233, 0.08);
+      border-color: var(--accent-blue);
+    }}
+
+    .queue-item-company {{ font-size: 0.85rem; font-weight: 700; color: #ffffff; margin-bottom: 0.2rem; }}
+    .queue-item-title {{ font-size: 0.88rem; font-weight: 600; color: var(--accent-blue); line-height: 1.35; margin-bottom: 0.4rem; }}
+    .queue-item-meta {{ display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }}
+
+    .queue-inspector-pane {{
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid var(--panel-border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+    }}
+
+    /* Table Styles */
+    .custom-table {{
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      font-variant-numeric: tabular-nums;
+    }}
+
+    .custom-table th {{
+      text-align: left;
+      padding: 0.75rem 1rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--panel-border);
       font-size: 0.78rem;
-      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }}
-    .src-linkedin {{ background: rgba(10, 102, 194, 0.2); border: 1px solid #0a66c2; color: #38bdf8; }}
-    .src-indeed {{ background: rgba(33, 100, 243, 0.2); border: 1px solid #2164f3; color: #60a5fa; }}
-    .src-greenhouse {{ background: rgba(36, 161, 108, 0.2); border: 1px solid #24a16c; color: #4ade80; }}
-    .src-lever {{ background: rgba(255, 122, 89, 0.2); border: 1px solid #ff7a59; color: #fb923c; }}
-    .src-default {{ background: rgba(148, 163, 184, 0.2); border: 1px solid #94a3b8; color: #cbd5e1; }}
 
-    /* 4-Week Stale Alert Badge */
-    .stale-alert-badge {{
-      background: rgba(251, 191, 36, 0.15);
-      border: 1px solid var(--accent-amber);
-      color: var(--accent-amber);
-      padding: 0.25rem 0.6rem;
+    .custom-table td {{
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      vertical-align: middle;
+    }}
+
+    .custom-table tr:hover td {{
+      background: rgba(255, 255, 255, 0.02);
+    }}
+
+    .company-name {{ font-weight: 700; color: #ffffff; font-size: 0.92rem; }}
+    .role-title {{ color: var(--accent-blue); font-weight: 600; font-size: 0.9rem; margin-top: 0.1rem; }}
+    .match-score {{ font-weight: 700; color: var(--accent-cyan); font-variant-numeric: tabular-nums; }}
+
+    .source-badge {{
+      display: inline-block;
+      padding: 0.2rem 0.55rem;
       border-radius: 0.35rem;
       font-size: 0.75rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      margin-top: 0.35rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--panel-border);
+      color: var(--text-muted);
     }}
 
-    /* Status Selector Dropdown */
-    .status-select {{
-      background: rgba(15, 23, 42, 0.9);
+    .src-linkedin {{ background: rgba(14, 165, 233, 0.1); border-color: rgba(14, 165, 233, 0.3); color: var(--accent-blue); }}
+    .src-greenhouse {{ background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3); color: var(--accent-green); }}
+    .src-lever {{ background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3); color: var(--accent-amber); }}
+
+    .btn-primary {{
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.45rem;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }}
+    .btn-primary:hover {{ background: #0284c7; transform: translateY(-1px); }}
+    .btn-primary:active {{ transform: scale(0.98); }}
+
+    .btn-secondary {{
+      background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--panel-border);
       color: #ffffff;
-      padding: 0.35rem 0.65rem;
-      border-radius: 0.5rem;
-      font-size: 0.82rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 0.45rem;
       font-weight: 600;
-      outline: none;
+      font-size: 0.82rem;
       cursor: pointer;
+      transition: all 0.15s ease;
     }}
-    .status-select:focus {{ border-color: var(--accent-blue); }}
-
-    .match-score {{ font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--accent-purple); }}
+    .btn-secondary:hover {{ background: rgba(255, 255, 255, 0.08); }}
+    .btn-secondary:active {{ transform: scale(0.98); }}
 
     .btn-link {{
       color: var(--accent-blue);
       text-decoration: none;
       font-size: 0.82rem;
       font-weight: 600;
-      margin-right: 0.5rem;
+      margin-right: 0.75rem;
     }}
     .btn-link:hover {{ text-decoration: underline; }}
 
-    .btn-no-response {{
-      background: transparent;
-      border: 1px solid var(--accent-amber);
-      color: var(--accent-amber);
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.35rem;
-      font-size: 0.75rem;
-      cursor: pointer;
-      margin-top: 0.25rem;
-    }}
-    .btn-no-response:hover {{ background: rgba(251, 191, 36, 0.2); }}
-
-    .queue-grid {{
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1.25rem;
-    }}
-
-    .queue-card {{
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--panel-border);
-      border-radius: 0.85rem;
-      padding: 1.25rem;
-      position: relative;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }}
-
-    .queue-card:hover {{
-      border-color: var(--accent-blue);
-      transform: translateY(-2px);
-    }}
-
-    .card-header {{ display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }}
-
     .btn-archive {{
-      background: transparent;
-      border: 1px solid var(--panel-border);
-      color: var(--text-muted);
-      padding: 0.3rem 0.6rem;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      color: var(--accent-amber);
+      padding: 0.4rem 0.75rem;
       border-radius: 0.4rem;
       font-size: 0.78rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
     }}
-    .btn-archive:hover {{ background: rgba(244, 63, 94, 0.15); color: var(--accent-rose); border-color: var(--accent-rose); }}
+    .btn-archive:hover {{ background: rgba(245, 158, 11, 0.18); }}
+
+    .btn-apply {{
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--accent-green);
+      padding: 0.4rem 0.85rem;
+      border-radius: 0.4rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }}
+    .btn-apply:hover {{ background: rgba(16, 185, 129, 0.22); }}
 
     .btn-restore {{
-      background: transparent;
-      border: 1px solid var(--accent-green);
-      color: var(--accent-green);
-      padding: 0.3rem 0.6rem;
+      background: rgba(14, 165, 233, 0.1);
+      border: 1px solid rgba(14, 165, 233, 0.25);
+      color: var(--accent-blue);
+      padding: 0.35rem 0.75rem;
       border-radius: 0.4rem;
       font-size: 0.78rem;
+      font-weight: 600;
       cursor: pointer;
-      margin-right: 0.5rem;
     }}
-    .btn-restore:hover {{ background: rgba(74, 222, 128, 0.15); }}
 
     .btn-delete-perm {{
-      background: transparent;
-      border: 1px solid var(--accent-rose);
-      color: var(--accent-rose);
-      padding: 0.3rem 0.6rem;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      color: var(--accent-red);
+      padding: 0.35rem 0.75rem;
       border-radius: 0.4rem;
       font-size: 0.78rem;
-      cursor: pointer;
-    }}
-    .btn-delete-perm:hover {{ background: rgba(244, 63, 94, 0.2); }}
-
-    .archive-chip-btn {{
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--panel-border);
-      color: var(--text-muted);
-      padding: 0.6rem 0.85rem;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      font-size: 0.82rem;
       font-weight: 600;
-      text-align: left;
-      transition: all 0.2s ease;
+      cursor: pointer;
     }}
-    .archive-chip-btn:hover {{
-      background: rgba(255, 255, 255, 0.08);
+
+    .status-select {{
+      background: #1e293b;
+      border: 1px solid var(--panel-border);
       color: #ffffff;
-    }}
-    .archive-chip-btn.active {{
-      background: rgba(56, 189, 248, 0.15);
-      border-color: var(--accent-cyan);
-      color: var(--accent-cyan);
+      padding: 0.35rem 0.65rem;
+      border-radius: 0.4rem;
+      font-size: 0.82rem;
+      outline: none;
     }}
 
     /* Modal Backdrop & Content */
     .modal-backdrop {{
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(10, 15, 29, 0.85);
+      background: rgba(9, 13, 22, 0.92);
       backdrop-filter: blur(8px);
-      z-index: 9999;
+      z-index: 99999;
       display: flex;
       align-items: center;
       justify-content: center;
     }}
     .modal-content {{
-      background: #0f172a;
+      background: #111827;
       border: 1px solid var(--panel-border);
-      border-radius: 1rem;
+      border-radius: 0.85rem;
       width: 92%;
       max-width: 800px;
       max-height: 90vh;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      box-shadow: var(--glass-shadow);
       color: #ffffff;
     }}
     .modal-header {{
-      padding: 1.25rem 1.5rem;
+      padding: 1.1rem 1.4rem;
       border-bottom: 1px solid var(--panel-border);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }}
-    .modal-body {{ padding: 1.5rem; overflow-y: auto; flex: 1; }}
+    .modal-body {{ padding: 1.4rem; overflow-y: auto; flex: 1; }}
 
-    .modal-tabs {{
-      display: flex;
-      gap: 0.5rem;
-      border-bottom: 1px solid var(--panel-border);
-      margin-bottom: 1.25rem;
-    }}
     .modal-tab-btn {{
       background: transparent;
       border: none;
       color: var(--text-muted);
       padding: 0.5rem 1rem;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
       border-bottom: 2px solid transparent;
       cursor: pointer;
@@ -541,21 +573,16 @@ def sync_dashboard():
     }}
 
     .form-group {{ margin-bottom: 1rem; }}
-    .form-label {{ display: block; font-size: 0.82rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.35rem; }}
+    .form-label {{ display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.35rem; }}
     .form-input, .form-select, .form-textarea {{
       width: 100%;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--panel-border);
-      border-radius: 0.5rem;
-      padding: 0.55rem 0.85rem;
+      border-radius: 0.45rem;
+      padding: 0.5rem 0.8rem;
       color: #ffffff;
       font-size: 0.88rem;
       outline: none;
-    }}
-    .form-select option, select option {{
-      background-color: #0f172a !important;
-      color: #ffffff !important;
-      padding: 0.5rem;
     }}
     .form-input:focus, .form-select:focus, .form-textarea:focus {{ border-color: var(--accent-blue); }}
     .form-textarea {{ min-height: 90px; resize: vertical; }}
@@ -563,20 +590,11 @@ def sync_dashboard():
     .grid-2 {{ display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }}
     .grid-3 {{ display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }}
 
-    .interview-card {{
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--panel-border);
-      border-radius: 0.75rem;
-      padding: 1rem;
-      margin-bottom: 1rem;
-    }}
-    .interview-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }}
-
     footer {{
       text-align: center;
       color: var(--text-muted);
-      font-size: 0.85rem;
-      padding: 2rem 0;
+      font-size: 0.82rem;
+      padding: 1.75rem 0;
       border-top: 1px solid var(--panel-border);
     }}
   </style>
@@ -586,38 +604,42 @@ def sync_dashboard():
   <div class="container">
     <header>
       <div>
-        <h1 class="brand-title">Executive Job Search Dashboard</h1>
-        <p class="brand-subtitle">Candidate: {{YOUR_FULL_NAME}} | Target Baseline: {{TARGET_COMPENSATION_MIN}} | Preferred Hybrid City & Remote</p>
+        <h1 class="brand-title">Executive Job Search Terminal</h1>
+        <p class="brand-subtitle">Candidate: {{YOUR_FULL_NAME}} | Target Baseline: {{TARGET_COMPENSATION_MIN}} | Preferred Hybrid City & 100% Remote</p>
       </div>
       <div style="display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap;">
-        <button id="btnOpenSettings" class="btn-primary" style="font-size: 0.88rem; padding: 0.55rem 1.15rem; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));" onclick="openSettingsModal()">⚙️ Platform Settings</button>
+        <button id="btnOpenSettings" class="btn-secondary" style="font-size: 0.82rem; padding: 0.45rem 0.95rem; border-color: rgba(14,165,233,0.3); color: var(--accent-blue);" onclick="openSettingsModal()">⚙️ Platform Settings</button>
         <div class="header-badge">
-          <span class="status-dot"></span> Active Search Engine Running
+          <span class="status-dot"></span> Search Engine Active
         </div>
       </div>
     </header>
 
-    <!-- KPI Summary Cards -->
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-label">Applied Opportunities</div>
-        <div class="kpi-value" style="color: var(--accent-green);">{status_counts["Applied"]}</div>
-        <div class="kpi-subtext">Company Portals & 1-Click Package Builds</div>
+    <!-- Compact Metric Ticker Bar -->
+    <div class="metric-ticker-bar">
+      <div class="ticker-item">
+        <span class="ticker-label">Applied:</span>
+        <span class="ticker-val" style="color: var(--accent-green);">{status_counts["Applied"]}</span>
       </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Interviewing Stage</div>
-        <div class="kpi-value" style="color: var(--accent-cyan);">{status_counts["Interviewing"]}</div>
-        <div class="kpi-subtext">Active Recruiter & Executive Panels</div>
+      <div class="ticker-divider"></div>
+      <div class="ticker-item">
+        <span class="ticker-label">Interviewing:</span>
+        <span class="ticker-val" style="color: var(--accent-cyan);">{status_counts["Interviewing"]}</span>
       </div>
-      <div class="kpi-card">
-        <div class="kpi-label">4-Week Follow-Up Alerts</div>
-        <div class="kpi-value" style="color: var(--accent-amber);">{stale_count}</div>
-        <div class="kpi-subtext">Applied &gt;28 Days Ago — Action Required</div>
+      <div class="ticker-divider"></div>
+      <div class="ticker-item">
+        <span class="ticker-label">Follow-Up Alerts:</span>
+        <span class="ticker-val" style="color: var(--accent-amber);">{stale_count}</span>
       </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Verified Review Queue</div>
-        <div class="kpi-value" style="color: var(--accent-purple);" id="queueBadge">{len(unique_queue)}</div>
-        <div class="kpi-subtext">Extracted from Live Email Alerts & Sweeps</div>
+      <div class="ticker-divider"></div>
+      <div class="ticker-item">
+        <span class="ticker-label">Verified Review Queue:</span>
+        <span class="ticker-val" style="color: var(--accent-blue);" id="queueBadge">{len(unique_queue)}</span>
+      </div>
+      <div class="ticker-divider"></div>
+      <div class="ticker-item">
+        <span class="ticker-label">Archived Repository:</span>
+        <span class="ticker-val" style="color: var(--text-muted);">{len(archived_queue)}</span>
       </div>
     </div>
 
@@ -759,7 +781,9 @@ def sync_dashboard():
         </div>
       </div>
 
-      <div class="queue-grid" id="queueContainer">
+      <div class="split-pane-layout">
+        <!-- Left Role Selector List -->
+        <div class="queue-list-pane" id="queueContainer">
 """
 
     for idx, item in enumerate(unique_queue):
@@ -780,7 +804,6 @@ def sync_dashboard():
 
         now = datetime.now()
 
-        # Check if posted time indicates freshness (<24h / early applicant / minutes / hours)
         p_low = date_posted_raw.lower()
         is_fresh_24h = False
         if any(k in p_low for k in ["minute", "hour", "just now", "early applicant", "today", "1h", "2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "10h", "11h", "12h"]):
@@ -801,7 +824,6 @@ def sync_dashboard():
             if hours_elapsed <= 24.0:
                 is_fresh_24h = True
 
-        # Determine Posted display text
         if date_posted_raw:
             posted_display = date_posted_raw
         elif posted_dt:
@@ -809,28 +831,6 @@ def sync_dashboard():
         else:
             posted_display = "Unknown (Check listing)"
 
-        # Determine Scraped / Ingested display text
-        scraped_dt = None
-        if time_scraped_raw:
-            try:
-                scraped_dt = datetime.fromisoformat(time_scraped_raw)
-            except Exception:
-                pass
-
-        if scraped_dt:
-            scraped_display = scraped_dt.strftime("%b %d, %Y %H:%M CT")
-        elif date_added_raw:
-            scraped_display = date_added_raw
-        else:
-            scraped_display = now.strftime("%b %d, %Y")
-
-        fresh_badge_html = ""
-        fresh_border_style = ""
-        if is_fresh_24h:
-            fresh_badge_html = '<span class="badge-fresh" style="background:#ef4444; color:#ffffff; font-weight:700; padding:0.25rem 0.55rem; border-radius:9999px; font-size:0.75rem; box-shadow:0 0 10px rgba(239,68,68,0.5); display:inline-flex; align-items:center; gap:0.25rem; margin-left:0.5rem;">🔥 FRESH (<24H)</span>'
-            fresh_border_style = "border-left: 4px solid #ef4444;"
-
-        # Clean company name and extract location specifics
         co = raw_co
         extracted_loc = item.get("location", "").strip()
         if " — " in co:
@@ -849,7 +849,6 @@ def sync_dashboard():
             else:
                 extracted_loc = "100% Remote / Preferred Hybrid City Hybrid"
 
-        # Compute specific role match score based on candidate criteria alignment & vibe coding signals
         title_lower = title.lower()
         full_text_lower = f"{title_lower} {str(item.get('description', '')).lower()}"
         
@@ -877,37 +876,32 @@ def sync_dashboard():
         clean_title = re.sub(r'[\r\n\t]+', ' ', title).replace("'", "\\'").replace('"', '&quot;').strip()
         clean_url = re.sub(r'[\r\n\t]+', '', url).replace("'", "\\'").strip()
 
-        # Build date display lines
-        date_lines = f'<div><strong style="color: var(--accent-amber);">📅 Posted:</strong> {posted_display}</div>'
-        if scraped_display and scraped_display != posted_display:
-            date_lines += f'<div><strong style="color: var(--accent-cyan);">📥 Ingested:</strong> {scraped_display}</div>'
-
         date_key_val = date_posted_raw if date_posted_raw else (posted_dt.strftime("%Y-%m-%d") if posted_dt else date_added_raw)
         if is_fresh_24h:
             date_key_val = "9999-99-99"
 
+        selected_cls = "selected" if idx == 0 else ""
+
         html += f"""
-        <div class="queue-card" id="{card_id}" data-date-key="{date_key_val}" data-company="{clean_co}" data-title="{clean_title}" style="{fresh_border_style}">
-          <div class="card-header">
-            <div>
-              <div class="company-name" style="display:flex; align-items:center; flex-wrap:wrap;">{co}{fresh_badge_html}</div>
-              <div class="role-title">{title}</div>
-            </div>
-            <span class="source-badge {src_class}">{source}</span>
-          </div>
-          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.85rem; line-height: 1.4;">
-            {date_lines}
-            <div><strong style="color: var(--accent-cyan);">Location:</strong> {extracted_loc}</div>
-            <div><strong style="color: var(--accent-purple);">Target Fit:</strong> {match}% Executive Match ({comp})</div>
-          </div>
-          <div style="display: flex; gap: 0.5rem; justify-content: space-between; align-items: center;">
-            <a href="{url}" class="btn-link" target="_blank">🔗 View Posting</a>
-            <div style="display: flex; gap: 0.4rem;">
-              <button class="btn-archive" onclick="openArchiveReasonModal('{clean_co}', '{clean_title}', '{clean_url}')">📦 Archive</button>
-              <button class="btn-apply" id="btn-apply-{card_id}" onclick="triggerApply('{card_id}', '{clean_co}', '{clean_title}', '{clean_url}')">⚡ Apply & Build Package</button>
+          <div class="queue-item-card {selected_cls}" id="{card_id}" data-date-key="{date_key_val}" data-company="{clean_co}" data-title="{clean_title}" data-source="{source}" data-location="{extracted_loc}" data-match="{match}" data-url="{clean_url}" data-posted="{posted_display}" data-fresh="{str(is_fresh_24h).lower()}" onclick="inspectQueueRole('{card_id}')">
+            <div class="queue-item-company">{co}</div>
+            <div class="queue-item-title">{title}</div>
+            <div class="queue-item-meta">
+              <span class="source-badge {src_class}">{source}</span>
+              <span style="color:var(--accent-cyan); font-weight:700;">{match}% Match</span>
             </div>
           </div>
+"""
+
+    html += f"""
+        </div><!-- End queue-list-pane -->
+
+        <!-- Right Role Inspector Drawer -->
+        <div class="queue-inspector-pane" id="queueInspectorPane">
+          <div style="color:var(--text-muted); font-size:0.9rem; text-align:center; padding:3rem 1rem;">Select an opportunity from the queue on the left to inspect details.</div>
         </div>
+      </div><!-- End split-pane-layout -->
+    </div>
 """
 
     html += f"""
@@ -1385,6 +1379,70 @@ def sync_dashboard():
       }});
 
       document.getElementById('roleCount').innerText = `${{visibleCount}} Roles Showing`;
+    }}
+
+    function inspectQueueRole(cardId) {{
+      document.querySelectorAll('.queue-item-card').forEach(c => c.classList.remove('selected'));
+      const card = document.getElementById(cardId);
+      if (!card) return;
+      card.classList.add('selected');
+
+      const co = card.getAttribute('data-company') || '';
+      const title = card.getAttribute('data-title') || '';
+      const source = card.getAttribute('data-source') || '';
+      const loc = card.getAttribute('data-location') || '';
+      const match = card.getAttribute('data-match') || '95';
+      const url = card.getAttribute('data-url') || '#';
+      const posted = card.getAttribute('data-posted') || '';
+      const isFresh = card.getAttribute('data-fresh') === 'true';
+
+      const inspector = document.getElementById('queueInspectorPane');
+      if (!inspector) return;
+
+      const freshBadge = isFresh ? '<span class="badge-fresh" style="background:#ef4444; color:#ffffff; font-weight:700; padding:0.25rem 0.55rem; border-radius:9999px; font-size:0.75rem; display:inline-flex; align-items:center; gap:0.25rem; margin-left:0.5rem;">🔥 FRESH (<24H)</span>' : '';
+
+      const cleanCoEsc = co.replace(/'/g, "\\'");
+      const cleanTitleEsc = title.replace(/'/g, "\\'");
+      const cleanUrlEsc = url.replace(/'/g, "\\'");
+
+      inspector.innerHTML = `
+        <div style="position: sticky; top: 1.5rem;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem; padding-bottom:1rem; border-bottom:1px solid var(--panel-border);">
+            <div>
+              <span class="source-badge src-default" style="margin-bottom:0.5rem; display:inline-block;">${{source}}</span>
+              <h2 style="font-size:1.3rem; color:#ffffff; font-weight:800; margin:0.2rem 0; font-family:'Outfit',sans-serif;">${{title}} ${{freshBadge}}</h2>
+              <div style="font-size:1rem; color:var(--accent-blue); font-weight:600;">${{co}}</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:1.8rem; font-weight:800; color:var(--accent-cyan); font-variant-numeric:tabular-nums; font-family:'Outfit',sans-serif;">${{match}}%</div>
+              <div style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">MATCH SCORE</div>
+            </div>
+          </div>
+
+          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--panel-border); border-radius:0.65rem; padding:1rem; margin-bottom:1.25rem; font-size:0.85rem; line-height:1.6; font-variant-numeric:tabular-nums;">
+            <div style="margin-bottom:0.4rem;"><strong style="color:var(--accent-amber);">📅 Employer Posted Date:</strong> <span style="color:#ffffff;">${{posted}}</span></div>
+            <div style="margin-bottom:0.4rem;"><strong style="color:var(--accent-cyan);">📍 Work Location / Model:</strong> <span style="color:#ffffff;">${{loc}}</span></div>
+            <div><strong style="color:var(--accent-purple);">💼 Targeted Scope:</strong> <span style="color:#ffffff;">{{TARGET_COMPENSATION_MIN}} Baseline Alignment</span></div>
+          </div>
+
+          <div style="margin-bottom:1.5rem;">
+            <div style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.6rem;">Key Strategic Signals</div>
+            <div style="display:flex; flex-wrap:wrap; gap:0.4rem;">
+              <span style="background:rgba(14,165,233,0.12); border:1px solid rgba(14,165,233,0.3); color:var(--accent-blue); padding:0.25rem 0.6rem; border-radius:0.4rem; font-size:0.78rem; font-weight:600;">⚡ Vibe Coding Alignment</span>
+              <span style="background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); color:var(--accent-green); padding:0.25rem 0.6rem; border-radius:0.4rem; font-size:0.78rem; font-weight:600;">🎯 Executive Level Fit</span>
+              <span style="background:rgba(168,85,247,0.12); border:1px solid rgba(168,85,247,0.3); color:var(--accent-purple); padding:0.25rem 0.6rem; border-radius:0.4rem; font-size:0.78rem; font-weight:600;">🛡️ Preferred Hybrid City / Remote Qualified</span>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:0.75rem;">
+            <button class="btn-primary" id="btn-apply-${{cardId}}" style="width:100%; padding:0.75rem 1rem; font-size:0.9rem; font-weight:700;" onclick="triggerApply('${{cardId}}', '${{cleanCoEsc}}', '${{cleanTitleEsc}}', '${{cleanUrlEsc}}')">⚡ Apply & Build 2-Page Package</button>
+            <div style="display:flex; gap:0.75rem;">
+              <a href="${{url}}" target="_blank" class="btn-secondary" style="flex:1; text-align:center; text-decoration:none; padding:0.55rem;">🔗 View Job Posting</a>
+              <button class="btn-archive" style="flex:1;" onclick="openArchiveReasonModal('${{cleanCoEsc}}', '${{cleanTitleEsc}}', '${{cleanUrlEsc}}')">📦 Archive</button>
+            </div>
+          </div>
+        </div>
+      `;
     }}
 
     async function runClosedJobAudit() {{
@@ -2000,6 +2058,12 @@ def sync_dashboard():
             window.openSettingsModal();
           }}
         }});
+      }}
+
+      // Auto-select and inspect first review queue opportunity if present
+      const firstCard = document.querySelector('.queue-item-card');
+      if (firstCard && typeof inspectQueueRole === 'function') {{
+        inspectQueueRole(firstCard.id);
       }}
     }});
   </script>
