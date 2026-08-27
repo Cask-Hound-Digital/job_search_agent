@@ -18,7 +18,7 @@ def sync_dashboard():
         state = json.load(f)
 
     from config_loader import CONFIG
-    config_json_str = json.dumps(CONFIG)
+    config_json_str = json.dumps(CONFIG).replace('\\', '\\\\')
 
     apps = state.get("applications", [])
     gmail_jobs = state.get("verified_gmail_jobs", [])
@@ -138,7 +138,7 @@ def sync_dashboard():
             a["days_elapsed"] = 0
 
     # Pass serialized JSON apps for dynamic client modal lookups
-    apps_json_str = json.dumps(apps).replace("'", "&#39;")
+    apps_json_str = json.dumps(apps).replace('\\', '\\\\').replace("'", "&#39;")
 
     print(f"Found {len(apps)} applications ({status_counts['Applied']} Applied), {stale_count} 4-week stale alerts, {len(unique_queue)} review queue roles, and {len(archived_queue)} archived roles.")
 
@@ -1913,21 +1913,27 @@ def sync_dashboard():
       document.getElementById('cfgNegativeKeywords').value = (scoring.negative_keywords || []).join(', ');
     }}
 
-    async function openSettingsModal() {{
-      document.getElementById('settingsModal').style.display = 'flex';
+    function openSettingsModal() {{
+      const m = document.getElementById('settingsModal');
+      if (!m) {{
+        alert('⚙️ Settings Modal element not found in DOM.');
+        return;
+      }}
+      m.style.display = 'flex';
       switchSettingsTab('candidate');
       populateSettingsForm(CONFIG_DATA);
 
-      try {{
-        const res = await fetch('http://localhost:5000/api/get_config');
-        const data = await res.json();
-        if (data.status === 'success') {{
-          populateSettingsForm(data.config);
-          renderResumesList(data.resumes || []);
-        }}
-      }} catch (err) {{
-        // Static fallback already rendered
-      }}
+      fetch('http://localhost:5000/api/get_config')
+        .then(res => res.json())
+        .then(data => {{
+          if (data && data.status === 'success') {{
+            populateSettingsForm(data.config);
+            renderResumesList(data.resumes || []);
+          }}
+        }})
+        .catch(err => {{
+          console.log('Using static payload config fallback.');
+        }});
     }}
 
     function closeSettingsModal() {{

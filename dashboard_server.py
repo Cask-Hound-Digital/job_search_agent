@@ -71,6 +71,19 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
             response = {"status": "running", "server": "Job Search Dashboard Server v1.0"}
             self.wfile.write(json.dumps(response).encode('utf-8'))
+        elif self.path in ['/', '/index.html', '/dashboard.html']:
+            index_path = os.path.join(BASE_DIR, "index.html")
+            if os.path.exists(index_path):
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/html; charset=utf-8')
+                self._set_cors_headers()
+                self.end_headers()
+                with open(index_path, 'rb') as f:
+                    self.wfile.write(f.read())
+                return
+            else:
+                self.send_response(404)
+                self.end_headers()
         elif self.path == '/api/get_config':
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
@@ -746,5 +759,5 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
 
 if __name__ == '__main__':
     print(f"Starting Job Search Dashboard API Server on http://localhost:{PORT}...")
-    server = ThreadedHTTPServer(('localhost', PORT), DashboardRequestHandler)
+    server = ThreadedHTTPServer(('0.0.0.0', PORT), DashboardRequestHandler)
     server.serve_forever()
