@@ -3,6 +3,7 @@ import sys
 import json
 import urllib.request
 import urllib.parse
+from datetime import datetime
 
 def _load_env():
     env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
@@ -60,17 +61,49 @@ def notify_fresh_jobs(jobs_list):
     if not bot_token:
         return 0
 
+    notified_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "notified_urls.json")
+    notified_set = set()
+    if os.path.exists(notified_file):
+        try:
+            with open(notified_file, 'r', encoding='utf-8') as f:
+                notified_set = set(json.load(f))
+        except Exception:
+            pass
+
     sent_count = 0
+    now = datetime.now()
+
     for job in jobs_list:
-        p_raw = str(job.get("date_posted_raw", job.get("date_posted", ""))).lower()
-        if any(k in p_raw for k in ["minute", "hour", "just now", "early applicant", "today", "1h", "2h", "3h", "4h", "5h"]):
+        url = job.get("url", "").split('?')[0].lower()
+        if not url or url in notified_set:
+            continue
+
+        p_raw = str(job.get("date_posted_raw", job.get("date_posted", job.get("date", "")))).strip()
+        p_low = p_raw.lower()
+        t_scraped = str(job.get("time_scraped", "")).strip()
+
+        is_fresh = False
+        if any(k in p_low for k in ["minute", "hour", "just now", "early applicant", "today", "1h", "2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "10h", "11h", "12h"]):
+            is_fresh = True
+        elif t_scraped:
+            try:
+                dt = datetime.fromisoformat(t_scraped)
+                if (now - dt).total_seconds() / 3600.0 <= 24.0:
+                    is_fresh = True
+            except Exception:
+                pass
+
+        if is_fresh:
             co = job.get("company_name", job.get("company", "Employer"))
             title = job.get("audited_role_title", job.get("title", "Role"))
-            url = job.get("url", "#")
             loc = job.get("location", "Remote / Preferred Hybrid City Hybrid")
             
-            if send_telegram_alert(co, title, url, loc, p_raw):
+            if send_telegram_alert(co, title, job.get("url", "#"), loc, p_raw if p_raw else "Just now (<24h)"):
                 sent_count += 1
+                notified_set.add(url)
+
+    with open(notified_file, 'w', encoding='utf-8') as f:
+        json.dump(list(notified_set), f, indent=2)
 
     return sent_count
 

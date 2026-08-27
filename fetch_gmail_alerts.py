@@ -289,22 +289,23 @@ def fetch_and_filter_all_job_alerts():
 
             print(f"Updated {STATE_FILE}: Added {added_count} new unique verified roles. Total queue count: {len(review_queue)}.")
 
-            # Trigger instant mobile push notifications for fresh jobs (<24h)
-            try:
-                from send_job_alert import notify_fresh_jobs
-                notify_fresh_jobs(valid_candidate_jobs)
-            except Exception as notify_err:
-                print(f"Warning sending job push notifications: {notify_err}")
-
             # Automatically run JobSpy multi-board scraper, audit ground-truth titles, ensure server is running, and sync live browser dashboard
             try:
                 from fetch_jobspy_roles import run_jobspy_scraper
                 from audit_and_fix_queue_companies import audit_queue
                 from sync_dashboard_from_state import sync_dashboard
+                from send_job_alert import notify_fresh_jobs
+
                 run_jobspy_scraper()
                 audit_queue()
                 ensure_dashboard_server_running()
                 sync_dashboard()
+
+                # Trigger instant mobile push notifications for fresh jobs (<24h) after audit
+                with open(STATE_FILE, 'r', encoding='utf-8') as sf:
+                    latest_state = json.load(sf)
+                notify_fresh_jobs(latest_state.get("review_queue", []))
+
             except Exception as sync_err:
                 print(f"Warning auditing/syncing dashboard: {sync_err}")
 
