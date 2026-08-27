@@ -289,14 +289,16 @@ def fetch_and_filter_all_job_alerts():
 
             print(f"Updated {STATE_FILE}: Added {added_count} new unique verified roles. Total queue count: {len(review_queue)}.")
 
-            # Automatically run JobSpy multi-board scraper, audit ground-truth titles, ensure server is running, and sync live browser dashboard
+            # Automatically run JobSpy multi-board scraper, Built In & Dice scraper, audit ground-truth titles, ensure server is running, and sync live browser dashboard
             try:
                 from fetch_jobspy_roles import run_jobspy_scraper
+                from fetch_builtin_and_dice import run_builtin_and_dice_scraper
                 from audit_and_fix_queue_companies import audit_queue
                 from sync_dashboard_from_state import sync_dashboard
                 from send_job_alert import notify_fresh_jobs
 
                 run_jobspy_scraper()
+                run_builtin_and_dice_scraper()
                 audit_queue()
                 ensure_dashboard_server_running()
                 sync_dashboard()

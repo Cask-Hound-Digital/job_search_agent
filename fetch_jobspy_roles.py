@@ -67,9 +67,6 @@ def is_valid_location(loc_str, is_remote_query=True):
         return False
 
     return True
-        if any(Preferred Hybrid City in l_lower for Preferred Hybrid City in DFW_CITIES):
-            return True
-        return False
 
 def run_jobspy_scraper():
     print("=========================================================")
