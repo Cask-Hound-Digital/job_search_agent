@@ -590,7 +590,7 @@ def sync_dashboard():
         <p class="brand-subtitle">Candidate: {{YOUR_FULL_NAME}} | Target Baseline: {{TARGET_COMPENSATION_MIN}} | Preferred Hybrid City & Remote</p>
       </div>
       <div style="display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap;">
-        <button class="btn-primary" style="font-size: 0.88rem; padding: 0.55rem 1.15rem; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));" onclick="openSettingsModal()">⚙️ Platform Settings</button>
+        <button id="btnOpenSettings" class="btn-primary" style="font-size: 0.88rem; padding: 0.55rem 1.15rem; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));" onclick="openSettingsModal()">⚙️ Platform Settings</button>
         <div class="header-badge">
           <span class="status-dot"></span> Active Search Engine Running
         </div>
@@ -1895,35 +1895,45 @@ def sync_dashboard():
       }}
     }}
 
+    function setVal(id, val) {{
+      const el = document.getElementById(id);
+      if (el) el.value = val;
+    }}
+
     function populateSettingsForm(cfg) {{
       if (!cfg) return;
       const cand = cfg.candidate || {{}};
       const matrix = cfg.search_matrix || {{}};
       const scoring = cfg.scoring_signals || {{}};
 
-      document.getElementById('cfgFullName').value = cand.full_name || '';
-      document.getElementById('cfgEmail').value = cand.email || '';
-      document.getElementById('cfgMinSalary').value = cand.min_salary_floor || 200000;
-      document.getElementById('cfgTargetSalary').value = cand.target_salary_baseline || 225000;
-      document.getElementById('cfgPrimaryLocation').value = cand.primary_location || '';
-      document.getElementById('cfgLocalCities').value = (cand.allowed_local_cities || []).join(', ');
+      setVal('cfgFullName', cand.full_name || '');
+      setVal('cfgEmail', cand.email || '');
+      setVal('cfgMinSalary', cand.min_salary_floor || 200000);
+      setVal('cfgTargetSalary', cand.target_salary_baseline || 225000);
+      setVal('cfgPrimaryLocation', cand.primary_location || '');
+      setVal('cfgLocalCities', (cand.allowed_local_cities || []).join(', '));
 
-      document.getElementById('cfgTargetTitles').value = (matrix.target_titles || []).join(String.fromCharCode(10));
-      document.getElementById('cfgExcludedTitles').value = (matrix.excluded_titles || []).join(', ');
+      setVal('cfgTargetTitles', (matrix.target_titles || []).join(String.fromCharCode(10)));
+      setVal('cfgExcludedTitles', (matrix.excluded_titles || []).join(', '));
 
-      document.getElementById('cfgPositiveKeywords').value = (scoring.positive_keywords || []).join(', ');
-      document.getElementById('cfgNegativeKeywords').value = (scoring.negative_keywords || []).join(', ');
+      setVal('cfgPositiveKeywords', (scoring.positive_keywords || []).join(', '));
+      setVal('cfgNegativeKeywords', (scoring.negative_keywords || []).join(', '));
     }}
 
-    function openSettingsModal() {{
+    window.openSettingsModal = function() {{
+      console.log('[SETTINGS] opening modal...');
       const m = document.getElementById('settingsModal');
       if (!m) {{
         alert('⚙️ Settings Modal element not found in DOM.');
         return;
       }}
       m.style.display = 'flex';
-      switchSettingsTab('candidate');
-      populateSettingsForm(CONFIG_DATA);
+      try {{
+        switchSettingsTab('candidate');
+      }} catch(e) {{ console.error('switchSettingsTab error:', e); }}
+      try {{
+        populateSettingsForm(CONFIG_DATA);
+      }} catch(e) {{ console.error('populateSettingsForm error:', e); }}
 
       fetch('http://localhost:5000/api/get_config')
         .then(res => res.json())
@@ -1936,7 +1946,7 @@ def sync_dashboard():
         .catch(err => {{
           console.log('Using static payload config fallback.');
         }});
-    }}
+    }};
 
     function closeSettingsModal() {{
       document.getElementById('settingsModal').style.display = 'none';
@@ -2071,6 +2081,18 @@ def sync_dashboard():
         setTimeout(() => {{ toast.style.display = 'none'; }}, 4000);
       }}
     }}
+
+    document.addEventListener('DOMContentLoaded', () => {{
+      const btn = document.getElementById('btnOpenSettings');
+      if (btn) {{
+        btn.addEventListener('click', (e) => {{
+          e.preventDefault();
+          if (typeof window.openSettingsModal === 'function') {{
+            window.openSettingsModal();
+          }}
+        }});
+      }}
+    }});
   </script>
 
   <div id="toastNotification" style="display:none; position:fixed; bottom:2rem; right:2rem; background:#0f172a; border:1px solid var(--accent-blue); padding:1rem 1.5rem; border-radius:0.75rem; color:#fff; box-shadow:0 10px 30px rgba(0,0,0,0.5); z-index:10000;">
