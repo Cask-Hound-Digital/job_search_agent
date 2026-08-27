@@ -49,12 +49,7 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 class DashboardRequestHandler(BaseHTTPRequestHandler):
 
     def _set_cors_headers(self):
-        origin = self.headers.get('Origin', '')
-        allowed_prefixes = ('http://localhost', 'http://127.0.0.1', 'file://', 'null')
-        if origin and (origin.startswith(allowed_prefixes) or origin in allowed_prefixes):
-            self.send_header('Access-Control-Allow-Origin', origin)
-        else:
-            self.send_header('Access-Control-Allow-Origin', 'http://localhost:5000')
+        self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
 
