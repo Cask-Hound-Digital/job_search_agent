@@ -1920,7 +1920,7 @@ def sync_dashboard():
       setVal('cfgNegativeKeywords', (scoring.negative_keywords || []).join(', '));
     }}
 
-    window.openSettingsModal = function() {{
+    function openSettingsModal() {{
       console.log('[SETTINGS] opening modal...');
       const m = document.getElementById('settingsModal');
       if (!m) {{
@@ -1946,7 +1946,8 @@ def sync_dashboard():
         .catch(err => {{
           console.log('Using static payload config fallback.');
         }});
-    }};
+    }}
+    window.openSettingsModal = openSettingsModal;
 
     function closeSettingsModal() {{
       document.getElementById('settingsModal').style.display = 'none';
