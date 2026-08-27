@@ -1179,6 +1179,7 @@ def sync_dashboard():
     <!-- Settings & Configuration Modal moved to root body level -->
 
   <script>
+    const API_BASE = (window.location.origin && window.location.origin.startsWith('http')) ? window.location.origin : 'http://localhost:5000';
     const APPS_DATA = {apps_json_str};
     const CONFIG_DATA = {config_json_str};
     let currentFilter = 'all';
@@ -1217,7 +1218,7 @@ def sync_dashboard():
       showToast(`⚡ Building application package for <strong>${{company}}</strong>...`);
 
       try {{
-        const res = await fetch('http://localhost:5000/api/apply', {{
+        const res = await fetch(API_BASE + '/api/apply', {{
           method: 'POST',
           headers: {{ 'Content-Type': 'application/json' }},
           body: JSON.stringify({{
@@ -1458,7 +1459,7 @@ def sync_dashboard():
       }}
       showToast('🔄 Auditing review queue URLs for expired/closed postings...');
       try {{
-        const res = await fetch('http://localhost:5000/api/audit_closed_queue', {{
+        const res = await fetch(API_BASE + '/api/audit_closed_queue', {{
           method: 'POST',
           headers: {{ 'Content-Type': 'application/json' }}
         }});
@@ -1491,7 +1492,7 @@ def sync_dashboard():
       }}
       showToast('🔄 Fetching & parsing job URL...');
       try {{
-        const res = await fetch('http://localhost:5000/api/add_queue_url', {{
+        const res = await fetch(API_BASE + '/api/add_queue_url', {{
           method: 'POST',
           headers: {{ 'Content-Type': 'application/json' }},
           body: JSON.stringify({{ url: url }})
@@ -1511,7 +1512,7 @@ def sync_dashboard():
 
     async function updateJobStatus(appId, newStatus) {{
       try {{
-        const res = await fetch('http://localhost:5000/api/update_status', {{
+        const res = await fetch(API_BASE + '/api/update_status', {{
           method: 'POST',
           headers: {{ 'Content-Type': 'application/json' }},
           body: JSON.stringify({{ id: appId, status: newStatus }})
@@ -1564,7 +1565,7 @@ def sync_dashboard():
       showToast('📦 Archiving opportunity & training engine...');
 
       try {{
-        const res = await fetch('http://localhost:5000/api/archive_queue', {{
+        const res = await fetch(API_BASE + '/api/archive_queue', {{
           method: 'POST',
           headers: {{ 'Content-Type': 'application/json' }},
           body: JSON.stringify({{
@@ -1587,7 +1588,7 @@ def sync_dashboard():
 
     async function archiveQueueJob(jobUrl, reasonCategory = 'General Removal', customNotes = '') {{
       try {{
-        const res = await fetch('http://localhost:5000/api/archive_queue', {{
+        const res = await fetch(API_BASE + '/api/archive_queue', {{
           method: 'POST',
           headers: {{ 'Content-Type': 'application/json' }},
           body: JSON.stringify({{ url: jobUrl, reason_category: reasonCategory, custom_notes: customNotes }})
@@ -1604,7 +1605,7 @@ def sync_dashboard():
 
     async function restoreQueueJob(jobUrl) {{
       try {{
-        const res = await fetch('http://localhost:5000/api/restore_queue', {{
+        const res = await fetch(API_BASE + '/api/restore_queue', {{
           method: 'POST',
           headers: {{ 'Content-Type': 'application/json' }},
           body: JSON.stringify({{ url: jobUrl }})
@@ -1622,7 +1623,7 @@ def sync_dashboard():
     async function deleteQueuePermanent(jobUrl) {{
       if (!confirm('Are you sure you want to permanently delete this job from the archive?')) return;
       try {{
-        const res = await fetch('http://localhost:5000/api/delete_queue_permanent', {{
+        const res = await fetch(API_BASE + '/api/delete_queue_permanent', {{
           method: 'POST',
           headers: {{ 'Content-Type': 'application/json' }},
           body: JSON.stringify({{ url: jobUrl }})
@@ -1705,7 +1706,7 @@ def sync_dashboard():
       const followups = fDate ? [{{ id: 'FUP-01', date: fDate, notes: fNotes }}] : [];
 
       try {{
-        const res = await fetch('http://localhost:5000/api/save_application_details', {{
+        const res = await fetch(API_BASE + '/api/save_application_details', {{
           method: 'POST',
           headers: {{ 'Content-Type': 'application/json' }},
           body: JSON.stringify({{ id: currentAppDetailId, application_notes: notes, application_followups: followups }})
@@ -1818,7 +1819,7 @@ def sync_dashboard():
     async function deleteInterviewRound(intId) {{
       if (!confirm('Delete this interview round?')) return;
       try {{
-        const res = await fetch('http://localhost:5000/api/delete_interview', {{
+        const res = await fetch(API_BASE + '/api/delete_interview', {{
           method: 'POST',
           headers: {{ 'Content-Type': 'application/json' }},
           body: JSON.stringify({{ app_id: currentAppDetailId, interview_id: intId }})
@@ -1851,7 +1852,7 @@ def sync_dashboard():
       }};
 
       try {{
-        const res = await fetch('http://localhost:5000/api/save_interview', {{
+        const res = await fetch(API_BASE + '/api/save_interview', {{
           method: 'POST',
           headers: {{ 'Content-Type': 'application/json' }},
           body: JSON.stringify({{ app_id: currentAppDetailId, interview: intObj }})
@@ -1906,7 +1907,7 @@ def sync_dashboard():
         populateSettingsForm(CONFIG_DATA);
       }} catch(e) {{ console.error('populateSettingsForm error:', e); }}
 
-      fetch('http://localhost:5000/api/get_config')
+      fetch(API_BASE + '/api/get_config')
         .then(res => res.json())
         .then(data => {{
           if (data && data.status === 'success') {{
@@ -1966,7 +1967,7 @@ def sync_dashboard():
       reader.onload = async function(e) {{
         const b64 = e.target.result.split(',')[1];
         try {{
-          const res = await fetch('http://localhost:5000/api/upload_resume', {{
+          const res = await fetch(API_BASE + '/api/upload_resume', {{
             method: 'POST',
             headers: {{ 'Content-Type': 'application/json' }},
             body: JSON.stringify({{ filename: file.name, file_b64: b64 }})
@@ -2026,7 +2027,7 @@ def sync_dashboard():
       }};
 
       try {{
-        const res = await fetch('http://localhost:5000/api/save_config', {{
+        const res = await fetch(API_BASE + '/api/save_config', {{
           method: 'POST',
           headers: {{ 'Content-Type': 'application/json' }},
           body: JSON.stringify({{ config: newConfig }})
