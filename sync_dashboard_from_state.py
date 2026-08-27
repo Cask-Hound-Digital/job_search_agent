@@ -731,7 +731,11 @@ def sync_dashboard():
         source = item.get("source", "LinkedIn")
         
         # Differentiate Posted Date/Time vs Ingested/Scraped Time
-        date_posted_raw = str(item.get("date_posted_raw", item.get("date_posted", item.get("date", "")))).strip()
+        raw_p_val = str(item.get("date_posted_raw", item.get("date_posted", item.get("date", "")))).strip()
+        if raw_p_val.lower() in ["nan", "none", "null", "undefined"]:
+            raw_p_val = ""
+        date_posted_raw = raw_p_val
+
         time_scraped_raw = str(item.get("time_scraped", item.get("timestamp", ""))).strip()
         date_added_raw = str(item.get("date_added", "")).strip()
 

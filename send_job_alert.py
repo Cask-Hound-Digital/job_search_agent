@@ -25,12 +25,16 @@ def send_telegram_alert(company, title, url, location="100% Remote / Preferred H
         print("[NOTIFY CONFIG] Telegram BOT_TOKEN or CHAT_ID not set in .env")
         return False
 
+    posted_clean = str(posted_time).strip()
+    if not posted_clean or posted_clean.lower() in ["nan", "none", "null", "undefined"]:
+        posted_clean = "Just now (<24h)"
+
     message = (
         f"🔥 <b>FRESH JOB ALERT (&lt;24H)</b>\n\n"
         f"🏢 <b>Company:</b> {company}\n"
         f"💼 <b>Role:</b> {title}\n"
         f"📍 <b>Location:</b> {location}\n"
-        f"⏰ <b>Posted:</b> {posted_time}\n\n"
+        f"⏰ <b>Posted:</b> {posted_clean}\n\n"
         f"🔗 <a href='{url}'>View Posting on Job Board</a>\n"
         f"⚡ Open Dashboard on your PC to 1-Click Apply!"
     )

@@ -118,6 +118,10 @@ def run_jobspy_scraper():
 
                         clean_u = clean_url(job_url)
 
+                        dp_clean = str(date_posted).strip() if pd.notna(date_posted) else ""
+                        if dp_clean.lower() in ["nan", "none", "null"]:
+                            dp_clean = ""
+
                         all_scraped_jobs.append({
                             "title": job_title,
                             "company_name": company if company and company != "nan" else "Verified Employer",
@@ -126,8 +130,8 @@ def run_jobspy_scraper():
                             "email_subject": f"JobSpy Live Sweep: {title} ({loc})",
                             "status": "Verified Match",
                             "filter_reason": f"Passed JobSpy criteria check (Location: {location})",
-                            "date": date_posted,
-                            "date_posted": date_posted,
+                            "date": dp_clean,
+                            "date_posted": dp_clean,
                             "date_added": datetime.now().strftime("%Y-%m-%d"),
                             "time_scraped": datetime.now().isoformat(),
                             "audited_role_title": job_title,
