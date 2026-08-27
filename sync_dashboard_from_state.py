@@ -848,7 +848,7 @@ def sync_dashboard():
         pos_keywords = ["vibe coding", "prototyping", "ai-assisted", "automation", "api integration", "0-to-1", "martech", "web strategy"]
         pos_hits = sum(1 for kw in pos_keywords if kw in full_text_lower)
 
-        if any(k in title_lower for k in ["vp", "vice president", "head of"]):
+        if any(k in title_lower for k in ["vp", "vice president", "head of", "chief of staff"]):
             match = 98 + min(pos_hits, 1)
         elif "director" in title_lower:
             match = 97 + min(pos_hits, 2)
