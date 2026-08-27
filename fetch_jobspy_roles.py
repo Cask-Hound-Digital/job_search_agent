@@ -36,29 +36,25 @@ NON_DFW_LOCATIONS = [
     "canada", "paris", "france", "india", "australia", "singapore", "germany", "berlin", "tokyo"
 ]
 
-def is_valid_location(loc_str, is_remote_query=True):
-    if not loc_str:
-        return True
-    l_lower = loc_str.lower()
+def is_valid_location(loc_str, is_remote_query=True, title=""):
+    combined = f"{loc_str} {title}".lower()
 
-    # Reject explicitly labeled 100% Onsite / In-Office roles
-    if "onsite" in l_lower or "on-site" in l_lower or "in-office" in l_lower or "in office" in l_lower:
-        if "hybrid" not in l_lower and "remote" not in l_lower:
-            return False
+    # Reject explicitly labeled 100% Onsite / In-Office roles if not Preferred Hybrid City
+    if "onsite" in combined or "on-site" in combined or "in-office" in combined or "in office" in combined:
+        if "hybrid" not in combined and "remote" not in combined:
+            if not any(re.search(rf'\b{city}\b', combined) for city in ALLOWED_LOCAL_CITIES):
+                return False
 
-    # If explicitly remote, allow
-    if any(k in l_lower for k in ["remote", "work from home", "telecommute", "anywhere", "100% remote", "remote (us)", "remote - us"]):
-        return True
-
-    # If local city match, allow
-    if any(re.search(rf'\b{city}\b', l_lower) for city in ALLOWED_LOCAL_CITIES):
+    # Check 1: Explicit remote keywords in location or title
+    if any(k in combined for k in ["remote", "work from home", "telecommute", "anywhere", "100% remote", "remote (us)", "remote - us"]):
         return True
 
-    # Reject explicitly non-matching locations without remote tag
-    if any(re.search(rf'\b{kw}\b', l_lower) for kw in NON_DFW_LOCATIONS):
-        return False
+    # Check 2: Explicit Preferred Hybrid City local city match
+    if any(re.search(rf'\b{city}\b', combined) for city in ALLOWED_LOCAL_CITIES):
+        return True
 
-    return True
+    # If non-remote query and no Preferred Hybrid City match, reject
+    return False
 
 def run_jobspy_scraper():
     print("=========================================================")
