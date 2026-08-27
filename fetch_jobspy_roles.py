@@ -124,7 +124,12 @@ def run_jobspy_scraper():
                             print(f"  [REJECTED LOCATION] '{job_title}' at '{company}' in '{location}'")
                             continue
 
-                        clean_u = clean_url(job_url)
+                        # Check metadata salary amounts from JobSpy
+                        min_amt = row.get("min_amount") if pd.notna(row.get("min_amount")) else None
+                        max_amt = row.get("max_amount") if pd.notna(row.get("max_amount")) else None
+                        if max_amt and float(max_amt) < 200000 and float(max_amt) > 1000:
+                            print(f"  [REJECTED SALARY METADATA] '{job_title}' at '{company}' (Max: ${max_amt:,.0f} < $200k)")
+                            continue
 
                         dp_clean = str(date_posted).strip() if pd.notna(date_posted) else ""
                         if dp_clean.lower() in ["nan", "none", "null"]:
