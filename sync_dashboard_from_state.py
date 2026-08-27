@@ -1170,6 +1170,8 @@ def sync_dashboard():
             <button class="btn-primary" onclick="saveInterviewRound()">💾 Save Interview Round</button>
           </div>
         </div>
+      </div>
+    </div>
 
     <!-- Settings & Configuration Modal -->
     <div id="settingsModal" class="modal-backdrop" style="display:none;">
