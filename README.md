@@ -27,10 +27,11 @@
 > **Human-in-the-Loop Safeguard**: Clicking **"⚡ Apply & Build Package"** builds your tailored single-column ATS PDF/DOCX resume and 6-part hybrid cover letter locally. It **does not** automatically submit forms on external job sites. You maintain 100% control to review your customized package before submitting it directly to the employer's portal.
 
 ### Key Capabilities
-- **Multi-Board Job Scraping**: Open-source scraper engine ([`fetch_jobspy_roles.py`](fetch_jobspy_roles.py)) extracting live listings from LinkedIn and Indeed with zero third-party API fees.
-- **Strict Location Guardrail Filtering**: Validates geographic location strings and remote flags (`is_remote=True`) to automatically filter out non-matching onsite postings.
+- **Multi-Board Job Scraping**: Open-source scraper engine ([`fetch_jobspy_roles.py`](fetch_jobspy_roles.py)) extracting live listings from LinkedIn, Indeed, BuiltIn, and Dice with zero third-party API fees.
+- **🤝 LinkedIn 1st-Degree Connections Engine**: Automatically matches target companies against your exported `Connections.csv` file, displaying 1st-degree network badges and pre-filled 3TC warm outreach templates for instant networking.
+- **Strict Location & Title Safeguards**: Validates geographic location strings, remote flags (`is_remote=True`), and hard-excludes individual contributor engineering/PM titles to enforce executive profile rules.
 - **Instant Mobile Push Notifications**: Integrated Telegram Bot dispatcher ([`send_job_alert.py`](send_job_alert.py)) delivering real-time mobile alerts for `🔥 FRESH (<24H)` job postings directly to your phone.
-- **Silent Background API Server**: Local HTTP daemon server ([`dashboard_server.py`](dashboard_server.py)) running on `http://localhost:5000` with origin-validated CORS security.
+- **Silent Background API Server & Tailscale Support**: Local HTTP daemon server ([`dashboard_server.py`](dashboard_server.py)) running on port 5000 with dynamic origin binding (`window.location.origin`) for remote access over Tailscale.
 - **Responsive HTML Review Dashboard**: Interactive HTML dashboard ([`sync_dashboard_from_state.py`](sync_dashboard_from_state.py)) rendering live job queues with a 1-click **"⚡ Apply & Build Package"** button.
 - **ATS Master Document Builder**: Single document engine ([`build_application_package.py`](build_application_package.py)) generating single-column ATS PDF and DOCX resumes alongside 6-part hybrid cover letters.
 
@@ -167,6 +168,18 @@ If YACareerOps helps you streamline your job search or build tailored applicatio
 
 - **[JobSpy](https://github.com/BobsData/JobSpy)**: Powered by the open-source `python-jobspy` multi-board scraper engine for live $0-cost extraction from LinkedIn and Indeed.
 - **[ReportLab](https://www.reportlab.com/) & [python-docx](https://python-docx.readthedocs.io/)**: Single-column ATS document rendering engine.
+
+---
+
+## 🏷️ Release Versioning Policy & Governance
+
+YACareerOps follows [Semantic Versioning (SemVer 2.0.0)](https://semver.org/).
+
+| Release Tier | Version Example | When to Cut a New Release |
+| :--- | :--- | :--- |
+| **Major Release** | `v2.0.0` | Architectural shifts, breaking changes to core schemas/data structures, or major framework migrations (e.g. migrating from single-agent scrapers to full Antigravity 2.0 SDK multi-agent orchestration). |
+| **Minor Feature Release** | `v1.2.0` | New user-facing capabilities, tools, or integrations added without breaking existing workflows (e.g. LinkedIn 1st-Degree Connections Engine, Tailscale Remote Access, 4-Hour Cron Engine). |
+| **Patch Release** | `v1.2.1` | Bug fixes, scraper rate-limit adjustments, location/title exclusion updates, or minor UI/CSS visual polishes. |
 
 ---
 
