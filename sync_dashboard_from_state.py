@@ -1917,6 +1917,142 @@ def sync_dashboard():
       setVal('cfgNegativeKeywords', (scoring.negative_keywords || []).join(', '));
     }}
 
+
+    // ==========================================
+    // LINKEDIN CONNECTIONS ENGINE & MODALS
+    // ==========================================
+    function openUploadConnectionsModal() {{
+      console.log('[LINKEDIN] Opening upload modal...');
+      const modal = document.getElementById('uploadConnectionsModal');
+      if (modal) {{
+        modal.style.setProperty('display', 'flex', 'important');
+      }} else {{
+        alert('Upload modal element not found in DOM.');
+      }}
+    }}
+    window.openUploadConnectionsModal = openUploadConnectionsModal;
+
+    function closeUploadConnectionsModal() {{
+      const modal = document.getElementById('uploadConnectionsModal');
+      if (modal) modal.style.display = 'none';
+    }}
+    window.closeUploadConnectionsModal = closeUploadConnectionsModal;
+
+    async function processConnectionsUpload() {{
+      const fileInput = document.getElementById('connectionsFileInput');
+      if (!fileInput || !fileInput.files.length) {{
+        alert('Please select your Connections.csv file exported from LinkedIn.');
+        return;
+      }}
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = async function(e) {{
+        const base64Data = e.target.result.split(',')[1];
+        showToast(`🤝 Importing ${{file.name}}...`);
+
+        try {{
+          const res = await fetch(API_BASE + '/api/upload_connections', {{
+            method: 'POST',
+            headers: {{ 'Content-Type': 'application/json' }},
+            body: JSON.stringify({{
+              file_b64: base64Data,
+              filename: file.name
+            }})
+          }});
+
+          const data = await res.json();
+          if (data.status === 'success') {{
+            showToast(`✅ ${{data.message}}`);
+            closeUploadConnectionsModal();
+            setTimeout(() => {{ window.location.reload(); }}, 1200);
+          }} else {{
+            alert('Upload failed: ' + (data.message || 'Unknown error'));
+          }}
+        }} catch (err) {{
+          alert('Upload error: ' + err);
+        }}
+      }};
+
+      reader.readAsDataURL(file);
+    }}
+    window.processConnectionsUpload = processConnectionsUpload;
+
+    function showLinkedInConnectionsModal(companyName) {{
+      const modal = document.getElementById('linkedinConnectionsModal');
+      const titleElem = document.getElementById('connModalTitle');
+      const bodyElem = document.getElementById('connModalBody');
+
+      if (!modal || !titleElem || !bodyElem) return;
+
+      titleElem.innerText = `🤝 LinkedIn Connections at ${{companyName}}`;
+
+      let conns = [];
+      document.querySelectorAll('.queue-item-card, .app-row').forEach(el => {{
+        const c = el.getAttribute('data-company') || '';
+        if (c.toLowerCase() === companyName.toLowerCase()) {{
+          const connData = el.getAttribute('data-connections');
+          if (connData) {{
+            try {{ conns = JSON.parse(connData); }} catch(e){{}}
+          }}
+        }}
+      }});
+
+      if (!conns || !conns.length) {{
+        bodyElem.innerHTML = `
+          <div style="text-align:center; padding:2rem 1rem; color:var(--text-muted);">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">🔍</div>
+            <div>No 1st-degree LinkedIn connections found at <strong>${{companyName}}</strong> in your imported connections file.</div>
+            <div style="margin-top:1rem;">
+              <button class="btn-secondary" onclick="openUploadConnectionsModal()">🤝 Update / Upload LinkedIn Connections CSV</button>
+            </div>
+          </div>
+        `;
+      }} else {{
+        let rowsHtml = '';
+        conns.forEach((c, i) => {{
+          const profileUrl = c.url || '#';
+          const name = c.name || `${{c.first_name || ''}} ${{c.last_name || ''}}`.trim();
+          const pos = c.title || 'Team Member';
+          const date = c.connected_on || '';
+
+          const outreachTemplate = `Hi ${{c.first_name || name.split(' ')[0]}}, hope you're doing well! I saw an executive leadership opening at ${{companyName}} that aligns with my global digital operations background. Would love to catch up for 5 minutes if you have time!`;
+
+          rowsHtml += `
+            <div style="background:rgba(255,255,255,0.03); border:1px solid var(--panel-border); border-radius:0.6rem; padding:1rem; margin-bottom:0.75rem;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                  <div style="font-size:1.05rem; font-weight:700; color:#ffffff;">${{name}}</div>
+                  <div style="font-size:0.88rem; color:var(--accent-blue); margin-top:0.1rem;">${{pos}}</div>
+                  <div style="font-size:0.78rem; color:var(--text-muted); margin-top:0.2rem;">Connected on: ${{date}}</div>
+                </div>
+                <div>
+                  <a href="${{profileUrl}}" target="_blank" class="btn-primary" style="font-size:0.8rem; padding:0.4rem 0.8rem; text-decoration:none; display:inline-block;">🔗 View LinkedIn Profile</a>
+                </div>
+              </div>
+              <div style="margin-top:0.75rem; background:rgba(0,0,0,0.25); border-radius:0.4rem; padding:0.6rem 0.8rem; font-size:0.82rem; color:var(--text-muted);">
+                <strong style="color:var(--accent-cyan);">💬 3TC Warm Outreach Template:</strong>
+                <div id="msg-${{i}}" style="margin-top:0.3rem; color:#e2e8f0; font-style:italic;">"${{outreachTemplate}}"</div>
+                <button class="btn-secondary" style="font-size:0.72rem; padding:0.2rem 0.5rem; margin-top:0.4rem;" onclick="navigator.clipboard.writeText(\`${{outreachTemplate}}\`); showToast('📋 Copied outreach message!');">📋 Copy Message</button>
+              </div>
+            </div>
+          `;
+        }});
+
+        bodyElem.innerHTML = rowsHtml;
+      }}
+
+      modal.style.setProperty('display', 'flex', 'important');
+    }}
+    window.showLinkedInConnectionsModal = showLinkedInConnectionsModal;
+
+    function closeLinkedInConnectionsModal() {{
+      const modal = document.getElementById('linkedinConnectionsModal');
+      if (modal) modal.style.display = 'none';
+    }}
+    window.closeLinkedInConnectionsModal = closeLinkedInConnectionsModal;
+
     function openSettingsModal() {{
       console.log('[SETTINGS] opening modal...');
       const m = document.getElementById('settingsModal');
