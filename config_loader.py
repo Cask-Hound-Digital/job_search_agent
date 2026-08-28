@@ -37,6 +37,9 @@ def get_excluded_titles():
 def get_allowed_local_cities():
     return get_candidate_config().get("allowed_local_cities", [])
 
+def get_excluded_locations():
+    return get_search_matrix().get("excluded_locations", [])
+
 def get_min_salary_floor():
     return get_candidate_config().get("min_salary_floor", 150000)
 

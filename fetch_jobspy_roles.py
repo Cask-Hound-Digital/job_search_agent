@@ -36,23 +36,16 @@ NON_DFW_LOCATIONS = [
     "canada", "paris", "france", "india", "australia", "singapore", "germany", "berlin", "tokyo"
 ]
 
-INTL_EXCLUDED_LOCATIONS = [
-    "india", "mumbai", "bengaluru", "hyderabad", "pune", "gurgaon", "delhi", "noida",
-    "hong kong", "indonesia", "jakarta", "singapore", "uk", "london", "england",
-    "europe", "australia", "sydney", "melbourne", "canada", "toronto", "vancouver",
-    "china", "shenzhen", "shanghai", "beijing", "japan", "tokyo", "germany", "berlin",
-    "france", "paris", "philippines", "manila", "taiwan", "korea", "seoul", "vietnam",
-    "brazil", "mexico", "ireland", "dublin", "poland", "warsaw", "estonia", "tallinn",
-    "romania", "bucharest", "luxembourg", "switzerland", "zurich", "austria", "netherlands", "amsterdam",
-    "austin", "houston", "san antonio", "el paso", "corpus christi", "lubbock", "amarillo", "midland", "waco", "college station"
-]
+from config_loader import get_allowed_local_cities, get_excluded_locations
+
+ALLOWED_LOCAL_CITIES = get_allowed_local_cities()
 
 def is_valid_location(loc_str, is_remote_query=True, title=""):
     combined = f"{loc_str} {title}".lower()
 
-    # HARD REJECT: International non-US locations even if marked remote
-    for intl in INTL_EXCLUDED_LOCATIONS:
-        if re.search(rf'\b{intl}\b', combined):
+    # HARD REJECT: Excluded locations from candidate search matrix configuration
+    for loc_ex in get_excluded_locations():
+        if re.search(rf'\b{loc_ex}\b', combined):
             return False
 
     # Reject explicitly labeled 100% Onsite / In-Office roles if not Preferred Hybrid City
