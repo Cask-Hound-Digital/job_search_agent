@@ -279,11 +279,19 @@ def fetch_and_filter_all_job_alerts():
 
                 # Run strict IC Engineer, Austin, and Compensation purges BEFORE Telegram notifications
                 try:
-                    import subprocess
+                    import subprocess, sys, os
                     script_dir = os.path.dirname(os.path.abspath(__file__))
-                    purge_eng = os.path.join(script_dir, ".system_generated", "steps", "purge_eng.py")
-                    # Run post-audit scripts directly
-                    subprocess.run([sys.executable, "-c", "from config_loader import is_valid_target_title; import json, os; f='state.json'; state=json.load(open(f)); rq=[j for j in state.get('review_queue',[]) if is_valid_target_title(j.get('audited_role_title', j.get('title','')))]; state['review_queue']=rq; json.dump(state, open(f,'w'), indent=2)"], cwd=script_dir, check=False)
+                    purge_eng_script = os.path.join(script_dir, ".system_generated", "steps", "purge_eng.py")
+                    # Run config_loader title filter purge on state.json review_queue
+                    purge_cmd = [
+                        sys.executable, "-c",
+                        "import sys, os, json; sys.path.insert(0, r'P:\\Projects\\job-search-consultant'); "
+                        "from config_loader import is_valid_target_title; f=r'P:\\Projects\\job-search-consultant\\state.json'; "
+                        "state=json.load(open(f, encoding='utf-8')); "
+                        "rq=[j for j in state.get('review_queue',[]) if is_valid_target_title(j.get('audited_role_title', j.get('title','')))]; "
+                        "state['review_queue']=rq; json.dump(state, open(f,'w', encoding='utf-8'), indent=2)"
+                    ]
+                    subprocess.run(purge_cmd, cwd=script_dir, check=False)
                 except Exception as purge_err:
                     print(f"Warning running pre-telegram purge: {purge_err}")
 
