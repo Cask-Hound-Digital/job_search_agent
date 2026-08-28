@@ -43,7 +43,8 @@ INTL_EXCLUDED_LOCATIONS = [
     "china", "shenzhen", "shanghai", "beijing", "japan", "tokyo", "germany", "berlin",
     "france", "paris", "philippines", "manila", "taiwan", "korea", "seoul", "vietnam",
     "brazil", "mexico", "ireland", "dublin", "poland", "warsaw", "estonia", "tallinn",
-    "romania", "bucharest", "luxembourg", "switzerland", "zurich", "austria", "netherlands", "amsterdam"
+    "romania", "bucharest", "luxembourg", "switzerland", "zurich", "austria", "netherlands", "amsterdam",
+    "austin", "houston", "san antonio", "el paso", "corpus christi", "lubbock", "amarillo", "midland", "waco", "college station"
 ]
 
 def is_valid_location(loc_str, is_remote_query=True, title=""):
