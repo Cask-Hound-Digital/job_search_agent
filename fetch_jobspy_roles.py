@@ -36,8 +36,23 @@ NON_DFW_LOCATIONS = [
     "canada", "paris", "france", "india", "australia", "singapore", "germany", "berlin", "tokyo"
 ]
 
+INTL_EXCLUDED_LOCATIONS = [
+    "india", "mumbai", "bengaluru", "hyderabad", "pune", "gurgaon", "delhi", "noida",
+    "hong kong", "indonesia", "jakarta", "singapore", "uk", "london", "england",
+    "europe", "australia", "sydney", "melbourne", "canada", "toronto", "vancouver",
+    "china", "shenzhen", "shanghai", "beijing", "japan", "tokyo", "germany", "berlin",
+    "france", "paris", "philippines", "manila", "taiwan", "korea", "seoul", "vietnam",
+    "brazil", "mexico", "ireland", "dublin", "poland", "warsaw", "estonia", "tallinn",
+    "romania", "bucharest", "luxembourg", "switzerland", "zurich", "austria", "netherlands", "amsterdam"
+]
+
 def is_valid_location(loc_str, is_remote_query=True, title=""):
     combined = f"{loc_str} {title}".lower()
+
+    # HARD REJECT: International non-US locations even if marked remote
+    for intl in INTL_EXCLUDED_LOCATIONS:
+        if re.search(rf'\b{intl}\b', combined):
+            return False
 
     # Reject explicitly labeled 100% Onsite / In-Office roles if not Preferred Hybrid City
     if "onsite" in combined or "on-site" in combined or "in-office" in combined or "in office" in combined:
@@ -53,7 +68,7 @@ def is_valid_location(loc_str, is_remote_query=True, title=""):
     if any(re.search(rf'\b{city}\b', combined) for city in ALLOWED_LOCAL_CITIES):
         return True
 
-    # If non-remote query and no Preferred Hybrid City match, reject
+    # Default fallback: Reject if not explicitly US Remote or Preferred Hybrid City Local
     return False
 
 def run_jobspy_scraper():
