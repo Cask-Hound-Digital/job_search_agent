@@ -181,4 +181,6 @@ Always enforce the following locked preferences when generating or updating appl
    - Never pull exact wording or sentences straight from target JDs. Reword all requirements into authentic phrasing describing {{CANDIDATE}}'s real 18-year career at {{MOST_RECENT_COMPANY}}, {{PREVIOUS_COMPANY_2}}, and {{PREVIOUS_COMPANY_3}}.
 4. **"Workflows as a Product" Strategy**:
    - For digital transformation and operational roles, frame internal web & development operations with a **product management mindset** (prioritizing backlogs, mapping friction, driving adoption, partnering with Product & UX stakeholders).
+5. **GitHub Release Tracking & Recommendations**:
+   - Maintain `CHANGELOG.md` and version numbers in `config.json`. Whenever a major or minor feature milestone (such as LinkedIn Connections Engine, Tailscale Remote Access, or Scraper Hardening) is completed, proactively track the changes and recommend cutting an official GitHub Release (e.g. `v1.2.0`) with draft release notes.
 
