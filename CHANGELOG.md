@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [v1.2.0] - 2026-08-28 (Pending Release Recommendation)
+## [v1.2.0] - 2026-08-28
 
 ### Added
 - **🤝 LinkedIn 1st-Degree Connections Engine**: Parses exported `Connections.csv` files, matches network connections to target companies in the review queue and applications list, and displays green network badges.
