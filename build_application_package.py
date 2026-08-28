@@ -323,15 +323,11 @@ def generate_resume_pdf(job_payload, output_pdf_path):
         doc.build(story)
         print(f"Saved PDF Resume to {output_pdf_path}")
     except PermissionError:
-        print(f"[PERMISSION WARNING] File {output_pdf_path} is locked by an open application. Attempting to unlock...")
+        print(f"[PERMISSION WARNING] File {output_pdf_path} is locked by an open application. Saving to updated filename...")
         alt_path = output_pdf_path.replace(".pdf", "_updated.pdf")
-        doc.build(story, filename=alt_path)
-        try:
-            if os.path.exists(alt_path):
-                os.replace(alt_path, output_pdf_path)
-        except Exception:
-            pass
-        print(f"Saved PDF Resume to {output_pdf_path}")
+        doc_alt = SimpleDocTemplate(alt_path, pagesize=letter, leftMargin=43.2, rightMargin=43.2, topMargin=36, bottomMargin=36)
+        doc_alt.build(story)
+        print(f"Saved PDF Resume to {alt_path}")
 
 
 def generate_cover_docx(job_payload, output_docx_path):
