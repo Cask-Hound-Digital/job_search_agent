@@ -163,3 +163,22 @@ For expanded strategy frameworks, bullet point formulas, cover letter playbooks,
 - [`job_search_strategy_and_networking.md`](reference/job_search_strategy_and_networking.md)
 - [`resume_and_cover_letter_playbook.md`](reference/resume_and_cover_letter_playbook.md)
 - [`ai_prompting_and_automation_guide.md`](reference/ai_prompting_and_automation_guide.md)
+
+---
+
+## 9. Permanent Candidate Customization Rules ({{YOUR_FULL_NAME}})
+
+Always enforce the following locked preferences when generating or updating application packages:
+
+1. **Resume Headline Standard**:
+   - Use grounded, executive titles matching {{CANDIDATE}}'s experience: `GLOBAL DIGITAL & WEB OPERATIONS DIRECTOR | <TARGET ROLE TITLE>`.
+   - Never use artificial corporate mashups (e.g. no "Digital Product Operations Director").
+2. **Strict Skill & Tool Inclusion Policy**:
+   - Never inject unverified third-party platforms (Salesforce, {{MARKETING_AUTOMATION_TOOL}}, Hubspot, PIM) unless explicitly present in {{YOUR_FULL_NAME}}' locked ground-truth profile.
+   - Never use inflated AI buzzwords (e.g. "pioneer in Model Context Protocol"). Phrase AI capabilities naturally: *"Practical experience integrating AI workflows, Model Context Protocol (MCP) tools, and agent customization..."*
+   - Always present newly extracted JD skills to {{YOUR_NAME}} for explicit approval before adding to `approved_skills.json`.
+3. **No Verbatim JD Copying**:
+   - Never pull exact wording or sentences straight from target JDs. Reword all requirements into authentic phrasing describing {{CANDIDATE}}'s real 18-year career at {{MOST_RECENT_COMPANY}}, {{PREVIOUS_COMPANY_2}}, and {{PREVIOUS_COMPANY_3}}.
+4. **"Workflows as a Product" Strategy**:
+   - For digital transformation and operational roles, frame internal web & development operations with a **product management mindset** (prioritizing backlogs, mapping friction, driving adoption, partnering with Product & UX stakeholders).
+
