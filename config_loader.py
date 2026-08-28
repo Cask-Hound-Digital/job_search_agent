@@ -81,10 +81,20 @@ TARGET_DOMAIN_PHRASES = [
     "incubation"
 ]
 
+HARD_ENGINEER_EXCLUSIONS = [
+    "engineer", "engineering", "developer", "architect", "programmer", "coder",
+    "project manager", "project management", "pmo manager", "marketing operations", "marketing ops"
+]
+
 def is_valid_target_title(title_str):
     if not title_str:
         return False
     t_low = title_str.lower()
+
+    # HARD REJECT: Engineer, Developer, Architect, PM, MOPs titles
+    for h_ex in HARD_ENGINEER_EXCLUSIONS:
+        if h_ex in t_low:
+            return False
 
     # Reject hard excluded keywords
     for ex in get_excluded_titles():

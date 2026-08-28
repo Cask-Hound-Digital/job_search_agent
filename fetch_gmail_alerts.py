@@ -81,21 +81,21 @@ def get_job_dedup_key(title, url, company=""):
     # 3. Fallback to clean URL
     return f"url_{clean_u}"
 
+from config_loader import is_valid_target_title
+
 def evaluate_job_criteria(title, context_text):
     combined_text = f"{title} {context_text}".lower()
 
-    # 1. Exclusion Check
+    # 1. Strict Target Title Domain Validation
+    if not is_valid_target_title(title):
+        return False, f"Rejected: Title '{title}' is an excluded IC Engineer / PM / MOps role or out of target matrix"
+
+    # 2. Exclusion Check
     for ex in EXCLUDED_TITLES:
         if ex in combined_text:
             return False, f"Rejected: Contains excluded domain/title term ({ex})"
 
-    # 2. Expanded Target Title Match Check
-    has_target_title = any(t in combined_text for t in TARGET_TITLES)
-    if not has_target_title:
-        return False, "Rejected: Title does not match candidate's expanded target title matrix"
-
     # 3. Location Check (Default Remote for email alerts unless non-Preferred Hybrid City hybrid explicitly stated)
-    is_dfw = any(loc in combined_text for loc in DFW_LOCATIONS)
     is_non_dfw_onsite = any(loc in combined_text for loc in ["onsite in california", "onsite in new york", "hybrid in lansdale"])
 
     if is_non_dfw_onsite:
