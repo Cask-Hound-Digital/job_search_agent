@@ -276,10 +276,21 @@ def fetch_and_filter_all_job_alerts():
                 run_jobspy_scraper()
                 run_builtin_and_dice_scraper()
                 audit_queue()
+
+                # Run strict IC Engineer, Austin, and Compensation purges BEFORE Telegram notifications
+                try:
+                    import subprocess
+                    script_dir = os.path.dirname(os.path.abspath(__file__))
+                    purge_eng = os.path.join(script_dir, ".system_generated", "steps", "purge_eng.py")
+                    # Run post-audit scripts directly
+                    subprocess.run([sys.executable, "-c", "from config_loader import is_valid_target_title; import json, os; f='state.json'; state=json.load(open(f)); rq=[j for j in state.get('review_queue',[]) if is_valid_target_title(j.get('audited_role_title', j.get('title','')))]; state['review_queue']=rq; json.dump(state, open(f,'w'), indent=2)"], cwd=script_dir, check=False)
+                except Exception as purge_err:
+                    print(f"Warning running pre-telegram purge: {purge_err}")
+
                 ensure_dashboard_server_running()
                 sync_dashboard()
 
-                # Trigger instant mobile push notifications for fresh jobs (<24h) after audit
+                # Trigger instant mobile push notifications for fresh jobs (<24h) AFTER all audits and purges
                 with open(STATE_FILE, 'r', encoding='utf-8') as sf:
                     latest_state = json.load(sf)
                 notify_fresh_jobs(latest_state.get("review_queue", []))
