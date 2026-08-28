@@ -177,6 +177,40 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 self.wfile.write(json.dumps(res).encode('utf-8'))
                 return
 
+        elif self.path == '/api/upload_connections':
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                import base64
+                from linkedin_connections_manager import parse_linkedin_csv
+                data = json.loads(post_data.decode('utf-8'))
+                file_b64 = data.get('file_b64', '')
+                
+                target_path = os.path.join(BASE_DIR, "linkedin_connections.csv")
+                file_bytes = base64.b64decode(file_b64)
+                with open(target_path, 'wb') as f:
+                    f.write(file_bytes)
+
+                conns = parse_linkedin_csv(target_path)
+                print(f"[LINKEDIN ENGINE] Uploaded and parsed {len(conns)} LinkedIn connections into linkedin_connections.csv")
+                subprocess.run([PYTHON_EXE, "sync_dashboard_from_state.py"], cwd=BASE_DIR, check=False)
+
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self._set_cors_headers()
+                self.end_headers()
+                res = {"status": "success", "count": len(conns), "message": f"Successfully imported {len(conns)} LinkedIn connections!"}
+                self.wfile.write(json.dumps(res).encode('utf-8'))
+                return
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json')
+                self._set_cors_headers()
+                self.end_headers()
+                res = {"status": "error", "message": str(e)}
+                self.wfile.write(json.dumps(res).encode('utf-8'))
+                return
+
         elif self.path == '/api/apply':
             content_length = int(self.headers.get('Content-Length', 0))
             post_data = self.rfile.read(content_length)

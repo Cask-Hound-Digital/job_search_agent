@@ -98,6 +98,20 @@ def sync_dashboard():
 
     unique_queue.sort(key=get_queue_date_key, reverse=True)
 
+    # Enrich Applications & Review Queue with LinkedIn Connections Matching
+    try:
+        from linkedin_connections_manager import get_loaded_connections, get_connections_for_company
+        all_conns = get_loaded_connections()
+        if all_conns:
+            for item in unique_queue:
+                co = item.get("company_name", item.get("company", ""))
+                item["matched_connections"] = get_connections_for_company(co, all_conns)
+            for item in apps:
+                co = item.get("company_name", item.get("company", ""))
+                item["matched_connections"] = get_connections_for_company(co, all_conns)
+    except Exception as conn_err:
+        print(f"Warning matching LinkedIn connections: {conn_err}")
+
     # Compute status counts and stale applications (> 28 days)
     today = datetime.strptime("2026-08-21", "%Y-%m-%d")
 
@@ -761,6 +775,7 @@ def sync_dashboard():
           <span>Verified Review Queue</span>
           <span class="section-badge" id="queueCountBadge">{len(unique_queue)} Opportunities</span>
         </div>
+        <button class="btn-secondary" style="font-size: 0.83rem; padding: 0.45rem 1rem;" onclick="openUploadConnectionsModal()">🤝 Import LinkedIn Connections (CSV)</button>
         <button class="btn-secondary" id="btnAuditClosedQueue" style="font-size: 0.83rem; padding: 0.45rem 1rem;" onclick="runClosedJobAudit()">🔍 Audit & Prune Closed Postings</button>
       </div>
 
@@ -887,14 +902,24 @@ def sync_dashboard():
 
         selected_cls = "selected" if idx == 0 else ""
 
+        matched_conns = item.get("matched_connections", [])
+        conn_badge_html = ""
+        if matched_conns:
+            conn_count = len(matched_conns)
+            conn_badge_html = f'''<div class="conn-badge" style="margin-top:0.4rem; background:rgba(0, 230, 118, 0.15); border:1px solid #00e676; color:#00e676; padding:3px 8px; border-radius:4px; font-size:0.75rem; font-weight:700; cursor:pointer;" onclick="event.stopPropagation(); showLinkedInConnectionsModal('{clean_co}')">🤝 {conn_count} Network Connection{"s" if conn_count > 1 else ""}</div>'''
+
+        matched_conns_json = json.dumps(matched_conns).replace('"', '&quot;') if matched_conns else ''
+        data_conn_attr = f'''data-connections="{matched_conns_json}"''' if matched_conns else ''
+
         html += f"""
-          <div class="queue-item-card {selected_cls}" id="{card_id}" data-date-key="{date_key_val}" data-company="{clean_co}" data-title="{clean_title}" data-source="{source}" data-location="{extracted_loc}" data-match="{match}" data-url="{clean_url}" data-posted="{posted_display}" data-fresh="{str(is_fresh_24h).lower()}" onclick="inspectQueueRole('{card_id}')">
+          <div class="queue-item-card {selected_cls}" id="{card_id}" {data_conn_attr} data-date-key="{date_key_val}" data-company="{clean_co}" data-title="{clean_title}" data-source="{source}" data-location="{extracted_loc}" data-match="{match}" data-url="{clean_url}" data-posted="{posted_display}" data-fresh="{str(is_fresh_24h).lower()}" onclick="inspectQueueRole('{card_id}')">
             <div class="queue-item-company">{co}</div>
             <div class="queue-item-title">{title}</div>
             <div class="queue-item-meta">
               <span class="source-badge {src_class}">{source}</span>
               <span style="color:var(--accent-cyan); font-weight:700;">{match}% Match</span>
             </div>
+            {conn_badge_html}
           </div>
 """
 
@@ -2179,6 +2204,40 @@ def sync_dashboard():
       </div>
     </div>
   </div>
+
+  <!-- Upload Connections CSV Modal -->
+  <div id="uploadConnectionsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); backdrop-filter:blur(4px); z-index:99999; justify-content:center; align-items:center;">
+    <div style="background:#0f172a; border:1px solid var(--panel-border); border-radius:1rem; padding:2rem; width:90%; max-width:550px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.7);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+        <h3 style="margin:0; font-size:1.25rem; font-weight:700; color:#ffffff;">🤝 Import LinkedIn Connections CSV</h3>
+        <button onclick="closeUploadConnectionsModal()" style="background:none; border:none; color:var(--text-muted); font-size:1.5rem; cursor:pointer;">&times;</button>
+      </div>
+      <div style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1.25rem; line-height:1.6;">
+        Export your connections from LinkedIn (<strong style="color:#ffffff;">Settings & Privacy &rarr; Data Privacy &rarr; Get a copy of your data &rarr; Connections</strong>) and upload your <code style="color:var(--accent-cyan);">Connections.csv</code> file below to instantly match 1st-degree network connections for every job posting.
+      </div>
+      <div style="margin-bottom:1.5rem;">
+        <input type="file" id="connectionsFileInput" accept=".csv" style="width:100%; padding:0.75rem; background:#1e293b; border:1px solid var(--panel-border); border-radius:0.5rem; color:#ffffff; font-size:0.88rem;" />
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
+        <button class="btn-secondary" onclick="closeUploadConnectionsModal()">Cancel</button>
+        <button class="btn-primary" onclick="processConnectionsUpload()">🚀 Import Connections</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inspect Connections Modal -->
+  <div id="linkedinConnectionsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); backdrop-filter:blur(4px); z-index:99999; justify-content:center; align-items:center;">
+    <div style="background:#0f172a; border:1px solid var(--panel-border); border-radius:1rem; padding:2rem; width:90%; max-width:650px; max-height:85vh; overflow-y:auto; box-shadow:0 25px 50px -12px rgba(0,0,0,0.7);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; border-bottom:1px solid var(--panel-border); padding-bottom:1rem;">
+        <h3 id="connModalTitle" style="margin:0; font-size:1.25rem; font-weight:700; color:#ffffff;">🤝 LinkedIn Connections</h3>
+        <button onclick="closeLinkedInConnectionsModal()" style="background:none; border:none; color:var(--text-muted); font-size:1.5rem; cursor:pointer;">&times;</button>
+      </div>
+      <div id="connModalBody">
+        <!-- Rendered connection rows -->
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
 """
