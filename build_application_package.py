@@ -507,6 +507,38 @@ def build_package(job_payload):
 # ---------------------------------------------------------------------------
 # 3. Built-In Role Configurations (100% Genuine Candidate Language Only)
 # ---------------------------------------------------------------------------
+DEFAULT_PAYLOAD = {
+    "company": "Default Resume",
+    "folder": "Default Resume",
+    "role": "Global Digital Operations and AI Transformation Director",
+    "headline": "GLOBAL DIGITAL & WEB OPERATIONS DIRECTOR | MARKETING STRATEGY & AI TRANSFORMATION",
+    "summary": "Executive Digital Marketing & Web Operations Leader with 18+ years directing enterprise web strategy, AI transformation, digital platform architecture, and cross-functional technology teams across global B2B and B2C portfolios. Proven track record owning the corporate digital channel as a primary demand generation engine at {{MOST_RECENT_COMPANY}} (18+ years leading a 13+ person team across development, DevOps, QA, BA, and SEO). Expert in modernizing legacy web architectures ({{ENTERPRISE_CMS}} to {{HEADLESS_CMS}} CMS), operationalizing AI workflows (Claude, ChatGPT, Gemini, CoPilot, MCP), establishing team-wide prompt and governance guardrails, and driving Generative Engine Optimization (GEO/AEO).",
+    "areas_of_expertise": [
+        ("AI Transformation & Operational Workflows: ", "AI Workflow Redesign & Integration (Claude, ChatGPT, Gemini, CoPilot, MCP), Prompt & Context Structuring, Automation Capacity Planning, Time-to-Market Acceleration."),
+        ("AI Governance, Quality & Safety Guardrails: ", "Team-Wide AI Policy Standards, Brand & Compliance Safety Frameworks, Quality Control Protocols, Human-in-the-Loop Validation."),
+        ("Generative Engine Optimization (GEO/AEO): ", "Machine-Readable Content Models, AI Answer Engine Visibility (AEO/GEO), Structured Schema Standards, Search Presence Strategy."),
+        ("Enterprise Web Strategy & Architecture: ", "Global Digital Operations, CMS Governance ({{HEADLESS_CMS}} CMS, {{ENTERPRISE_CMS}}, WordPress), Next-Gen DXP Modernization, Multi-National Site Performance (34 Markets, 14 Languages)."),
+        ("Executive Leadership & Operations: ", "Cross-Disciplinary Team Management (13+ Dev, DevOps, QA, BA, SEO), Annual Planning & Budgeting ($1M+), CRO & Funnel Attribution.")
+    ],
+    "trend_micro_bullets": [
+        ("AI Transformation & Operational Workflow Redesign: ", "Pioneered team-wide AI transformation across global web marketing and development operations at {{MOST_RECENT_COMPANY}}, embedding AI tooling (Claude, ChatGPT, Gemini, CoPilot, MCP) into core production workflows to achieve a 35% improvement in execution velocity."),
+        ("Enterprise AI Governance & Adoption Guardrails: ", "Established operational AI governance guidelines, prompt structuring standards, and brand safety guardrails, enabling developers, marketers, and editors to adopt AI tooling safely while maintaining quality and data privacy standards."),
+        ("Generative Engine Optimization (GEO/AEO) & Machine Readability: ", "Spearheaded GEO/AEO strategies across global web properties, structuring content models for AI answer engines and traditional search platforms, driving a 40% increase in brand search presence and lifting organic demo conversions by 15%."),
+        ("Global Web Strategy & Operations Leadership: ", "Led global web marketing and digital operations for {{MOST_RECENT_COMPANY}}'s B2B and B2C enterprise portfolios, managing a {{TEAM_SIZE_PLACEHOLDER}} (Development, DevOps, QA, BA, SEO) to own the corporate web channel as the primary pipeline engine."),
+        ("Next-Gen DXP Discovery & Platform Modernization: ", "Led discovery, architectural evaluation, ROI analysis, and executive vendor decision-making to replace legacy Adobe Experience Manager ({{ENTERPRISE_CMS}}), organizing the redesign and migration of core web properties onto {{HEADLESS_CMS}} CMS with modern headless workflows."),
+        ("Multi-National Platform Modernization & MarTech: ", "Directed enterprise web platform migration across 34 countries and 14 languages, collaborating with marketing automation ({{MARKETING_AUTOMATION_TOOL}}) and GTM teams while integrating {{TAG_MANAGEMENT_TOOL}}, GTM, and {{ANALYTICS_PLATFORM}} to reduce page load time by 40% and drive 15% pipeline growth."),
+        ("CRO Roadmap & Funnel Optimization: ", "Owned global web analytics and CRO experimentation roadmap, leveraging advanced analytics and A/B testing to optimize high-impact customer journeys (homepage, solutions, pricing, demo/trial flows) to deliver sustained conversion growth."),
+        ("Resource Capacity Planning & Team Governance: ", "Established a unified collaboration framework for Developers, Marketers, Editors, and External Agencies, aligning capacity planning and intake workflows to optimize resource utilization and delivery quality.")
+    ],
+    "{{PREVIOUS_COMPANY_2}}_bullets": [
+        ("Full Web Storefront Lifecycle: ", "Oversaw end-to-end business management and full development lifecycle of global web-based products, including online and on-device storefronts for {{PREVIOUS_COMPANY_2}}, Sprint, and enterprise partners."),
+        ("Product Strategy & Go-To-Market Execution: ", "Executed web product strategy by analyzing market conditions, creating go-to-market plans, and developing detailed functional requirements, wireframes, and customer use cases.")
+    ],
+    "{{PREVIOUS_COMPANY_3}}_bullets": [
+        ("Digital Revenue & Campaign Growth: ", "Directed e-commerce and web marketing (SEO, SEM, email, marketplaces), testing offers and UX flows to drive 35%+ annual online sales growth and significantly increase repeat purchase and average order value.")
+    ]
+}
+
 DATABRICKS_PAYLOAD = {
     "company": "Databricks",
     "folder": "Databricks",
