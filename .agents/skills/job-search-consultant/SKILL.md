@@ -183,4 +183,6 @@ Always enforce the following locked preferences when generating or updating appl
    - For digital transformation and operational roles, frame internal web & development operations with a **product management mindset** (prioritizing backlogs, mapping friction, driving adoption, partnering with Product & UX stakeholders).
 5. **GitHub Release Tracking & Recommendations**:
    - Maintain `CHANGELOG.md` and version numbers in `config.json`. Whenever a major or minor feature milestone (such as LinkedIn Connections Engine, Tailscale Remote Access, or Scraper Hardening) is completed, proactively track the changes and recommend cutting an official GitHub Release (e.g. `v1.2.0`) with draft release notes.
+6. **Master Baseline Resume Standard**:
+   - Always use `Mark_Jaggers_Resume_Default_AI_and_Web_Marketing` (`P:\Job Search\Default Resume\Mark_Jaggers_Resume_Default_AI_and_Web_Marketing.pdf` / `.docx`) as the authoritative baseline for all future tailored resume generation across all target roles.
 
