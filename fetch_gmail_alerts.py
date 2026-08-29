@@ -148,8 +148,8 @@ def fetch_and_filter_all_job_alerts():
                 if isinstance(response_part, tuple):
                     msg = email.message_from_bytes(response_part[1])
                     sender = msg.get("From", "").lower()
-                    # Whitelisted sender domains & specific addresses (LinkedIn, Indeed, BuiltIn)
-                    allowed_senders = ["linkedin", "indeed", "builtin", "support@builtin.com", "donotreply@match.indeed.com"]
+                    # Whitelisted sender domains & specific addresses (LinkedIn, Indeed, BuiltIn, Dice)
+                    allowed_senders = ["linkedin", "indeed", "builtin", "dice", "support@builtin.com", "donotreply@match.indeed.com", "dice@connect.dice.com"]
                     if not any(domain in sender for domain in allowed_senders):
                         continue
 
@@ -176,7 +176,7 @@ def fetch_and_filter_all_job_alerts():
                     # Deep parse HTML anchor tags
                     matches = re.findall(r'<a[^>]+href=["\']([^"\']+)["\'][^>]*>(.*?)</a>', body, re.IGNORECASE | re.DOTALL)
                     for href, text_content in matches:
-                        if any(domain in href for domain in ["linkedin.com/jobs/view", "linkedin.com/comm/jobs/view", "indeed.com", "builtin.com"]):
+                        if any(domain in href for domain in ["linkedin.com/jobs/view", "linkedin.com/comm/jobs/view", "indeed.com", "builtin.com", "dice.com"]):
                             clean_href = clean_url(href)
                             clean_title = re.sub(r'<[^>]+>', ' ', text_content).strip()
                             clean_title = re.sub(r'\s+', ' ', clean_title)
