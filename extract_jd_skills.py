@@ -9,7 +9,7 @@ APPROVED_SKILLS_FILE = os.path.join(BASE_DIR, "approved_skills.example.json")
 REJECTED_SKILLS_FILE = os.path.join(BASE_DIR, "rejected_skills.json")
 
 COMMON_TECH_PATTERNS = [
-    r'\b({{ENTERPRISE_CMS}}|Adobe Experience Manager|{{HEADLESS_CMS}}|Contentful|WordPress|Drupal|Strapi|Webflow|Sitecore|HubSpot|{{MARKETING_AUTOMATION_TOOL}})\b',
+    r'\b({{ENTERPRISE_CMS}}|Adobe Experience Manager|{{HEADLESS_CMS}}|Contentful|WordPress||Strapi|Webflow|Sitecore|HubSpot|{{MARKETING_AUTOMATION_TOOL}})\b',
     r'\b(React|Next\.js|Vue|Angular|Node\.js|TypeScript|JavaScript|HTML5|CSS3|GraphQL|REST API|Tailwind)\b',
     r'\b({{ANALYTICS_PLATFORM}}|Google Analytics|Google Tag Manager|GTM|{{TAG_MANAGEMENT_TOOL}}|Segment|Adobe Analytics|Mixpanel|Amplitude|Optimizely|VWO)\b',
     r'\b(SEO|GEO|AEO|Generative Engine Optimization|CRO|A/B Testing|Multivariate Testing|UX/UI|Design System|Figma)\b',
@@ -26,7 +26,7 @@ def load_approved_skills():
         except Exception:
             pass
     return [
-        "Executive Web Strategy & Architecture", "Global Web Operations", "CMS Governance ({{HEADLESS_CMS}}, {{ENTERPRISE_CMS}}, WordPress, Drupal)",
+        "Executive Web Strategy & Architecture", "Global Web Operations", "CMS Governance ({{HEADLESS_CMS}}, {{ENTERPRISE_CMS}}, WordPress)",
         "Next-Gen DXP Modernization", "Generative Engine Optimization (GEO/AEO)", "Conversion Rate Optimization (CRO)",
         "{{ANALYTICS_PLATFORM}} / GTM Data Governance", "Cross-Disciplinary Team Management (13+ Dev, DevOps, QA, BA, SEO)"
     ]

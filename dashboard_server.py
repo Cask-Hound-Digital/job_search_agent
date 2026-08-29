@@ -346,7 +346,7 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                     role_headline = f"{title.upper()} | GLOBAL DIGITAL EXPERIENCE & AI LEADER"
                     role_summary = f"Executive web technology and digital experience leader with 18+ years leading enterprise web strategy, digital product operations, and cross-functional teams. Proven track record turning corporate web channels into high-velocity demand generation and revenue engines. Expert in evaluating emerging AI technologies (Claude Code, ChatGPT, CoPilot, GEO/AEO), modernizing legacy digital architectures, and managing strategic vendor/partner relationships."
                     role_expertise = [
-                        ["Enterprise Web Strategy & Architecture: ", "Global Web Operations, CMS Governance ({{HEADLESS_CMS}}, {{ENTERPRISE_CMS}}, WordPress, Drupal), Next-Gen DXP Modernization, Multi-National Site Performance."],
+                        ["Enterprise Web Strategy & Architecture: ", "Global Web Operations, CMS Governance ({{HEADLESS_CMS}}, {{ENTERPRISE_CMS}}, WordPress), Next-Gen DXP Modernization, Multi-National Site Performance."],
                         ["AI Activation & Digital Innovation: ", "Generative Engine Optimization (GEO/AEO), AI-Assisted Workflows (Claude, ChatGPT, CoPilot), Automated Personalization & Analytics."],
                         ["Conversion Rate Optimization (CRO): ", "High-Velocity A/B Testing Roadmaps, Customer Experience (CX) Architecture, Multi-Site Funnel Velocity, {{ANALYTICS_PLATFORM}} / GTM Data Governance."],
                         ["Executive Leadership & Governance: ", "Cross-Disciplinary Team Management (13+ Dev, DevOps, QA, BA, SEO), ROI & Business Case Governance, Strategic Partner Management."]
