@@ -279,7 +279,7 @@ def fetch_and_filter_all_job_alerts():
 
                 # Run strict IC Engineer, Austin, and Compensation purges BEFORE Telegram notifications
                 try:
-                    import subprocess
+                    import subprocess, sys, os
                     script_dir = os.path.dirname(os.path.abspath(__file__))
                     # Run config_loader title filter purge on state.json review_queue
                     purge_cmd = [
