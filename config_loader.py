@@ -84,9 +84,18 @@ TARGET_DOMAIN_PHRASES = [
     "incubation"
 ]
 
-HARD_ENGINEER_EXCLUSIONS = [
-    "engineer", "engineering", "developer", "architect", "programmer", "coder",
-    "project manager", "project management", "pmo manager", "marketing operations", "marketing ops"
+# Exclude IC Software Engineers and Project Managers strictly
+PURE_IC_ENGINEER_EXCLUSIONS = [
+    "software engineer", "sr. software engineer", "sr software engineer", "senior software engineer",
+    "staff software engineer", "principal software engineer", "full stack engineer", "frontend engineer",
+    "backend engineer", "qa engineer", "developer", "programmer", "coder", "architect",
+    "project manager", "project management", "pmo manager", "scrum master", "agile coach",
+    "marketing operations", "marketing ops"
+]
+
+# Expressly allowed leadership & management categories
+LEADERSHIP_ROLE_KEYWORDS = [
+    "manager", "director", "head", "vp", "vice president", "lead", "principal", "chief", "advisor", "consultant"
 ]
 
 def is_valid_target_title(title_str):
@@ -94,17 +103,26 @@ def is_valid_target_title(title_str):
         return False
     t_low = title_str.lower()
 
-    # HARD REJECT: Engineer, Developer, Architect, PM, MOPs titles
-    for h_ex in HARD_ENGINEER_EXCLUSIONS:
-        if h_ex in t_low:
+    # 1. HARD REJECT: Pure IC software engineers and project managers
+    for ic_ex in PURE_IC_ENGINEER_EXCLUSIONS:
+        if ic_ex in t_low:
             return False
 
-    # Reject hard excluded keywords
+    # 2. Reject explicit excluded titles from candidate config.json
     for ex in get_excluded_titles():
         if ex.lower() in t_low:
             return False
 
-    # Check if title matches target domain phrases or target titles
+    # 3. ALWAYS ALLOW Product Management roles
+    if "product manager" in t_low or "product management" in t_low or "product strategy" in t_low or "product lead" in t_low or "product director" in t_low:
+        return True
+
+    # 4. ALLOW Engineering Management & AI Engineering Leadership
+    if any(lk in t_low for lk in LEADERSHIP_ROLE_KEYWORDS):
+        if any(ek in t_low for ek in ["engineering", "ai", "gen ai", "genai", "agentic", "sre", "technical services", "digital"]):
+            return True
+
+    # 5. Check target domain phrases or target titles
     for phrase in TARGET_DOMAIN_PHRASES:
         if phrase in t_low:
             return True
