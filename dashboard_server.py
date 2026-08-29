@@ -104,14 +104,55 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                         size_kb = round(os.path.getsize(fpath) / 1024.0, 1)
                         resume_files.append({"filename": fname, "modified": mtime, "size_kb": size_kb})
 
-            resp = {"status": "success", "config": cfg_data, "resumes": resume_files}
+            skills_data = get_approved_skills_data()
+            resp = {
+                "status": "success", 
+                "config": cfg_data, 
+                "resumes": resume_files,
+                "approved_skills": skills_data.get("approved_skills", []),
+                "approved_categories": skills_data.get("approved_categories", [])
+            }
             self.wfile.write(json.dumps(resp).encode('utf-8'))
         else:
             self.send_response(404)
             self.end_headers()
 
     def do_POST(self):
-        if self.path == '/api/save_config':
+        if self.path == '/api/save_skills':
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                skills_list = data.get('approved_skills', [])
+                categories_list = data.get('approved_categories', [])
+
+                s_data = get_approved_skills_data()
+                s_data["approved_skills"] = [str(s).strip() for s in skills_list if str(s).strip()]
+                s_data["approved_categories"] = [str(c).strip() for c in categories_list if str(c).strip()]
+                s_data["last_updated"] = datetime.now().strftime("%Y-%m-%d")
+
+                with open(APPROVED_SKILLS_FILE, 'w', encoding='utf-8') as f:
+                    json.dump(s_data, f, indent=2)
+
+                # Re-compile dashboard HTML after updating skills
+                try:
+                    from sync_dashboard_from_state import sync_dashboard
+                    sync_dashboard()
+                except Exception as sync_err:
+                    print(f"Warning syncing dashboard after skills save: {sync_err}")
+
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "success", "message": "Approved skills updated successfully"}).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json')
+                self._set_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode('utf-8'))
+        elif self.path == '/api/save_config':
             content_length = int(self.headers.get('Content-Length', 0))
             post_data = self.rfile.read(content_length)
             try:

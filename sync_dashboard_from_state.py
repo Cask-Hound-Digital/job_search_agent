@@ -2074,6 +2074,10 @@ def sync_dashboard():
           if (data && data.status === 'success') {{
             populateSettingsForm(data.config);
             renderResumesList(data.resumes || []);
+            if (data.approved_skills) {{
+              window.currentApprovedSkillsList = data.approved_skills || [];
+              renderApprovedSkillsEditor(window.currentApprovedSkillsList);
+            }}
           }}
         }})
         .catch(err => {{
@@ -2087,7 +2091,7 @@ def sync_dashboard():
     }}
 
     function switchSettingsTab(tabName) {{
-      ['Candidate', 'Matrix', 'Scoring', 'Resumes'].forEach(t => {{
+      ['Candidate', 'Matrix', 'Scoring', 'Skills', 'Resumes'].forEach(t => {{
         const btn = document.getElementById('tabSet' + t);
         const sec = document.getElementById('secSet' + t);
         if (t.toLowerCase() === tabName.toLowerCase()) {{
@@ -2099,6 +2103,84 @@ def sync_dashboard():
         }}
       }});
     }}
+
+    window.currentApprovedSkillsList = [];
+
+    function renderApprovedSkillsEditor(skills) {{
+      const container = document.getElementById('approvedSkillsChipsContainer');
+      const counter = document.getElementById('approvedSkillsCount');
+      if (!container) return;
+
+      container.innerHTML = '';
+      if (counter) counter.innerText = `${{skills.length}} Approved Candidate Baseline Skills`;
+
+      if (!skills || skills.length === 0) {{
+        container.innerHTML = '<div style="color:var(--text-muted); font-size:0.85rem;">No approved baseline skills defined.</div>';
+        return;
+      }}
+
+      skills.forEach((skill, idx) => {{
+        const chip = document.createElement('div');
+        chip.style.cssText = 'display:inline-flex; align-items:center; gap:0.4rem; padding:0.35rem 0.65rem; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.3); border-radius:0.4rem; font-size:0.82rem; color:#f8fafc; margin-right:0.35rem; margin-bottom:0.4rem;';
+        chip.innerHTML = `
+          <span>${{skill}}</span>
+          <button type="button" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-weight:bold; font-size:0.85rem; padding:0 0.15rem;" onclick="removeApprovedSkill(${{idx}})" title="Remove skill">✕</button>
+        `;
+        container.appendChild(chip);
+      }});
+    }}
+
+    function addNewApprovedSkill() {{
+      const input = document.getElementById('newSkillInput');
+      if (!input || !input.value.trim()) return;
+
+      const raw = input.value.trim();
+      const newSkills = raw.split(',').map(s => s.trim()).filter(s => s.length > 0);
+
+      const existingSet = new Set(window.currentApprovedSkillsList.map(s => s.toLowerCase()));
+      let addedCount = 0;
+
+      newSkills.forEach(s => {{
+        if (!existingSet.has(s.toLowerCase())) {{
+          window.currentApprovedSkillsList.push(s);
+          existingSet.add(s.toLowerCase());
+          addedCount++;
+        }}
+      }});
+
+      input.value = '';
+      renderApprovedSkillsEditor(window.currentApprovedSkillsList);
+      showToast(`➕ Added ${{addedCount}} new skill(s) to approved baseline.`);
+    }}
+    window.addNewApprovedSkill = addNewApprovedSkill;
+
+    function removeApprovedSkill(idx) {{
+      if (idx >= 0 && idx < window.currentApprovedSkillsList.length) {{
+        const removed = window.currentApprovedSkillsList.splice(idx, 1);
+        renderApprovedSkillsEditor(window.currentApprovedSkillsList);
+        showToast(`🗑️ Removed '<strong>${{removed[0]}}</strong>' from approved baseline.`);
+      }}
+    }}
+    window.removeApprovedSkill = removeApprovedSkill;
+
+    async function saveApprovedSkillsToServer() {{
+      try {{
+        const res = await fetch(API_BASE + '/api/save_skills', {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }},
+          body: JSON.stringify({{ approved_skills: window.currentApprovedSkillsList }})
+        }});
+        const data = await res.json();
+        if (data.status === 'success') {{
+          showToast('⚡ Approved Candidate Baseline Skills updated & saved!');
+        }} else {{
+          showToast(`❌ Error saving skills: ${{data.message}}`);
+        }}
+      }} catch (err) {{
+        showToast('❌ Server error saving skills.');
+      }}
+    }}
+    window.saveApprovedSkillsToServer = saveApprovedSkillsToServer;
 
     function renderResumesList(resumes) {{
       const container = document.getElementById('activeResumesList');
@@ -2151,6 +2233,17 @@ def sync_dashboard():
     async function saveSettingsConfig() {{
       const msg = document.getElementById('settingsStatusMsg');
       msg.innerText = 'Saving configuration...';
+
+      // Save approved baseline skills if skills list exists
+      if (window.currentApprovedSkillsList && window.currentApprovedSkillsList.length > 0) {{
+        try {{
+          await fetch(API_BASE + '/api/save_skills', {{
+            method: 'POST',
+            headers: {{ 'Content-Type': 'application/json' }},
+            body: JSON.stringify({{ approved_skills: window.currentApprovedSkillsList }})
+          }});
+        }} catch(e) {{ console.error('Error saving skills:', e); }}
+      }}
 
       const targetTitlesList = document.getElementById('cfgTargetTitles').value
         .split(String.fromCharCode(10))
@@ -2254,6 +2347,7 @@ def sync_dashboard():
         <button class="modal-tab-btn active" id="tabSetCandidate" onclick="switchSettingsTab('candidate')">👤 Candidate Profile</button>
         <button class="modal-tab-btn" id="tabSetMatrix" onclick="switchSettingsTab('matrix')">🎯 Search Matrix & Titles</button>
         <button class="modal-tab-btn" id="tabSetScoring" onclick="switchSettingsTab('scoring')">⚡ Vibe Coding & Signals</button>
+        <button class="modal-tab-btn" id="tabSetSkills" onclick="switchSettingsTab('skills')">⚡ Approved Skills</button>
         <button class="modal-tab-btn" id="tabSetResumes" onclick="switchSettingsTab('resumes')">📄 Resume & Assets</button>
       </div>
 
@@ -2313,6 +2407,33 @@ def sync_dashboard():
           <div class="form-group">
             <label class="form-label">Negative Rejection Keywords (Comma-separated)</label>
             <textarea id="cfgNegativeKeywords" class="form-textarea" style="min-height:90px;"></textarea>
+          </div>
+        </div>
+
+        <!-- Tab 4: Approved Skills & Baseline Capabilities Manager -->
+        <div id="secSetSkills" style="display:none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; padding-bottom:0.75rem; border-bottom:1px solid var(--panel-border);">
+            <div>
+              <h3 style="margin:0; font-size:1.05rem; color:#ffffff; font-weight:700;">⚡ Candidate Baseline Skills & Capabilities</h3>
+              <p style="margin:0.2rem 0 0 0; font-size:0.8rem; color:var(--text-muted);">Manage approved baseline skills used during automated 1-click tailored resume generation.</p>
+            </div>
+            <span id="approvedSkillsCount" style="font-size:0.8rem; font-weight:700; color:var(--accent-cyan); background:rgba(56,189,248,0.12); padding:0.25rem 0.65rem; border-radius:0.4rem; border:1px solid rgba(56,189,248,0.3);">0 Skills</span>
+          </div>
+
+          <div style="display:flex; gap:0.5rem; margin-bottom:1.25rem;">
+            <input type="text" id="newSkillInput" class="form-input" placeholder="Enter new skill or comma-separated skills (e.g., Vector Databases, LangChain, MCP)..." onkeypress="if(event.key==='Enter'){{event.preventDefault(); addNewApprovedSkill();}}" />
+            <button type="button" class="btn-primary" style="white-space:nowrap; padding:0.5rem 1rem;" onclick="addNewApprovedSkill()">➕ Add Skill</button>
+          </div>
+
+          <div style="margin-bottom:1.25rem;">
+            <label class="form-label" style="margin-bottom:0.5rem; display:block;">Approved Baseline Skill Chips (Click ✕ to remove)</label>
+            <div id="approvedSkillsChipsContainer" style="min-height:120px; max-height:260px; overflow-y:auto; padding:0.75rem; background:rgba(15,23,42,0.6); border:1px solid var(--panel-border); border-radius:0.5rem;">
+              <div style="color:var(--text-muted); font-size:0.85rem;">Loading approved baseline skills...</div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end;">
+            <button type="button" class="btn-secondary" style="padding:0.4rem 0.85rem; border-color:var(--accent-cyan); color:var(--accent-cyan);" onclick="saveApprovedSkillsToServer()">💾 Save Approved Skills</button>
           </div>
         </div>
 
