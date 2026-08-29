@@ -148,8 +148,9 @@ def fetch_and_filter_all_job_alerts():
                 if isinstance(response_part, tuple):
                     msg = email.message_from_bytes(response_part[1])
                     sender = msg.get("From", "").lower()
-                    # Filter out Lensa - only parse LinkedIn, Indeed, BuiltIn
-                    if not any(domain in sender for domain in ["linkedin", "indeed", "builtin"]):
+                    # Whitelisted sender domains & specific addresses (LinkedIn, Indeed, BuiltIn)
+                    allowed_senders = ["linkedin", "indeed", "builtin", "support@builtin.com", "donotreply@match.indeed.com"]
+                    if not any(domain in sender for domain in allowed_senders):
                         continue
 
                     subj = msg["Subject"]
