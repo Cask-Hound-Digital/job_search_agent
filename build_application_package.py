@@ -513,8 +513,8 @@ def build_package(job_payload):
 DATABRICKS_PAYLOAD = {
     "company": "Databricks",
     "folder": "Databricks",
-    "role": "Director Web Marketing",
-    "headline": "{{YOUR_TARGET_ROLE_3}} | GLOBAL DIGITAL EXPERIENCE & AI STRATEGY LEADER",
+    "role": "Director, Marketing Strategy and AI Transformation",
+    "headline": "DIRECTOR, MARKETING STRATEGY & AI TRANSFORMATION | GLOBAL DIGITAL EXPERIENCE LEADER",
     "summary": "Visionary Global Web & Digital Marketing Executive with 18+ years leading enterprise web strategy, digital platform architecture, AI Agent orchestration, enterprise AI governance guardrails, and cross-functional technology teams. Proven track record transforming corporate web properties into scalable growth engines optimized for both human visitors and AI search/answer engines. Experienced in driving multi-national platform migrations across 34 countries and 14 languages, high-velocity experimentation, structured content governance, and data-driven web operations to maximize marketing pipeline.",
     "areas_of_expertise": [
         ("Global Web Strategy & Machine Readability: ", "Global Web Ecosystem Architecture, AI Agent & Answer Engine Optimization (GEO/AEO), Structured Content Standards, Personalization & Segmented Journeys."),
