@@ -1,5 +1,6 @@
 import os
 import json
+import re
 
 CONFIG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
 EXAMPLE_CONFIG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.example.json")
@@ -103,26 +104,30 @@ def is_valid_target_title(title_str):
         return False
     t_low = title_str.lower()
 
-    # 1. HARD REJECT: Pure IC software engineers and project managers
-    for ic_ex in PURE_IC_ENGINEER_EXCLUSIONS:
-        if ic_ex in t_low:
-            return False
+    # 1. HARD REJECT: Project Managers & PMO
+    if any(pm in t_low for pm in ["project manager", "project management", "pmo manager", "scrum master", "agile coach"]):
+        return False
 
-    # 2. Reject explicit excluded titles from candidate config.json
-    for ex in get_excluded_titles():
-        if ex.lower() in t_low:
-            return False
-
-    # 3. ALWAYS ALLOW Product Management roles
-    if "product manager" in t_low or "product management" in t_low or "product strategy" in t_low or "product lead" in t_low or "product director" in t_low:
+    # 2. ALWAYS ALLOW Product Management roles
+    if "product manager" in t_low or "product management" in t_low or "product strategy" in t_low or "product lead" in t_low or "product director" in t_low or "product owner" in t_low:
         return True
 
-    # 4. ALLOW Engineering Management & AI Engineering Leadership
-    if any(lk in t_low for lk in LEADERSHIP_ROLE_KEYWORDS):
-        if any(ek in t_low for ek in ["engineering", "ai", "gen ai", "genai", "agentic", "sre", "technical services", "digital"]):
+    # 3. ALLOW Engineering Management & AI Engineering Leadership (e.g. Manager Software Engineering, Director AI Engineering)
+    if any(lk in t_low for lk in ["manager", "director", "head", "vp", "vice president", "lead", "principal", "chief"]):
+        if any(ek in t_low for ek in ["engineering", "ai", "gen ai", "genai", "agentic", "sre", "technical services", "digital", "data"]):
             return True
 
-    # 5. Check target domain phrases or target titles
+    # 4. HARD REJECT: Pure IC software engineers & developers
+    for ic_ex in PURE_IC_ENGINEER_EXCLUSIONS:
+        if re.search(rf'\b{re.escape(ic_ex)}\b', t_low):
+            return False
+
+    # 5. Reject explicit excluded titles from candidate config.json
+    for ex in get_excluded_titles():
+        if re.search(rf'\b{re.escape(ex.lower())}\b', t_low):
+            return False
+
+    # 6. Check target domain phrases or target titles
     for phrase in TARGET_DOMAIN_PHRASES:
         if phrase in t_low:
             return True
