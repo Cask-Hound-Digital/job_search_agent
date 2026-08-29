@@ -20,6 +20,17 @@ def sync_dashboard():
     from config_loader import CONFIG
     config_json_str = json.dumps(CONFIG).replace('\\', '\\\\')
 
+    APPROVED_SKILLS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "approved_skills.json")
+    static_approved_skills = []
+    if os.path.exists(APPROVED_SKILLS_FILE):
+        try:
+            with open(APPROVED_SKILLS_FILE, 'r', encoding='utf-8') as sf:
+                sdata = json.load(sf)
+                static_approved_skills = sdata.get("approved_skills", [])
+        except Exception:
+            pass
+    static_skills_json = json.dumps(static_approved_skills)
+
     apps = state.get("applications", [])
     gmail_jobs = state.get("verified_gmail_jobs", [])
     review_queue = state.get("review_queue", [])
@@ -2053,6 +2064,9 @@ def sync_dashboard():
     }}
     window.closeLinkedInConnectionsModal = closeLinkedInConnectionsModal;
 
+    const STATIC_APPROVED_SKILLS = {static_skills_json};
+    window.currentApprovedSkillsList = Array.isArray(STATIC_APPROVED_SKILLS) ? [...STATIC_APPROVED_SKILLS] : [];
+
     function openSettingsModal() {{
       console.log('[SETTINGS] opening modal...');
       const m = document.getElementById('settingsModal');
@@ -2067,6 +2081,9 @@ def sync_dashboard():
       try {{
         populateSettingsForm(CONFIG_DATA);
       }} catch(e) {{ console.error('populateSettingsForm error:', e); }}
+      try {{
+        renderApprovedSkillsEditor(window.currentApprovedSkillsList);
+      }} catch(e) {{ console.error('renderApprovedSkillsEditor error:', e); }}
 
       fetch(API_BASE + '/api/get_config')
         .then(res => res.json())
@@ -2074,8 +2091,8 @@ def sync_dashboard():
           if (data && data.status === 'success') {{
             populateSettingsForm(data.config);
             renderResumesList(data.resumes || []);
-            if (data.approved_skills) {{
-              window.currentApprovedSkillsList = data.approved_skills || [];
+            if (data.approved_skills && data.approved_skills.length > 0) {{
+              window.currentApprovedSkillsList = data.approved_skills;
               renderApprovedSkillsEditor(window.currentApprovedSkillsList);
             }}
           }}
@@ -2102,9 +2119,11 @@ def sync_dashboard():
           if (sec) sec.style.display = 'none';
         }}
       }});
-    }}
 
-    window.currentApprovedSkillsList = [];
+      if (tabName.toLowerCase() === 'skills') {{
+        renderApprovedSkillsEditor(window.currentApprovedSkillsList);
+      }}
+    }}
 
     function renderApprovedSkillsEditor(skills) {{
       const container = document.getElementById('approvedSkillsChipsContainer');
