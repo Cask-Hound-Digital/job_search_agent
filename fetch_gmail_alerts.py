@@ -4,6 +4,8 @@ from email.header import decode_header
 import re
 import json
 import os
+import sys
+import subprocess
 from datetime import datetime
 
 def _load_env_file():
@@ -279,7 +281,6 @@ def fetch_and_filter_all_job_alerts():
 
                 # Run strict IC Engineer, Austin, and Compensation purges BEFORE Telegram notifications
                 try:
-                    import subprocess, sys, os
                     script_dir = os.path.dirname(os.path.abspath(__file__))
                     # Run config_loader title filter purge on state.json review_queue
                     purge_cmd = [
