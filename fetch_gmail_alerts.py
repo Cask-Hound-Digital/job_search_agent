@@ -181,7 +181,14 @@ def fetch_and_filter_all_job_alerts():
                             clean_title = re.sub(r'<[^>]+>', ' ', text_content).strip()
                             clean_title = re.sub(r'\s+', ' ', clean_title)
 
-                            if len(clean_title) > 3 and not any(skip in clean_title.lower() for skip in ["unsubscribe", "view all", "privacy policy", "settings", "job alert"]):
+                            # Safeguard: Reject generic search results / category landing pages (e.g., '10,000+ Head of Product jobs in United States')
+                            t_low = clean_title.lower()
+                            is_junk_search_link = any(junk in t_low for junk in [
+                                "unsubscribe", "view all", "privacy policy", "settings", "job alert",
+                                "jobs in united states", "open roles", "000+ ", "search results", "browse jobs"
+                            ])
+
+                            if len(clean_title) > 3 and not is_junk_search_link:
                                 all_individual_jobs.append({
                                     "email_subject": subj_text.strip(),
                                     "title": clean_title,

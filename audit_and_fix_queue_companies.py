@@ -143,13 +143,33 @@ def audit_queue():
         if posted_raw:
             j["date_posted_raw"] = posted_raw
 
-        # Sanitize "{{YOUR_NAME}}" or generic mistakes
-        if company.lower() in ["{{YOUR_NAME}}", "your job alert", "job alert", "linkedin"]:
-            company = "Verified Employer"
+        # URL Fallback Company Extraction if page title/meta fetch fails or returns Verified Employer
+        if not company or company.lower() in ["verified employer", "verified company", "{{YOUR_NAME}}", "your job alert", "job alert", "linkedin"]:
+            m_gh = re.search(r'greenhouse\.io/([^/]+)', url, re.IGNORECASE)
+            m_lv = re.search(r'lever\.co/([^/]+)', url, re.IGNORECASE)
+            m_bi = re.search(r'builtin\.com/company/([^/]+)', url, re.IGNORECASE)
+            if m_gh and m_gh.group(1).lower() not in ["embed", "jobs"]:
+                company = m_gh.group(1).replace('-', ' ').title()
+            elif m_lv:
+                company = m_lv.group(1).replace('-', ' ').title()
+            elif m_bi:
+                company = m_bi.group(1).replace('-', ' ').title()
 
-        existing_co = j.get("company_name", "").strip()
-        if company != "Verified Employer" or not existing_co:
-            j["company_name"] = company
+        # Safeguard: Purge generic unresolvable search page placeholders
+        t_low = (real_role or raw_title).lower()
+        if any(junk in t_low for junk in ["jobs in united states", "open roles", "000+ ", "search results", "browse jobs"]):
+            print(f" [PURGED GENERIC SEARCH PLACEHOLDER] '{raw_title}' -> {url}")
+            continue
+
+        if not company or company.lower() in ["verified employer", "verified company", "{{YOUR_NAME}}", "your job alert", "job alert", "linkedin"]:
+            existing_co = j.get("company_name", j.get("company", "")).strip()
+            if existing_co and existing_co.lower() not in ["verified employer", "verified company"]:
+                company = existing_co
+            else:
+                company = "Verified Employer"
+
+        j["company_name"] = company
+        j["company"] = company
         j["audited_role_title"] = real_role if len(real_role) > 3 else raw_title
         j["page_title"] = page_title or ""
 
