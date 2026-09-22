@@ -1,0 +1,11 @@
+{
+  "last_updated": "2026-01-01T00:00:00Z",
+  "policy": {
+    "auto_submit": false,
+    "user_approval_required": true,
+    "mandatory_live_validation": "Every job posting must undergo HTTP 200 verification before presentation to user."
+  },
+  "applications": [],
+  "review_queue": [],
+  "archived_queue": []
+}\n

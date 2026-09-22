@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autonomous Job Search Agent Dashboard</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --border: rgba(255, 255, 255, 0.1);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 24px; min-height: 100vh; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    h1 { font-size: 24px; color: var(--text); }
+    .stats-bar { display: flex; gap: 16px; }
+    .stat-badge { background: var(--card-bg); padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); font-size: 14px; }
+    .stat-val { font-weight: bold; color: var(--accent); }
+    .split-pane { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .card { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border); padding: 20px; }
+    .card h2 { font-size: 18px; margin-bottom: 16px; color: var(--accent); }
+    .item-list { display: flex; flex-direction: column; gap: 12px; max-height: 70vh; overflow-y: auto; }
+    .item-card { background: rgba(15, 23, 42, 0.6); padding: 14px; border-radius: 8px; border: 1px solid var(--border); }
+    .item-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+    .item-meta { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+    .item-actions { display: flex; gap: 8px; }
+    button { background: var(--accent); color: #0f172a; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 12px; }
+    button:hover { background: var(--accent-hover); }
+    .btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Autonomous Job Search Agent</h1>
+      <p style="color: var(--text-muted); font-size: 14px;">Multi-board ingestion, ATS resume packaging, and application pipeline manager</p>
+    </div>
+    <div class="stats-bar">
+      <div class="stat-badge">Review Queue: <span id="stat-queue" class="stat-val">0</span></div>
+      <div class="stat-badge">Tracked Applications: <span id="stat-apps" class="stat-val">0</span></div>
+    </div>
+  </header>
+
+  <div class="split-pane">
+    <div class="card">
+      <h2>Vetted Opportunities (Review Queue)</h2>
+      <div id="queue-list" class="item-list">
+        <p style="color: var(--text-muted); font-size: 14px;">Run `python run_unified_search.py` to ingest opportunities.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Submitted & Tracked Applications</h2>
+      <div id="apps-list" class="item-list">
+        <p style="color: var(--text-muted); font-size: 14px;">No applications tracked yet.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function loadData() {
+      try {
+        const resQ = await fetch('/api/queue');
+        if (resQ.ok) {
+          const queue = await resQ.json();
+          document.getElementById('stat-queue').textContent = queue.length;
+          if (queue.length > 0) {
+            document.getElementById('queue-list').innerHTML = queue.map(item => `
+              <div class="item-card">
+                <div class="item-title">${item.title}</div>
+                <div class="item-meta">${item.company} | ${item.location || 'Remote'} | ${item.source || 'Aggregator'}</div>
+                <div class="item-actions">
+                  <a href="${item.url}" target="_blank"><button>View Posting</button></a>
+                  <button class="btn-secondary" onclick="archiveRole('${item.url}')">Dismiss</button>
+                </div>
+              </div>
+            `).join('');
+          }
+        }
+        const resA = await fetch('/api/applications');
+        if (resA.ok) {
+          const apps = await resA.json();
+          document.getElementById('stat-apps').textContent = apps.length;
+        }
+      } catch (err) {
+        console.log('Loading state:', err);
+      }
+    }
+    async function archiveRole(url) {
+      await fetch('/api/archive', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({url: url, reason: 'User Dismissed'})
+      });
+      loadData();
+    }
+    loadData();
+  </script>
+</body>
+</html>\n

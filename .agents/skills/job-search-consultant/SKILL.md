@@ -40,11 +40,11 @@ Candidates **do not need 100%** of the required qualifications. Having ~80% of t
 
 ---
 
-## 3. Building High-Impact Resume Bullet Points
+## 3. Building "Badass" Resume Bullet Points
 
 Every high-impact bullet point follows a **3-part formula**:
 
-$$\text{High-Impact Bullet Point} = \text{Action Verb} + \text{Specific / Quantifiable Detail} + \text{Measurable Result}$$
+$$\text{Badass Bullet Point} = \text{Action Verb} + \text{Specific / Quantifiable Detail} + \text{Measurable Result}$$
 
 ### The 3 Components
 1. **Action Verb**: Strong, punchy starting verb (e.g., *Spearheaded, Streamlined, Directed, Oversaw, Generated, Negotiated, Optimized*). Avoid weak verbs like "Worked on" or "Responsible for".
@@ -88,9 +88,9 @@ $$\text{High-Impact Bullet Point} = \text{Action Verb} + \text{Specific / Quanti
 
 ---
 
-## 5. The Executive Hybrid Cover Letter Strategy
+## 5. The "Badass" Hybrid Cover Letter Strategy
 
-### Anatomy of a Hybrid Cover Letter (6 Parts)
+### Anatomy of a Badass Cover Letter (6 Parts)
 1. **Branding Header**: Matches the visual design/header of the resume.
 2. **Address & Salutation**: Date, company info, salutation (*"Dear [Hiring Manager Name]"*, *"Dear Hiring Manager"*, or *"Dear Selection Committee"*). **Never use "To whom it may concern"**.
 3. **Introductory Paragraph (3–5 Sentences)**: State role & company applied for, why applying, brief value summary, and introduce the body bullet points.
@@ -159,30 +159,9 @@ When using AI to draft or polish resumes and cover letters, follow the **"You + 
 
 ## 8. Reference Guides & Deep Dives
 
-For expanded strategy frameworks, bullet point formulas, cover letter playbooks, and AI prompt sequences, refer to the skill reference guides:
-- [`job_search_strategy_and_networking.md`](reference/job_search_strategy_and_networking.md)
-- [`resume_and_cover_letter_playbook.md`](reference/resume_and_cover_letter_playbook.md)
-- [`ai_prompting_and_automation_guide.md`](reference/ai_prompting_and_automation_guide.md)
-
----
-
-## 9. Permanent Candidate Customization Rules ({{YOUR_FULL_NAME}})
-
-Always enforce the following locked preferences when generating or updating application packages:
-
-1. **Resume Headline Standard**:
-   - Use grounded, executive titles matching {{CANDIDATE}}'s experience: `GLOBAL DIGITAL & WEB OPERATIONS DIRECTOR | <TARGET ROLE TITLE>`.
-   - Never use artificial corporate mashups (e.g. no "Digital Product Operations Director").
-2. **Strict Skill & Tool Inclusion Policy**:
-   - Never inject unverified third-party platforms (Salesforce, {{MARKETING_AUTOMATION_TOOL}}, Hubspot, PIM) unless explicitly present in {{YOUR_FULL_NAME}}' locked ground-truth profile.
-   - Never use inflated AI buzzwords (e.g. "pioneer in Model Context Protocol"). Phrase AI capabilities naturally: *"Practical experience integrating AI workflows, Model Context Protocol (MCP) tools, and agent customization..."*
-   - Always present newly extracted JD skills to {{YOUR_NAME}} for explicit approval before adding to `approved_skills.json`.
-3. **No Verbatim JD Copying**:
-   - Never pull exact wording or sentences straight from target JDs. Reword all requirements into authentic phrasing describing {{CANDIDATE}}'s real 18-year career at {{MOST_RECENT_COMPANY}}, {{PREVIOUS_COMPANY_2}}, and {{PREVIOUS_COMPANY_3}}.
-4. **"Workflows as a Product" Strategy**:
-   - For digital transformation and operational roles, frame internal web & development operations with a **product management mindset** (prioritizing backlogs, mapping friction, driving adoption, partnering with Product & UX stakeholders).
-5. **GitHub Release Tracking & Recommendations**:
-   - Maintain `CHANGELOG.md` and version numbers in `config.json`. Whenever a major or minor feature milestone (such as LinkedIn Connections Engine, Tailscale Remote Access, or Scraper Hardening) is completed, proactively track the changes and recommend cutting an official GitHub Release (e.g. `v1.2.0`) with draft release notes.
-6. **Master Baseline Resume Standard**:
-   - Always use `Mark_Jaggers_Resume_Default_AI_and_Web_Marketing_v1.2` (`P:\Job Search\Default Resume\Mark_Jaggers_Resume_Default_AI_and_Web_Marketing_v1.2.pdf` / `.docx`) as the authoritative baseline for all future tailored resume generation across all target roles.
-
+For expanded templates, prompt scripts, bullet libraries, and sample resumes, refer to the skill documentation files:
+- [`job_search_strategy_guide.md`](reference/job_search_strategy_guide.md)
+- [`badass_cover_letters_guide.md`](reference/badass_cover_letters_guide.md)
+- [`badass_resume_bullets_guide.md`](reference/badass_resume_bullets_guide.md)
+- [`chatgpt_resume_prompts_guide.md`](reference/chatgpt_resume_prompts_guide.md)
+- [`ten_out_of_ten_resumes_guide.md`](reference/ten_out_of_ten_resumes_guide.md)

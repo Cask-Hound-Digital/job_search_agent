@@ -1,6 +1,23 @@
+# Environment variables and secrets
 .env
+*.env
+*.env.local
+
+# State files, run logs, and local backups
+state.json
+state.json.bak
+state_backups/
+*.log
 __pycache__/
 *.pyc
-*.log
-approved_skills.json
-rejection_rules.json
+
+# Application package document outputs
+output/
+*.docx
+*.pdf
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db\n
