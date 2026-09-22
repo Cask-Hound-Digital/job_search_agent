@@ -4,6 +4,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![SemVer](https://img.shields.io/badge/version-2.0.0-emerald.svg)](https://semver.org/)
 [![Architecture](https://img.shields.io/badge/architecture-modular--agentic-orange.svg)](#-system-architecture)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate-yellow.svg)](https://www.buymeacoffee.com/roadrashtx)
+
+<a href="https://www.buymeacoffee.com/roadrashtx" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 42px !important;width: 152px !important;" ></a>
 
 ---
 
@@ -182,6 +185,14 @@ When running inside Google Antigravity:
    ```bash
    /schedule CronExpression="0 7,11,15 * * *" Prompt="Execute multi-board search cycle and sync dashboard."
    ```
+
+---
+
+## ☕ Support the Project
+
+If YACareerOps helps you streamline your job search or build tailored applications, feel free to support the project:
+
+[<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="180">](https://www.buymeacoffee.com/roadrashtx)
 
 ---
 
