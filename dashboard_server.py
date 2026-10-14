@@ -48,18 +48,7 @@ def setup_page():
         return send_from_directory(BASE_DIR, "setup.html")
     return "<h1>Autonomous Job Search Agent - Setup Wizard</h1><p>setup.html not found.</p>"
 
-@app.route("/api/setup", methods=["GET", "POST"])
-def setup_api():
-    if request.method == "GET":
-        if os.path.exists(CONFIG_PATH):
-            try:
-                with open(CONFIG_PATH, "r", encoding="utf-8") as f:
-                    return jsonify(json.load(f))
-            except Exception:
-                pass
-        return jsonify({})
-
-    payload = request.get_json() or {}
+def update_config_from_payload(payload: dict) -> tuple[bool, str, dict]:
     full_name = payload.get("full_name", "").strip()
     email = payload.get("email", "").strip()
     phone = payload.get("phone", "").strip()
@@ -72,17 +61,17 @@ def setup_api():
     excluded_titles = payload.get("excluded_titles", [])
 
     if not full_name:
-        return jsonify({"success": False, "error": "Full Name is required."}), 400
+        return False, "Full Name is required.", {}
     if not email or "@" not in email or "." not in email:
-        return jsonify({"success": False, "error": "A valid Email Address is required."}), 400
+        return False, "A valid Email Address is required.", {}
     if not phone:
-        return jsonify({"success": False, "error": "Phone Number is required."}), 400
+        return False, "Phone Number is required.", {}
     if not primary_location:
-        return jsonify({"success": False, "error": "Primary Location is required."}), 400
+        return False, "Primary Location is required.", {}
     if not isinstance(min_salary_floor, (int, float)) or min_salary_floor < 0:
-        return jsonify({"success": False, "error": "Minimum Salary Floor must be a positive number."}), 400
+        return False, "Minimum Salary Floor must be a positive number.", {}
     if not target_titles or len(target_titles) == 0:
-        return jsonify({"success": False, "error": "At least one Target Job Title is required."}), 400
+        return False, "At least one Target Job Title is required.", {}
 
     existing_cfg = {}
     if os.path.exists(CONFIG_PATH):
@@ -118,6 +107,31 @@ def setup_api():
     search_matrix["target_titles"] = [t.strip() for t in target_titles if t.strip()]
     search_matrix["excluded_titles"] = [t.strip() for t in excluded_titles if t.strip()]
 
+    notifications = existing_cfg.get("notifications", {
+        "telegram_enabled": False,
+        "desktop_enabled": True,
+        "alert_on_raw_ingest": False,
+        "alert_only_vetted": True
+    })
+    if "notifications" in payload and isinstance(payload["notifications"], dict):
+        notifications.update(payload["notifications"])
+
+    sources = existing_cfg.get("sources", {
+        "builtin": True,
+        "jobspy": True,
+        "jobspipe": True,
+        "gmail": True
+    })
+    if "sources" in payload and isinstance(payload["sources"], dict):
+        sources.update(payload["sources"])
+
+    scheduler_cfg = existing_cfg.get("scheduler", {
+        "interval_hours": 6.0,
+        "enabled": True
+    })
+    if "scheduler" in payload and isinstance(payload["scheduler"], dict):
+        scheduler_cfg.update(payload["scheduler"])
+
     new_cfg = {
         "candidate": cand,
         "search_matrix": search_matrix,
@@ -125,11 +139,9 @@ def setup_api():
             "positive_keywords": ["architecture", "scaling", "leadership"],
             "negative_keywords": ["entry level", "internship"]
         }),
-        "notifications": existing_cfg.get("notifications", {
-            "telegram_enabled": False,
-            "alert_on_raw_ingest": False,
-            "alert_only_vetted": True
-        })
+        "notifications": notifications,
+        "sources": sources,
+        "scheduler": scheduler_cfg
     }
 
     tmp_path = CONFIG_PATH + ".tmp"
@@ -137,17 +149,148 @@ def setup_api():
         json.dump(new_cfg, f, indent=2)
     os.replace(tmp_path, CONFIG_PATH)
 
+    return True, "", new_cfg
+
+@app.route("/api/setup", methods=["GET", "POST"])
+def setup_api():
+    if request.method == "GET":
+        if os.path.exists(CONFIG_PATH):
+            try:
+                with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+                    return jsonify(json.load(f))
+            except Exception:
+                pass
+        return jsonify({})
+
+    payload = request.get_json() or {}
+    ok, err, cfg = update_config_from_payload(payload)
+    if not ok:
+        return jsonify({"success": False, "error": err}), 400
     return jsonify({"success": True, "redirect": "/"})
+
+@app.route("/api/settings", methods=["GET", "POST"])
+def settings_api():
+    if request.method == "GET":
+        if os.path.exists(CONFIG_PATH):
+            try:
+                with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+                    return jsonify(json.load(f))
+            except Exception:
+                pass
+        return jsonify({})
+
+    payload = request.get_json() or {}
+    # Flatten if candidate object passed
+    if "candidate" in payload and isinstance(payload["candidate"], dict):
+        cand = payload["candidate"]
+        for k in ["full_name", "email", "phone", "primary_location", "min_salary_floor", "target_salary_baseline", "workplace_preferences", "allowed_local_cities"]:
+            if k in cand and k not in payload:
+                payload[k] = cand[k]
+    if "search_matrix" in payload and isinstance(payload["search_matrix"], dict):
+        sm = payload["search_matrix"]
+        if "target_titles" in sm and "target_titles" not in payload:
+            payload["target_titles"] = sm["target_titles"]
+        if "excluded_titles" in sm and "excluded_titles" not in payload:
+            payload["excluded_titles"] = sm["excluded_titles"]
+
+    ok, err, cfg = update_config_from_payload(payload)
+    if not ok:
+        return jsonify({"success": False, "error": err}), 400
+    return jsonify({"success": True, "settings": cfg})
+
+@app.route("/api/sources", methods=["GET", "POST"])
+def sources_api():
+    cfg = {}
+    if os.path.exists(CONFIG_PATH):
+        try:
+            with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+                cfg = json.load(f)
+        except Exception:
+            pass
+
+    sources = cfg.get("sources", {
+        "builtin": True,
+        "jobspy": True,
+        "jobspipe": True,
+        "gmail": True
+    })
+
+    if request.method == "POST":
+        payload = request.get_json() or {}
+        updates = payload.get("sources", payload)
+        for k in ["builtin", "jobspy", "jobspipe", "gmail"]:
+            if k in updates:
+                sources[k] = bool(updates[k])
+        cfg["sources"] = sources
+        tmp = CONFIG_PATH + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(cfg, f, indent=2)
+        os.replace(tmp, CONFIG_PATH)
+        return jsonify({"success": True, "sources": sources})
+
+    creds_exist = os.path.exists(os.path.join(BASE_DIR, "credentials.json"))
+    token_exist = os.path.exists(os.path.join(BASE_DIR, "token.json"))
+    gmail_status = "ready" if (creds_exist and token_exist) else ("needs_auth" if creds_exist else "missing_credentials")
+
+    return jsonify({
+        "sources": sources,
+        "details": {
+            "gmail": {
+                "has_credentials": creds_exist,
+                "has_token": token_exist,
+                "status": gmail_status
+            },
+            "jobspy": {"status": "ready"},
+            "builtin": {"status": "ready"},
+            "jobspipe": {"status": "ready"}
+        }
+    })
+
+@app.route("/api/notifications", methods=["GET", "POST"])
+def notifications_api():
+    from notifications import get_notification_status, update_notification_settings
+    if request.method == "POST":
+        payload = request.get_json() or {}
+        if "desktop_enabled" not in payload:
+            return jsonify({"success": False, "error": "Missing desktop_enabled field"}), 400
+        ok = update_notification_settings(bool(payload["desktop_enabled"]))
+        return jsonify({"success": ok, "notifications": get_notification_status()})
+    return jsonify(get_notification_status())
 
 @app.route("/api/status", methods=["GET"])
 def get_status():
     state = load_state()
+    from scheduler import get_scheduler_status
+    from notifications import get_notification_status
+    sched = get_scheduler_status()
+    notif = get_notification_status()
+
+    cfg = {}
+    if os.path.exists(CONFIG_PATH):
+        try:
+            with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+                cfg = json.load(f)
+        except Exception:
+            pass
+
+    sources = cfg.get("sources", {
+        "builtin": True,
+        "jobspy": True,
+        "jobspipe": True,
+        "gmail": True
+    })
+
     return jsonify({
         "status": "online",
         "applications_count": len(state.get("applications", [])),
         "review_queue_count": len(state.get("review_queue", [])),
         "archived_queue_count": len(state.get("archived_queue", [])),
-        "last_updated": state.get("last_updated", "N/A")
+        "last_updated": state.get("last_updated", "N/A"),
+        "last_run": sched.get("last_run"),
+        "next_run": sched.get("next_run"),
+        "scheduler": sched,
+        "notifications": notif,
+        "sources": sources
     })
 
 @app.route("/api/queue", methods=["GET"])
@@ -248,15 +391,69 @@ def scheduler_api():
     from scheduler import get_scheduler_status, update_scheduler_interval
     if request.method == "POST":
         payload = request.get_json() or {}
-        interval = payload.get("interval_hours")
-        enabled = payload.get("enabled", True)
-        if interval is not None:
-            try:
-                update_scheduler_interval(float(interval), enabled=bool(enabled))
-            except ValueError:
-                return jsonify({"success": False, "error": "Invalid interval_hours"}), 400
+        curr = get_scheduler_status()
+        interval = payload.get("interval_hours", curr.get("interval_hours", 6.0))
+        enabled = payload.get("enabled", curr.get("enabled", True))
+        try:
+            update_scheduler_interval(float(interval), enabled=bool(enabled))
+        except ValueError:
+            return jsonify({"success": False, "error": "Invalid interval_hours"}), 400
         return jsonify({"success": True, "scheduler": get_scheduler_status()})
     return jsonify(get_scheduler_status())
+
+@app.route("/api/auth/gmail", methods=["GET"])
+def gmail_auth_status():
+    creds_file = os.path.join(BASE_DIR, "credentials.json")
+    token_file = os.path.join(BASE_DIR, "token.json")
+    has_creds = os.path.exists(creds_file)
+    has_token = os.path.exists(token_file)
+    status = "authenticated" if (has_creds and has_token) else ("needs_auth" if has_creds else "missing_credentials")
+    return jsonify({
+        "has_credentials": has_creds,
+        "has_token": has_token,
+        "status": status
+    })
+
+@app.route("/api/auth/gmail/credentials", methods=["POST"])
+def gmail_upload_credentials():
+    payload = request.get_json() or {}
+    content = payload.get("credentials_content")
+    if not content and "file" in request.files:
+        content = request.files["file"].read().decode("utf-8", errors="ignore")
+    if not content:
+        return jsonify({"success": False, "error": "No credentials content provided."}), 400
+
+    try:
+        parsed = json.loads(content) if isinstance(content, str) else content
+        if "installed" not in parsed and "web" not in parsed:
+            return jsonify({"success": False, "error": "Invalid Google Cloud credentials JSON structure. Expected 'installed' or 'web' client ID key."}), 400
+        creds_path = os.path.join(BASE_DIR, "credentials.json")
+        with open(creds_path, "w", encoding="utf-8") as f:
+            json.dump(parsed, f, indent=2)
+        return jsonify({"success": True, "message": "credentials.json saved successfully."})
+    except json.JSONDecodeError:
+        return jsonify({"success": False, "error": "Content is not valid JSON."}), 400
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route("/api/auth/gmail/start", methods=["POST"])
+def gmail_start_auth():
+    creds_path = os.path.join(BASE_DIR, "credentials.json")
+    if not os.path.exists(creds_path):
+        return jsonify({"success": False, "error": "credentials.json not found. Please upload it first."}), 400
+
+    import threading
+    from auth_gmail import authenticate_gmail
+
+    def run_flow():
+        try:
+            authenticate_gmail()
+        except Exception as e:
+            print(f"Gmail auth flow exception: {e}")
+
+    thread = threading.Thread(target=run_flow, daemon=True)
+    thread.start()
+    return jsonify({"success": True, "message": "OAuth authorization flow started in browser."})
 
 @app.route("/api/scheduler/run", methods=["POST"])
 def scheduler_run_now():

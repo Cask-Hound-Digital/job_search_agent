@@ -9,65 +9,439 @@
       --bg: #0f172a;
       --card-bg: rgba(30, 41, 59, 0.7);
       --border: rgba(255, 255, 255, 0.1);
+      --border-light: rgba(255, 255, 255, 0.16);
       --text: #f8fafc;
       --text-muted: #94a3b8;
       --accent: #38bdf8;
       --accent-hover: #0284c7;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); padding: 24px; min-height: 100vh; }
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
-    h1 { font-size: 24px; color: var(--text); }
-    .stats-bar { display: flex; gap: 16px; }
-    .stat-badge { background: var(--card-bg); padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); font-size: 14px; }
+    header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); gap: 16px; flex-wrap: wrap; }
+    h1 { font-size: 24px; color: var(--text); margin-bottom: 4px; }
+    .header-controls { display: flex; gap: 10px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+    .stats-bar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .stat-badge { background: var(--card-bg); padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border); font-size: 13px; display: flex; align-items: center; gap: 6px; }
     .stat-val { font-weight: bold; color: var(--accent); }
+    
+    .source-panel { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .source-panel-title { font-size: 14px; font-weight: 600; color: var(--text); }
+    .source-chips { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .source-chip { display: flex; align-items: center; gap: 8px; background: rgba(15, 23, 42, 0.6); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); font-size: 13px; }
+    .source-chip input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--accent); cursor: pointer; }
+    .source-tag { font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
+    .tag-active { background: rgba(34, 197, 94, 0.2); color: #86efac; }
+    .tag-disabled { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; }
+    .tag-warning { background: rgba(245, 158, 11, 0.2); color: #fde68a; }
+
     .split-pane { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 900px) { .split-pane { grid-template-columns: 1fr; } }
     .card { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border); padding: 20px; }
-    .card h2 { font-size: 18px; margin-bottom: 16px; color: var(--accent); }
-    .item-list { display: flex; flex-direction: column; gap: 12px; max-height: 70vh; overflow-y: auto; }
-    .item-card { background: rgba(15, 23, 42, 0.6); padding: 14px; border-radius: 8px; border: 1px solid var(--border); }
-    .item-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
-    .item-meta { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
-    .item-actions { display: flex; gap: 8px; }
-    button { background: var(--accent); color: #0f172a; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 12px; }
+    .card h2 { font-size: 17px; margin-bottom: 16px; color: var(--accent); display: flex; justify-content: space-between; align-items: center; }
+    .item-list { display: flex; flex-direction: column; gap: 12px; max-height: 72vh; overflow-y: auto; padding-right: 4px; }
+    
+    .item-card { background: rgba(15, 23, 42, 0.6); padding: 14px; border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; transition: border-color 0.2s; }
+    .item-card:hover { border-color: var(--border-light); }
+    .item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .item-title { font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.3; }
+    .item-badges { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .item-meta { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+    .item-actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+
+    .badge { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; }
+    .score-high { background: rgba(34, 197, 94, 0.18); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.35); }
+    .score-med { background: rgba(56, 189, 248, 0.18); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); }
+    .score-low { background: rgba(148, 163, 184, 0.18); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.35); }
+
+    .badge-verified { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+    .badge-unconfirmed { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+    button { background: var(--accent); color: #0f172a; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 12px; transition: opacity 0.2s; }
     button:hover { background: var(--accent-hover); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
     .btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.05); }
+    .btn-danger { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; }
+    .btn-danger:hover { background: rgba(239, 68, 68, 0.3); }
+    .btn-toggle { background: rgba(255, 255, 255, 0.1); color: var(--text); padding: 3px 8px; font-size: 11px; }
+    .btn-toggle.active { background: rgba(34, 197, 94, 0.25); color: #86efac; border: 1px solid #22c55e; }
+
+    /* Modal Styles */
+    .modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+    .modal-backdrop.open { display: flex; }
+    .modal-card { background: #1e293b; border: 1px solid var(--border-light); border-radius: 12px; width: 100%; max-width: 720px; max-height: 90vh; overflow-y: auto; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+    .modal-header h3 { font-size: 18px; color: var(--accent); }
+    .modal-close { background: transparent; border: none; font-size: 20px; color: var(--text-muted); cursor: pointer; }
+    .form-group { margin-bottom: 14px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    label { display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 5px; }
+    .hint { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+    input[type="text"], input[type="email"], input[type="tel"], input[type="number"], textarea {
+      width: 100%; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); padding: 8px 10px; font-size: 13px; outline: none;
+    }
+    input:focus, textarea:focus { border-color: var(--accent); }
+    .checkbox-group { display: flex; gap: 16px; align-items: center; margin-top: 4px; }
+    .checkbox-label { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+    .checkbox-label input { accent-color: var(--accent); }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border); }
+    
+    .empty-state { padding: 32px 16px; text-align: center; color: var(--text-muted); }
+    .empty-state h3 { color: var(--text); font-size: 15px; margin-bottom: 8px; }
+    .empty-state p { font-size: 13px; margin-bottom: 14px; max-width: 420px; margin-left: auto; margin-right: auto; line-height: 1.5; }
   </style>
 </head>
 <body>
   <header>
     <div>
       <h1>Autonomous Job Search Agent</h1>
-      <p style="color: var(--text-muted); font-size: 14px;">Multi-board ingestion, ATS resume packaging, and application pipeline manager</p>
+      <p style="color: var(--text-muted); font-size: 13px;">Multi-board ingestion, ATS resume packaging, and application pipeline manager</p>
+      <div class="header-controls">
+        <button id="btn-run-search" onclick="runSearchNow()">⚡ Run search now</button>
+        <button id="btn-open-settings" class="btn-secondary" onclick="openSettingsModal()">⚙️ Settings</button>
+      </div>
     </div>
     <div class="stats-bar">
-      <div class="stat-badge">Review Queue: <span id="stat-queue" class="stat-val">0</span></div>
-      <div class="stat-badge">Tracked Applications: <span id="stat-apps" class="stat-val">0</span></div>
-      <div class="stat-badge" id="stat-sched-badge">
-        Scheduler: <span id="stat-sched-val" class="stat-val">6h</span>
-        <button id="sched-edit-btn" style="padding: 2px 8px; font-size: 11px; margin-left: 8px;">Edit</button>
+      <div class="stat-badge">Queue: <span id="stat-queue" class="stat-val">0</span></div>
+      <div class="stat-badge">Applied: <span id="stat-apps" class="stat-val">0</span></div>
+      <div class="stat-badge" id="sched-badge">
+        <span>Scheduler: <strong id="sched-interval" class="stat-val">6h</strong></span>
+        <button id="btn-toggle-sched" class="btn-toggle" onclick="toggleScheduler()">ON</button>
+        <button id="sched-edit-btn" class="btn-secondary" style="padding: 2px 6px; font-size: 11px;">Edit</button>
+      </div>
+      <div class="stat-badge" id="notif-badge">
+        <span>Desktop Alerts:</span>
+        <button id="btn-toggle-notif" class="btn-toggle" onclick="toggleNotifications()">ON</button>
+      </div>
+      <div class="stat-badge" style="font-size: 12px; color: var(--text-muted);">
+        <span>Last Run: <strong id="stat-last-run" style="color: var(--text);">Never</strong></span>
+        <span style="margin: 0 4px;">|</span>
+        <span>Next Run: <strong id="stat-next-run" style="color: var(--text);">--</strong></span>
       </div>
     </div>
   </header>
+
+  <!-- Sources Status Panel -->
+  <div class="source-panel">
+    <div class="source-panel-title">Ingestion Sources:</div>
+    <div class="source-chips">
+      <label class="source-chip">
+        <input type="checkbox" id="src-jobspy" onchange="toggleSource('jobspy', this.checked)">
+        <span>JobSpy (LinkedIn/Indeed)</span>
+        <span id="tag-jobspy" class="source-tag tag-active">Active</span>
+      </label>
+      <label class="source-chip">
+        <input type="checkbox" id="src-builtin" onchange="toggleSource('builtin', this.checked)">
+        <span>BuiltIn</span>
+        <span id="tag-builtin" class="source-tag tag-active">Active</span>
+      </label>
+      <label class="source-chip">
+        <input type="checkbox" id="src-jobspipe" onchange="toggleSource('jobspipe', this.checked)">
+        <span>JobsPipe ATS</span>
+        <span id="tag-jobspipe" class="source-tag tag-active">Active</span>
+      </label>
+      <label class="source-chip">
+        <input type="checkbox" id="src-gmail" onchange="toggleSource('gmail', this.checked)">
+        <span>Gmail Alerts</span>
+        <span id="tag-gmail" class="source-tag tag-active">Active</span>
+      </label>
+    </div>
+  </div>
 
   <div class="split-pane">
     <div class="card">
       <h2>Vetted Opportunities (Review Queue)</h2>
       <div id="queue-list" class="item-list">
-        <p style="color: var(--text-muted); font-size: 14px;">Run `python run_unified_search.py` to ingest opportunities.</p>
+        <div class="empty-state">
+          <h3>No roles in review queue</h3>
+          <p>Click "⚡ Run search now" to scan active boards and ingest matching leadership opportunities.</p>
+        </div>
       </div>
     </div>
 
     <div class="card">
       <h2>Submitted & Tracked Applications</h2>
       <div id="apps-list" class="item-list">
-        <p style="color: var(--text-muted); font-size: 14px;">No applications tracked yet.</p>
+        <div class="empty-state">
+          <h3>No applications tracked yet</h3>
+          <p>Roles submitted through "⚡ Apply & Build Package" will appear here with generated application packages.</p>
+        </div>
       </div>
+    </div>
+  </div>
+
+  <!-- In-Dashboard Settings Modal -->
+  <div id="settings-modal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Configuration & Pipeline Settings</h3>
+        <button class="modal-close" onclick="closeSettingsModal()">&times;</button>
+      </div>
+
+      <form id="settings-form" onsubmit="saveSettings(event)">
+        <h4 style="color: var(--accent); font-size: 14px; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 4px;">Candidate Profile</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cfg_full_name">Full Name *</label>
+            <input type="text" id="cfg_full_name" required>
+          </div>
+          <div class="form-group">
+            <label for="cfg_email">Email Address *</label>
+            <input type="email" id="cfg_email" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cfg_phone">Phone Number *</label>
+            <input type="tel" id="cfg_phone" required>
+          </div>
+          <div class="form-group">
+            <label for="cfg_location">Primary Location *</label>
+            <input type="text" id="cfg_location" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cfg_min_floor">Minimum Salary Floor ($ USD) *</label>
+            <input type="number" id="cfg_min_floor" required min="0" step="5000">
+            <p class="hint">Hard floor. Roles below this are rejected at ingestion.</p>
+          </div>
+          <div class="form-group">
+            <label for="cfg_target_baseline">Target Salary Baseline ($ USD) *</label>
+            <input type="number" id="cfg_target_baseline" required min="0" step="5000">
+            <p class="hint">Benchmark for scoring compensation headroom (100% target).</p>
+          </div>
+        </div>
+
+        <h4 style="color: var(--accent); font-size: 14px; margin: 16px 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 4px;">Workplace & Alignment</h4>
+        <div class="form-group">
+          <label>Workplace Preferences *</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label"><input type="checkbox" name="cfg_workplace" value="Remote"> Remote</label>
+            <label class="checkbox-label"><input type="checkbox" name="cfg_workplace" value="Hybrid"> Hybrid</label>
+            <label class="checkbox-label"><input type="checkbox" name="cfg_workplace" value="Onsite"> Onsite</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="cfg_cities">Allowed Local Metro Cities</label>
+          <input type="text" id="cfg_cities" placeholder="e.g. dallas, fort worth, plano, irving">
+          <p class="hint">Comma-separated list of approved cities for non-remote roles.</p>
+        </div>
+
+        <h4 style="color: var(--accent); font-size: 14px; margin: 16px 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 4px;">Search Matrix</h4>
+        <div class="form-group">
+          <label for="cfg_target_titles">Target Job Titles (one per line or comma-separated) *</label>
+          <textarea id="cfg_target_titles" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="cfg_excluded_titles">Excluded Job Titles (one per line or comma-separated)</label>
+          <textarea id="cfg_excluded_titles" rows="2"></textarea>
+        </div>
+
+        <h4 style="color: var(--accent); font-size: 14px; margin: 16px 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 4px;">Automation & Alerts</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cfg_interval">Scheduler Interval (Hours)</label>
+            <input type="number" id="cfg_interval" min="0.1" step="0.5" value="6.0">
+          </div>
+          <div class="form-group" style="display: flex; flex-direction: column; justify-content: center; gap: 8px;">
+            <label class="checkbox-label">
+              <input type="checkbox" id="cfg_sched_enabled">
+              <span>Enable Background Scheduler</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="cfg_notif_enabled">
+              <span>Enable Desktop Notifications</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="settings-alert" style="display: none; padding: 10px; border-radius: 6px; font-size: 13px; margin-top: 12px;"></div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeSettingsModal()">Cancel</button>
+          <button type="submit" id="btn-save-settings">Save Changes</button>
+        </div>
+      </form>
     </div>
   </div>
 
   <script>
     let currentQueue = [];
+    let schedulerState = { enabled: true, interval_hours: 6.0 };
+    let notificationsState = { desktop_enabled: true };
+    let sourcesState = { builtin: true, jobspy: true, jobspipe: true, gmail: true };
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[m]));
+    }
+
+    async function loadStatus() {
+      try {
+        const res = await fetch('/api/status');
+        if (res.ok) {
+          const s = await res.json();
+          document.getElementById('stat-queue').textContent = s.review_queue_count || 0;
+          document.getElementById('stat-apps').textContent = s.applications_count || 0;
+
+          if (s.last_run) document.getElementById('stat-last-run').textContent = s.last_run;
+          if (s.next_run) document.getElementById('stat-next-run').textContent = s.next_run;
+
+          if (s.scheduler) {
+            schedulerState = s.scheduler;
+            document.getElementById('sched-interval').textContent = `${s.scheduler.interval_hours}h`;
+            const schedBtn = document.getElementById('btn-toggle-sched');
+            if (s.scheduler.enabled) {
+              schedBtn.textContent = 'ON';
+              schedBtn.className = 'btn-toggle active';
+            } else {
+              schedBtn.textContent = 'OFF';
+              schedBtn.className = 'btn-toggle';
+            }
+          }
+
+          if (s.notifications) {
+            notificationsState = s.notifications;
+            const notifBtn = document.getElementById('btn-toggle-notif');
+            if (s.notifications.desktop_enabled) {
+              notifBtn.textContent = 'ON';
+              notifBtn.className = 'btn-toggle active';
+              if (s.notifications.last_notification) {
+                notifBtn.title = `Last alert: ${s.notifications.last_notification.count} roles at ${s.notifications.last_notification.timestamp}`;
+              }
+            } else {
+              notifBtn.textContent = 'OFF';
+              notifBtn.className = 'btn-toggle';
+              notifBtn.title = 'Desktop notifications disabled';
+            }
+          }
+
+          if (s.sources) {
+            sourcesState = s.sources;
+            updateSourcePanelUI(s.sources);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load status:', err);
+      }
+    }
+
+    async function loadSources() {
+      try {
+        const res = await fetch('/api/sources');
+        if (res.ok) {
+          const data = await res.json();
+          sourcesState = data.sources || {};
+          updateSourcePanelUI(sourcesState, data.details);
+        }
+      } catch (err) {
+        console.error('Failed to load sources:', err);
+      }
+    }
+
+    function updateSourcePanelUI(sources, details) {
+      for (const [src, enabled] of Object.entries(sources)) {
+        const cb = document.getElementById(`src-${src}`);
+        const tag = document.getElementById(`tag-${src}`);
+        if (cb) cb.checked = !!enabled;
+        if (tag) {
+          if (!enabled) {
+            tag.textContent = 'Disabled';
+            tag.className = 'source-tag tag-disabled';
+          } else {
+            if (src === 'gmail' && details && details.gmail) {
+              if (details.gmail.status === 'ready') {
+                tag.textContent = 'Connected';
+                tag.className = 'source-tag tag-active';
+              } else if (details.gmail.status === 'needs_auth') {
+                tag.textContent = 'Needs Auth';
+                tag.className = 'source-tag tag-warning';
+              } else {
+                tag.textContent = 'No Creds';
+                tag.className = 'source-tag tag-disabled';
+              }
+            } else {
+              tag.textContent = 'Active';
+              tag.className = 'source-tag tag-active';
+            }
+          }
+        }
+      }
+    }
+
+    async function toggleSource(sourceKey, isChecked) {
+      try {
+        sourcesState[sourceKey] = isChecked;
+        await fetch('/api/sources', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ [sourceKey]: isChecked })
+        });
+        loadSources();
+      } catch (err) {
+        console.error('Failed to toggle source:', err);
+      }
+    }
+
+    async function toggleScheduler() {
+      const newEnabled = !schedulerState.enabled;
+      try {
+        const res = await fetch('/api/scheduler', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ enabled: newEnabled })
+        });
+        if (res.ok) {
+          loadStatus();
+        }
+      } catch (err) {
+        console.error('Failed to toggle scheduler:', err);
+      }
+    }
+
+    async function toggleNotifications() {
+      const newEnabled = !notificationsState.desktop_enabled;
+      try {
+        const res = await fetch('/api/notifications', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ desktop_enabled: newEnabled })
+        });
+        if (res.ok) {
+          loadStatus();
+        }
+      } catch (err) {
+        console.error('Failed to toggle notifications:', err);
+      }
+    }
+
+    async function runSearchNow() {
+      const btn = document.getElementById('btn-run-search');
+      btn.disabled = true;
+      btn.textContent = '⏳ Running search...';
+
+      try {
+        await fetch('/api/scheduler/run', { method: 'POST' });
+        setTimeout(async () => {
+          await loadData();
+          await loadStatus();
+          btn.disabled = false;
+          btn.textContent = '⚡ Run search now';
+        }, 5000);
+      } catch (err) {
+        console.error('Error running search:', err);
+        btn.disabled = false;
+        btn.textContent = '⚡ Run search now';
+      }
+    }
+
     async function loadData() {
       try {
         const resQ = await fetch('/api/queue');
@@ -75,22 +449,60 @@
           const queue = await resQ.json();
           currentQueue = queue;
           document.getElementById('stat-queue').textContent = queue.length;
+
           if (queue.length > 0) {
-            document.getElementById('queue-list').innerHTML = queue.map((item, idx) => `
-              <div class="item-card">
-                <div class="item-title">${item.title}</div>
-                <div class="item-meta">${item.company} | ${item.location || 'Remote'} | ${item.source || 'Aggregator'}</div>
-                <div class="item-actions">
-                  <a href="${item.url}" target="_blank"><button>View Posting</button></a>
-                  <button onclick="applyRole(${idx})">⚡ Apply & Build Package</button>
-                  <button class="btn-secondary" onclick="archiveRole('${item.url}')">Dismiss</button>
+            document.getElementById('queue-list').innerHTML = queue.map((item, idx) => {
+              const score = typeof item.match_score === 'number' ? item.match_score : 0;
+              let scoreClass = 'score-low';
+              if (score >= 80) scoreClass = 'score-high';
+              else if (score >= 60) scoreClass = 'score-med';
+
+              const isVerified = item.verification === 'verified';
+              const verBadge = isVerified
+                ? `<span class="badge badge-verified" title="Active listing verified">✓ Verified</span>`
+                : `<span class="badge badge-unconfirmed" title="${escapeHtml(item.verification_note || 'Pending verification probe')}">⚠️ Unconfirmed${item.verification_note ? ': ' + escapeHtml(item.verification_note) : ''}</span>`;
+
+              const compText = item.compensation || (item.min_amount ? `$${item.min_amount.toLocaleString()}` : '');
+
+              return `
+                <div class="item-card">
+                  <div class="item-header">
+                    <div class="item-title">${escapeHtml(item.title)}</div>
+                    <div class="item-badges">
+                      <span class="badge ${scoreClass}">Match ${score}/100</span>
+                      ${verBadge}
+                    </div>
+                  </div>
+                  <div class="item-meta">
+                    <strong>${escapeHtml(item.company)}</strong> &bull; ${escapeHtml(item.location || 'Remote')} &bull; Source: ${escapeHtml(item.source || 'Aggregator')}
+                    ${compText ? ` &bull; <span style="color: var(--accent);">${escapeHtml(compText)}</span>` : ''}
+                  </div>
+                  <div class="item-actions">
+                    <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer"><button>View Posting</button></a>
+                    <button onclick="applyRole(${idx})">⚡ Apply & Build Package</button>
+                    <button class="btn-secondary" onclick="archiveRole('${escapeHtml(item.url)}')">Dismiss</button>
+                  </div>
                 </div>
-              </div>
-            `).join('');
+              `;
+            }).join('');
           } else {
-            document.getElementById('queue-list').innerHTML = '<p style="color: var(--text-muted); font-size: 14px;">No roles in review queue.</p>';
+            const anyEnabled = Object.values(sourcesState).some(v => v);
+            let emptyMsg = 'No opportunities currently in review queue.';
+            if (!anyEnabled) {
+              emptyMsg = 'All ingestion sources are currently disabled. Enable sources in the panel above to scan for roles.';
+            } else {
+              emptyMsg = 'Click "⚡ Run search now" to scan active boards and ingest matching leadership opportunities.';
+            }
+            document.getElementById('queue-list').innerHTML = `
+              <div class="empty-state">
+                <h3>No roles in review queue</h3>
+                <p>${emptyMsg}</p>
+                <button onclick="runSearchNow()">⚡ Run search now</button>
+              </div>
+            `;
           }
         }
+
         const resA = await fetch('/api/applications');
         if (resA.ok) {
           const apps = await resA.json();
@@ -98,18 +510,30 @@
           if (apps.length > 0) {
             document.getElementById('apps-list').innerHTML = apps.map(item => `
               <div class="item-card">
-                <div class="item-title">${item.title}</div>
-                <div class="item-meta">${item.company || item.company_name} | ${item.status || 'Applied'} | ${item.date_applied || ''}</div>
+                <div class="item-header">
+                  <div class="item-title">${escapeHtml(item.title)}</div>
+                  <span class="badge score-high">${escapeHtml(item.status || 'Applied')}</span>
+                </div>
+                <div class="item-meta">
+                  <strong>${escapeHtml(item.company || item.company_name)}</strong> &bull; Applied: ${escapeHtml(item.date_applied || 'Recent')}
+                  ${item.package_dir ? `<br><small style="color: var(--text-muted); font-family: monospace;">${escapeHtml(item.package_dir)}</small>` : ''}
+                </div>
               </div>
             `).join('');
           } else {
-            document.getElementById('apps-list').innerHTML = '<p style="color: var(--text-muted); font-size: 14px;">No applications tracked yet.</p>';
+            document.getElementById('apps-list').innerHTML = `
+              <div class="empty-state">
+                <h3>No applications tracked yet</h3>
+                <p>Roles submitted through "⚡ Apply & Build Package" will appear here with generated application packages.</p>
+              </div>
+            `;
           }
         }
       } catch (err) {
-        console.log('Loading state:', err);
+        console.error('Error loading data:', err);
       }
     }
+
     async function applyRole(idx) {
       const item = currentQueue[idx];
       if (!item) return;
@@ -124,47 +548,160 @@
           })
         });
         if (res.ok) {
-          loadData();
+          await loadData();
+          await loadStatus();
         }
       } catch (err) {
         console.error('Error applying:', err);
       }
     }
+
     async function archiveRole(url) {
-      await fetch('/api/archive', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({url: url, reason: 'User Dismissed'})
-      });
-      loadData();
-    }
-    loadData();
-    async function loadSchedulerStatus() {
       try {
-        const res = await fetch('/api/scheduler');
-        if (res.ok) {
-          const data = await res.json();
-          const valElem = document.getElementById('stat-sched-val');
-          if (valElem) {
-            valElem.textContent = `${data.interval_hours}h` + (data.enabled ? '' : ' (off)');
-          }
-        }
-      } catch (e) {}
+        await fetch('/api/archive', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({url: url, reason: 'User Dismissed'})
+        });
+        await loadData();
+        await loadStatus();
+      } catch (err) {
+        console.error('Error archiving:', err);
+      }
     }
-    loadSchedulerStatus();
 
     document.getElementById('sched-edit-btn').addEventListener('click', async () => {
-      const current = document.getElementById('stat-sched-val').textContent.replace('h', '').replace(' (off)', '');
+      const current = schedulerState.interval_hours || 6.0;
       const newInterval = prompt('Enter autonomous search cycle interval in hours:', current);
       if (newInterval && !isNaN(parseFloat(newInterval))) {
         await fetch('/api/scheduler', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ interval_hours: parseFloat(newInterval), enabled: true })
+          body: JSON.stringify({ interval_hours: parseFloat(newInterval) })
         });
-        loadSchedulerStatus();
+        loadStatus();
       }
     });
+
+    // In-Dashboard Settings Modal logic
+    async function openSettingsModal() {
+      const alertBox = document.getElementById('settings-alert');
+      alertBox.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/settings');
+        if (res.ok) {
+          const data = await res.json();
+          const cand = data.candidate || {};
+          const sm = data.search_matrix || {};
+          const sched = data.scheduler || {};
+          const notif = data.notifications || {};
+
+          document.getElementById('cfg_full_name').value = cand.full_name || '';
+          document.getElementById('cfg_email').value = cand.email || '';
+          document.getElementById('cfg_phone').value = cand.phone || '';
+          document.getElementById('cfg_location').value = cand.primary_location || '';
+          document.getElementById('cfg_min_floor').value = cand.min_salary_floor || 180000;
+          document.getElementById('cfg_target_baseline').value = cand.target_salary_baseline || 200000;
+          document.getElementById('cfg_cities').value = (cand.allowed_local_cities || []).join(', ');
+
+          const wp = (cand.workplace_preferences || []).map(p => p.toLowerCase());
+          document.querySelectorAll('input[name="cfg_workplace"]').forEach(cb => {
+            cb.checked = wp.includes(cb.value.toLowerCase());
+          });
+
+          document.getElementById('cfg_target_titles').value = (sm.target_titles || []).join('\n');
+          document.getElementById('cfg_excluded_titles').value = (sm.excluded_titles || []).join('\n');
+
+          document.getElementById('cfg_interval').value = sched.interval_hours || 6.0;
+          document.getElementById('cfg_sched_enabled').checked = sched.enabled !== false;
+          document.getElementById('cfg_notif_enabled').checked = notif.desktop_enabled !== false;
+        }
+      } catch (err) {
+        console.error('Error fetching settings:', err);
+      }
+
+      document.getElementById('settings-modal').classList.add('open');
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settings-modal').classList.remove('open');
+    }
+
+    async function saveSettings(e) {
+      e.preventDefault();
+      const alertBox = document.getElementById('settings-alert');
+      alertBox.style.display = 'none';
+
+      const workplaces = Array.from(document.querySelectorAll('input[name="cfg_workplace"]:checked')).map(cb => cb.value);
+      if (workplaces.length === 0) {
+        alertBox.textContent = 'Select at least one workplace preference.';
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'rgba(239, 68, 68, 0.2)';
+        alertBox.style.color = '#fca5a5';
+        return;
+      }
+
+      function parseList(text) {
+        return text.split(/[\n,]+/).map(s => s.trim()).filter(s => s.length > 0);
+      }
+
+      const payload = {
+        full_name: document.getElementById('cfg_full_name').value.trim(),
+        email: document.getElementById('cfg_email').value.trim(),
+        phone: document.getElementById('cfg_phone').value.trim(),
+        primary_location: document.getElementById('cfg_location').value.trim(),
+        min_salary_floor: parseInt(document.getElementById('cfg_min_floor').value, 10) || 0,
+        target_salary_baseline: parseInt(document.getElementById('cfg_target_baseline').value, 10) || 0,
+        workplace_preferences: workplaces,
+        allowed_local_cities: parseList(document.getElementById('cfg_cities').value),
+        target_titles: parseList(document.getElementById('cfg_target_titles').value),
+        excluded_titles: parseList(document.getElementById('cfg_excluded_titles').value),
+        scheduler: {
+          interval_hours: parseFloat(document.getElementById('cfg_interval').value) || 6.0,
+          enabled: document.getElementById('cfg_sched_enabled').checked
+        },
+        notifications: {
+          desktop_enabled: document.getElementById('cfg_notif_enabled').checked
+        }
+      };
+
+      const btn = document.getElementById('btn-save-settings');
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+
+      try {
+        const res = await fetch('/api/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const resData = await res.json();
+        if (res.ok && resData.success) {
+          closeSettingsModal();
+          await loadStatus();
+          await loadData();
+        } else {
+          alertBox.textContent = resData.error || 'Failed to save configuration.';
+          alertBox.style.display = 'block';
+          alertBox.style.background = 'rgba(239, 68, 68, 0.2)';
+          alertBox.style.color = '#fca5a5';
+        }
+      } catch (err) {
+        alertBox.textContent = 'Network error: ' + err.message;
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'rgba(239, 68, 68, 0.2)';
+        alertBox.style.color = '#fca5a5';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Save Changes';
+      }
+    }
+
+    // Initial Load
+    loadStatus();
+    loadSources();
+    loadData();
   </script>
 </body>
-</html>
+</html>

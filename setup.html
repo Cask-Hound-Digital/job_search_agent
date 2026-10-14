@@ -124,6 +124,38 @@
         </div>
       </div>
 
+      <div class="card">
+        <h2>4. Gmail Job Alerts OAuth2 (Optional)</h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5;">
+          Connect your Gmail account via Google OAuth2 to ingest job alerts automatically. No app passwords or IMAP credentials required.
+        </p>
+
+        <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.6;">
+          <strong>Quick Google Cloud Setup (5 Minutes):</strong>
+          <ol style="margin-left: 20px; margin-top: 6px;">
+            <li>Go to <a href="https://console.cloud.google.com" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">Google Cloud Console</a> and create or select a project.</li>
+            <li>Enable the <strong>Gmail API</strong> in APIs &amp; Services &rarr; Library.</li>
+            <li>In APIs &amp; Services &rarr; Credentials, click <strong>Create Credentials</strong> &rarr; <strong>OAuth client ID</strong> (Application type: <em>Desktop app</em>).</li>
+            <li>Download the client secret JSON file and select or paste it below.</li>
+          </ol>
+        </div>
+
+        <div class="form-group">
+          <label for="creds_file">Upload credentials.json (Desktop Client Secrets)</label>
+          <input type="file" id="creds_file" accept=".json" style="padding: 6px 8px; font-size: 13px;">
+        </div>
+        <div class="form-group">
+          <label for="creds_json_text">Or paste contents of credentials.json</label>
+          <textarea id="creds_json_text" rows="3" placeholder='{"installed": {"client_id": "...", "client_secret": "..."}}'></textarea>
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap;">
+          <button type="button" id="btn-upload-creds" onclick="uploadCredentials()" style="background: rgba(255, 255, 255, 0.1); border: 1px solid var(--border); color: var(--text); padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px;">Save credentials.json</button>
+          <button type="button" id="btn-start-auth" onclick="startGmailAuth()" style="background: var(--accent); color: #0f172a; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px;">Authorize with Google</button>
+          <span id="gmail-status-text" style="font-size: 13px; color: var(--text-muted); margin-left: 6px;">Checking Gmail status...</span>
+        </div>
+      </div>
+
       <button type="submit" id="submit-btn" class="btn-submit">Save Configuration & Launch Dashboard</button>
     </form>
   </div>
@@ -136,6 +168,96 @@
       alertBox.style.display = "block";
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+
+    async function checkGmailStatus() {
+      const statusSpan = document.getElementById("gmail-status-text");
+      try {
+        const res = await fetch("/api/auth/gmail");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.status === "authenticated") {
+            statusSpan.textContent = "✓ Connected & Authenticated";
+            statusSpan.style.color = "#4ade80";
+          } else if (data.status === "needs_auth") {
+            statusSpan.textContent = "⚠️ Credentials saved. Click 'Authorize with Google' to complete setup.";
+            statusSpan.style.color = "#fbbf24";
+          } else {
+            statusSpan.textContent = "Not configured (optional - can configure later in Settings)";
+            statusSpan.style.color = "var(--text-muted)";
+          }
+        }
+      } catch (e) {
+        statusSpan.textContent = "Unable to check Gmail status";
+      }
+    }
+
+    async function uploadCredentials() {
+      const statusSpan = document.getElementById("gmail-status-text");
+      const fileInput = document.getElementById("creds_file");
+      const textArea = document.getElementById("creds_json_text");
+      let content = textArea.value.trim();
+
+      if (!content && fileInput.files.length > 0) {
+        content = await fileInput.files[0].text();
+      }
+
+      if (!content) {
+        alert("Please select a credentials.json file or paste its JSON content.");
+        return;
+      }
+
+      try {
+        statusSpan.textContent = "Saving credentials...";
+        const res = await fetch("/api/auth/gmail/credentials", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ credentials_content: content })
+        });
+        const d = await res.json();
+        if (res.ok && d.success) {
+          textArea.value = "";
+          fileInput.value = "";
+          await checkGmailStatus();
+        } else {
+          alert(d.error || "Failed to save credentials.");
+          await checkGmailStatus();
+        }
+      } catch (err) {
+        alert("Network error: " + err.message);
+      }
+    }
+
+    async function startGmailAuth() {
+      const statusSpan = document.getElementById("gmail-status-text");
+      statusSpan.textContent = "Launching browser authorization window...";
+      try {
+        const res = await fetch("/api/auth/gmail/start", { method: "POST" });
+        const d = await res.json();
+        if (res.ok && d.success) {
+          statusSpan.textContent = "Waiting for browser login completion...";
+          let polls = 0;
+          const pollInterval = setInterval(async () => {
+            polls++;
+            const sRes = await fetch("/api/auth/gmail");
+            if (sRes.ok) {
+              const sData = await sRes.json();
+              if (sData.status === "authenticated") {
+                clearInterval(pollInterval);
+                await checkGmailStatus();
+              }
+            }
+            if (polls > 30) clearInterval(pollInterval);
+          }, 3000);
+        } else {
+          alert(d.error || "Failed to start OAuth authorization.");
+          await checkGmailStatus();
+        }
+      } catch (e) {
+        alert("Failed to start OAuth flow: " + e.message);
+      }
+    }
+
+    checkGmailStatus();
 
     // Prefill form if existing config is present
     fetch("/api/setup")

@@ -109,12 +109,22 @@ def get_scheduler_status() -> dict:
     if _scheduler is not None and enabled:
         job = _scheduler.get_job("unified_search_job")
         if job and job.next_run_time:
-            next_run = job.next_run_time.isoformat()
+            next_run = job.next_run_time.strftime("%Y-%m-%d %H:%M:%S")
+
+    last_run = _last_run
+    if not last_run:
+        state_path = os.path.join(BASE_DIR, "state.json")
+        if os.path.exists(state_path):
+            try:
+                with open(state_path, "r", encoding="utf-8") as f:
+                    last_run = json.load(f).get("last_search_cycle")
+            except Exception:
+                pass
 
     return {
         "enabled": enabled,
         "interval_hours": interval,
-        "last_run": _last_run,
+        "last_run": last_run,
         "next_run": next_run,
         "is_running": _scheduler is not None and _scheduler.running
     }

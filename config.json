@@ -114,5 +114,11 @@
   "scheduler": {
     "interval_hours": 6.0,
     "enabled": true
+  },
+  "sources": {
+    "builtin": true,
+    "jobspy": true,
+    "jobspipe": true,
+    "gmail": true
   }
 }
