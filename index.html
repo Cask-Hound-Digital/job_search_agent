@@ -63,32 +63,67 @@
   </div>
 
   <script>
+    let currentQueue = [];
     async function loadData() {
       try {
         const resQ = await fetch('/api/queue');
         if (resQ.ok) {
           const queue = await resQ.json();
+          currentQueue = queue;
           document.getElementById('stat-queue').textContent = queue.length;
           if (queue.length > 0) {
-            document.getElementById('queue-list').innerHTML = queue.map(item => `
+            document.getElementById('queue-list').innerHTML = queue.map((item, idx) => `
               <div class="item-card">
                 <div class="item-title">${item.title}</div>
                 <div class="item-meta">${item.company} | ${item.location || 'Remote'} | ${item.source || 'Aggregator'}</div>
                 <div class="item-actions">
                   <a href="${item.url}" target="_blank"><button>View Posting</button></a>
+                  <button onclick="applyRole(${idx})">⚡ Apply & Build Package</button>
                   <button class="btn-secondary" onclick="archiveRole('${item.url}')">Dismiss</button>
                 </div>
               </div>
             `).join('');
+          } else {
+            document.getElementById('queue-list').innerHTML = '<p style="color: var(--text-muted); font-size: 14px;">No roles in review queue.</p>';
           }
         }
         const resA = await fetch('/api/applications');
         if (resA.ok) {
           const apps = await resA.json();
           document.getElementById('stat-apps').textContent = apps.length;
+          if (apps.length > 0) {
+            document.getElementById('apps-list').innerHTML = apps.map(item => `
+              <div class="item-card">
+                <div class="item-title">${item.title}</div>
+                <div class="item-meta">${item.company || item.company_name} | ${item.status || 'Applied'} | ${item.date_applied || ''}</div>
+              </div>
+            `).join('');
+          } else {
+            document.getElementById('apps-list').innerHTML = '<p style="color: var(--text-muted); font-size: 14px;">No applications tracked yet.</p>';
+          }
         }
       } catch (err) {
         console.log('Loading state:', err);
+      }
+    }
+    async function applyRole(idx) {
+      const item = currentQueue[idx];
+      if (!item) return;
+      try {
+        const res = await fetch('/api/apply', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            url: item.url,
+            company: item.company,
+            title: item.title
+          })
+        });
+        if (res.ok) {
+          loadData();
+        }
+      } catch (err) {
+        console.error('Error applying:', err);
       }
     }
     async function archiveRole(url) {
@@ -102,4 +137,4 @@
     loadData();
   </script>
 </body>
-</html>\n
+</html>

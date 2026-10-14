@@ -66,6 +66,62 @@ def archive_item():
         return jsonify({"success": True, "archived": found})
     return jsonify({"success": False, "error": "Item not found"}), 404
 
+@app.route("/api/apply", methods=["POST"])
+def apply_item():
+    payload = request.get_json() or {}
+    url = payload.get("url")
+    company = payload.get("company", "Unknown")
+    title = payload.get("title", "Unknown")
+
+    if not url:
+        return jsonify({"success": False, "error": "Missing URL"}), 400
+
+    from build_documents import generate_package
+    from safe_state_manager import get_next_job_id
+    from datetime import datetime
+
+    output_dir = generate_package(company, title)
+
+    state = load_state()
+    queue = state.get("review_queue", [])
+    applications = state.get("applications", [])
+
+    new_q = []
+    found = None
+    for item in queue:
+        item_url = item.get("url") or item.get("job_url")
+        if item_url == url:
+            found = item
+        else:
+            new_q.append(item)
+
+    if not found:
+        found = {
+            "company": company,
+            "title": title,
+            "url": url,
+            "source": "Manual Apply"
+        }
+
+    app_entry = {
+        **found,
+        "id": get_next_job_id(applications),
+        "status": "Applied",
+        "date_applied": datetime.now().strftime("%Y-%m-%d"),
+        "package_dir": output_dir
+    }
+    applications.append(app_entry)
+
+    state["review_queue"] = new_q
+    state["applications"] = applications
+    save_state_safe(state, caller="dashboard_apply")
+
+    return jsonify({
+        "success": True,
+        "output_folder": output_dir,
+        "application": app_entry
+    })
+
 if __name__ == "__main__":
     print("Starting Autonomous Job Search Dashboard on http://localhost:5000")
     app.run(host="0.0.0.0", port=5000, debug=False)

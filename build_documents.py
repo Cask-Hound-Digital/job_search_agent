@@ -106,21 +106,25 @@ def generate_package(company: str, target_role: str):
     cfg_path = os.path.join(BASE_DIR, "config.json")
     profile = {}
     if os.path.exists(cfg_path):
-        with open(cfg_path, "r", encoding="utf-8") as f:
-            c = json.load(f).get("candidate", {})
-            profile = {
-                "name": c.get("full_name", "Candidate Name"),
-                "email": c.get("email", "candidate@example.com"),
-                "phone": c.get("phone", "(555) 000-0000"),
-                "location": c.get("primary_location", "Remote"),
-                "linkedin": "https://www.linkedin.com/in/candidate/"
-            }
+        try:
+            with open(cfg_path, "r", encoding="utf-8") as f:
+                c = json.load(f).get("candidate", {})
+                profile = {
+                    "name": c.get("full_name", "Candidate Name"),
+                    "email": c.get("email", "candidate@example.com"),
+                    "phone": c.get("phone", "(555) 000-0000"),
+                    "location": c.get("primary_location", "Remote"),
+                    "linkedin": "https://www.linkedin.com/in/candidate/"
+                }
+        except Exception as e:
+            print(f"Warning: Failed to load config.json in build_documents: {e}")
 
     docx_path = os.path.join(comp_dir, f"Resume_{company}.docx")
     pdf_path = os.path.join(comp_dir, f"Resume_{company}.pdf")
 
     build_docx_resume(profile, target_role, docx_path)
     build_pdf_resume(profile, target_role, pdf_path)
+    return comp_dir
 
 if __name__ == "__main__":
     generate_package("ExampleCorp", "Director of Engineering")

@@ -96,7 +96,7 @@ def is_domain_aligned(title: str, company: str = "", location: str = "", salary:
             return False, f"Onsite/Hybrid location outside target metro: {location}"
 
     # 5. Target Seniority / Title Alignment
-    if targets:
+    if targets and t and t.lower() != "unknown":
         matched_target = any(tgt.lower() in t_lower for tgt in targets)
         if not matched_target:
             # Fallback leadership check
@@ -140,7 +140,18 @@ def is_blacklisted(url: str, company: str = "", title: str = "", location: str =
     target_id = extract_job_identifier(url)
     co_norm = normalize_text(company)
     title_norm = normalize_text(title)
-    target_key = f"{co_norm}_{title_norm}" if co_norm and title_norm else ""
+    target_key = f"{co_norm}_{title_norm}" if co_norm and title_norm and co_norm != "unknown" and title_norm != "unknown" else ""
+
+    # Check against review queue
+    for q in state.get("review_queue", []):
+        q_url = (q.get("job_url") or q.get("url") or "").split("?")[0].lower().rstrip("/")
+        if clean_u and q_url == clean_u:
+            return True, "Already in review queue (URL match)"
+        if target_id and extract_job_identifier(q_url) == target_id:
+            return True, "Already in review queue (Job ID match)"
+        q_key = f"{normalize_text(q.get('company_name') or q.get('company'))}_{normalize_text(q.get('title'))}"
+        if target_key and q_key == target_key:
+            return True, "Already in review queue (Role & Company match)"
 
     # Check against active applications
     for a in state.get("applications", []):
