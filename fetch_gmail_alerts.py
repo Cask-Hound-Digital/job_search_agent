@@ -9,7 +9,7 @@ from email.header import decode_header
 import re
 import os
 import json
-from ingest_guard import is_blacklisted
+from ingest_guard import is_blacklisted, score_role
 from safe_state_manager import save_state_safe
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -114,13 +114,14 @@ def fetch_gmail_alerts():
             if blacklisted:
                 continue
 
+            score = score_role(title=title, company=co)
             new_roles.append({
                 "company": co,
                 "title": title,
                 "url": r_url,
                 "source": "Gmail Alerts",
                 "status": "Verified Match",
-                "match_score": 90
+                "match_score": score
             })
 
         if new_roles:

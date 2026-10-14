@@ -5,7 +5,7 @@ Scrapes live job postings across LinkedIn and Indeed with salary extraction.
 
 import json
 import os
-from ingest_guard import is_blacklisted, load_config
+from ingest_guard import is_blacklisted, load_config, score_role
 from safe_state_manager import save_state_safe
 
 STATE_FILE = "state.json"
@@ -60,6 +60,13 @@ def run_jobspy_scraper():
         if blacklisted:
             continue
 
+        score = score_role(
+            title=title,
+            company=co,
+            salary=sal,
+            date_posted=str(row.get("date_posted", "")) if pd.notna(row.get("date_posted")) else "",
+            description=str(row.get("description", "")) if pd.notna(row.get("description")) else ""
+        )
         new_roles.append({
             "company": co,
             "title": title,
@@ -68,7 +75,7 @@ def run_jobspy_scraper():
             "compensation": sal,
             "source": "JobSpy",
             "status": "Verified Match",
-            "match_score": 94
+            "match_score": score
         })
 
     if new_roles:

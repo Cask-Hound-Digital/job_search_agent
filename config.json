@@ -16,6 +16,51 @@
       "manhattan",
       "jersey city",
       "queens"
+    ],
+    "professional_summary": "Accomplished technology leader with extensive experience scaling enterprise platforms, directing cross-functional engineering teams, and modernizing digital infrastructure. Proven expertise in cloud architecture, technical roadmap execution, and operational governance that consistently accelerates product delivery and business growth.",
+    "key_skills": [
+      "Technical Strategy & Enterprise Architecture",
+      "Cross-Functional Engineering Leadership",
+      "Cloud Infrastructure & Security Governance",
+      "DevOps, CI/CD & Workflow Automation",
+      "Agile Product Execution & Roadmapping",
+      "Team Building, Mentorship & Retention",
+      "Site Reliability & Performance Optimization",
+      "Executive Stakeholder Engagement"
+    ],
+    "experience": [
+      {
+        "company": "{{PREVIOUS_COMPANY_1}}",
+        "location": "New York, NY",
+        "title": "Director of Technology",
+        "start_date": "2020",
+        "end_date": "Present",
+        "bullets": [
+          "Directed global technical roadmap and engineering operations across multi-disciplinary teams, scaling digital platform capacity by 150%.",
+          "Architected cloud infrastructure modernization and automated CI/CD deployment pipelines, reducing release turnaround times by 40%.",
+          "Managed an annual technology budget and resource allocation, ensuring on-schedule delivery of all core platform initiatives.",
+          "Implemented comprehensive monitoring and site reliability standards, achieving 99.99% system uptime across high-volume services."
+        ]
+      },
+      {
+        "company": "{{PREVIOUS_COMPANY_2}}",
+        "location": "New York, NY",
+        "title": "Senior Technical Manager",
+        "start_date": "2015",
+        "end_date": "2020",
+        "bullets": [
+          "Led engineering teams responsible for core enterprise web services and distributed data processing pipelines.",
+          "Partnered with product, security, and design stakeholders to execute high-impact software initiatives.",
+          "Mentored junior and senior engineers, establishing robust code review standards and engineering best practices."
+        ]
+      }
+    ],
+    "education": [
+      {
+        "degree": "Bachelor of Science in Computer Science",
+        "institution": "{{UNIVERSITY_NAME}}",
+        "graduation_year": "{{GRADUATION_YEAR}}"
+      }
     ]
   },
   "search_matrix": {

@@ -107,7 +107,7 @@ def is_domain_aligned(title: str, company: str = "", location: str = "", salary:
     # 6. Salary Floor Check
     if salary and min_floor > 0:
         found_amounts = []
-        for m in re.finditer(r'\$(\d{1,3}(?:,\d{3})+|\d+k?|\d{5,7})', str(salary), re.IGNORECASE):
+        for m in re.finditer(r'(?:\$|\b)(\d{1,3}(?:,\d{3})+|\d{2,3}k|\d{5,7})\b', str(salary), re.IGNORECASE):
             raw = m.group(1).replace(',', '').lower()
             try:
                 val = int(float(raw.replace('k', '')) * 1000) if 'k' in raw else int(float(raw))
@@ -176,3 +176,141 @@ def is_blacklisted(url: str, company: str = "", title: str = "", location: str =
             return True, "Already archived (Role & Company match)"
 
     return False, "Verified New Opportunity"
+
+def score_role(title: str, company: str = "", salary: str = "", date_posted: str = "", description: str = "") -> int:
+    """
+    Computes a composite match score (0-100) based on:
+      1. Title-to-target similarity (0-35 points)
+      2. Seniority signal presence (0-25 points)
+      3. Compensation vs. floor headroom (0-25 points)
+      4. Recency (0-15 points)
+    """
+    cfg = load_config()
+    candidate_cfg = cfg.get("candidate", {})
+    matrix_cfg = cfg.get("search_matrix", {})
+
+    target_titles = matrix_cfg.get("target_titles", [])
+    if not target_titles:
+        target_titles = [
+            "Director of Product Management", "Director of Engineering",
+            "VP of Engineering", "Head of Digital Strategy", "Chief of Staff"
+        ]
+
+    min_floor = candidate_cfg.get("min_salary_floor", 180000)
+    baseline = candidate_cfg.get("target_salary_baseline", 200000)
+    if baseline <= min_floor:
+        baseline = min_floor + 20000
+
+    t_str = str(title or "").strip()
+    t_lower = t_str.lower()
+    t_clean = normalize_text(t_str)
+
+    # 1. Title-to-Target Similarity (0-35 points)
+    stopwords = {"of", "the", "and", "in", "for", "to", "a", "an", "at", "by", "with"}
+    t_tokens = set(w for w in t_clean.split() if w not in stopwords)
+
+    best_title_score = 5
+    for target in target_titles:
+        tgt_clean = normalize_text(target)
+        tgt_tokens = set(w for w in tgt_clean.split() if w not in stopwords)
+
+        if not tgt_tokens:
+            continue
+
+        if t_clean == tgt_clean:
+            similarity = 35
+        elif tgt_clean in t_clean or t_clean in tgt_clean:
+            similarity = 32
+        elif tgt_tokens.issubset(t_tokens):
+            similarity = 30
+        else:
+            intersection = len(t_tokens & tgt_tokens)
+            union = len(t_tokens | tgt_tokens)
+            jaccard = intersection / union if union else 0.0
+            similarity = int(round(jaccard * 35))
+
+        if similarity > best_title_score:
+            best_title_score = similarity
+
+    title_score = min(35, max(5, best_title_score)) if t_str and t_lower != "unknown" else 5
+
+    # 2. Seniority Signal Presence (0-25 points)
+    if any(k in t_lower for k in ["chief", "vp", "vice president", "head of", "head", "cxo", "c-level"]):
+        seniority_score = 25
+    elif any(k in t_lower for k in ["director", "senior director", "sr. director", "sr director", "group director"]):
+        seniority_score = 22
+    elif any(k in t_lower for k in ["principal", "staff", "architect"]):
+        seniority_score = 18
+    elif any(k in t_lower for k in ["lead", "lead strategist", "lead architect"]):
+        seniority_score = 14
+    elif any(k in t_lower for k in ["senior", "sr", "manager"]):
+        seniority_score = 10
+    else:
+        seniority_score = 5
+
+    # 3. Compensation vs Floor Headroom (0-25 points)
+    comp_score = 15  # Neutral default when compensation is unstated
+    if salary:
+        found_amounts = []
+        for m in re.finditer(r'(?:\$|\b)(\d{1,3}(?:,\d{3})+|\d{2,3}k|\d{5,7})\b', str(salary), re.IGNORECASE):
+            raw = m.group(1).replace(',', '').lower()
+            try:
+                val = int(float(raw.replace('k', '')) * 1000) if 'k' in raw else int(float(raw))
+                if 30000 <= val <= 2000000:
+                    found_amounts.append(val)
+            except (ValueError, TypeError):
+                continue
+
+        if found_amounts:
+            max_comp = max(found_amounts)
+            if max_comp >= baseline * 1.25:
+                comp_score = 25
+            elif max_comp >= baseline:
+                fraction = (max_comp - baseline) / max(1, (baseline * 0.25))
+                comp_score = 20 + int(round(fraction * 4))
+            elif max_comp >= min_floor:
+                fraction = (max_comp - min_floor) / max(1, (baseline - min_floor))
+                comp_score = 15 + int(round(fraction * 4))
+            else:
+                comp_score = max(0, int(round(15 * (max_comp / max(1, min_floor)))))
+
+    # 4. Recency (0-15 points)
+    recency_score = 10  # Neutral default
+    if date_posted:
+        dp_str = str(date_posted).strip().lower()
+        if any(w in dp_str for w in ["today", "just", "hour", "minute", "moment"]):
+            recency_score = 15
+        elif any(w in dp_str for w in ["yesterday", "1 day", "24 hour"]):
+            recency_score = 14
+        elif any(w in dp_str for w in ["2 day", "3 day"]):
+            recency_score = 12
+        elif any(w in dp_str for w in ["4 day", "5 day", "6 day", "7 day", "1 week"]):
+            recency_score = 9
+        elif any(w in dp_str for w in ["2 week", "10 day", "14 day"]):
+            recency_score = 6
+        elif any(w in dp_str for w in ["3 week", "4 week", "month", "30+"]):
+            recency_score = 3
+        else:
+            m_date = re.search(r'(\d{4})-(\d{2})-(\d{2})', dp_str)
+            if m_date:
+                try:
+                    posted_dt = datetime.strptime(m_date.group(0), "%Y-%m-%d").date()
+                    days = (datetime.now().date() - posted_dt).days
+                    if days <= 0:
+                        recency_score = 15
+                    elif days == 1:
+                        recency_score = 14
+                    elif days <= 3:
+                        recency_score = 12
+                    elif days <= 7:
+                        recency_score = 9
+                    elif days <= 14:
+                        recency_score = 6
+                    else:
+                        recency_score = 3
+                except Exception:
+                    recency_score = 10
+
+    total_score = title_score + seniority_score + comp_score + recency_score
+    return max(0, min(100, int(round(total_score))))
+

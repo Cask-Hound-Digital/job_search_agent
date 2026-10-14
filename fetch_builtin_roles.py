@@ -9,7 +9,7 @@ import re
 import html
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
-from ingest_guard import is_blacklisted, load_config
+from ingest_guard import is_blacklisted, load_config, score_role
 from safe_state_manager import save_state_safe
 
 STATE_FILE = "state.json"
@@ -73,13 +73,14 @@ def fetch_builtin_opportunities():
         blacklisted, reason = is_blacklisted(d["url"], d["company"], d["title"])
         if blacklisted:
             continue
+        score = score_role(title=d["title"], company=d["company"])
         new_roles.append({
             "company": d["company"],
             "title": d["title"],
             "url": d["url"],
             "source": "BuiltIn",
             "status": "Verified Match",
-            "match_score": 95
+            "match_score": score
         })
 
     if new_roles:

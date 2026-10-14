@@ -6,7 +6,7 @@ Queries Greenhouse, Lever, Ashby, and Workday APIs via JobsPipe service.
 import os
 import json
 import urllib.request
-from ingest_guard import is_blacklisted, load_config
+from ingest_guard import is_blacklisted, load_config, score_role
 from safe_state_manager import save_state_safe
 
 STATE_FILE = "state.json"
@@ -48,19 +48,23 @@ def fetch_jobspipe_opportunities():
                 co = item.get("company") or "Verified Employer"
                 url = item.get("url") or item.get("source_url") or ""
                 loc = item.get("location") or "Remote"
+                sal = str(item.get("salary") or item.get("compensation") or "")
+                date_p = str(item.get("date_posted") or item.get("created_at") or "")
 
-                blacklisted, reason = is_blacklisted(url, co, title, location=loc)
+                blacklisted, reason = is_blacklisted(url, co, title, location=loc, salary=sal)
                 if blacklisted:
                     continue
 
+                score = score_role(title=title, company=co, salary=sal, date_posted=date_p)
                 new_roles.append({
                     "company": co,
                     "title": title,
                     "url": url,
                     "location": loc,
+                    "compensation": sal,
                     "source": "JobsPipe",
                     "status": "Verified Match",
-                    "match_score": 96
+                    "match_score": score
                 })
 
             if new_roles:
