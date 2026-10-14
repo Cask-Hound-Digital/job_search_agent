@@ -43,6 +43,10 @@
     <div class="stats-bar">
       <div class="stat-badge">Review Queue: <span id="stat-queue" class="stat-val">0</span></div>
       <div class="stat-badge">Tracked Applications: <span id="stat-apps" class="stat-val">0</span></div>
+      <div class="stat-badge" id="stat-sched-badge">
+        Scheduler: <span id="stat-sched-val" class="stat-val">6h</span>
+        <button id="sched-edit-btn" style="padding: 2px 8px; font-size: 11px; margin-left: 8px;">Edit</button>
+      </div>
     </div>
   </header>
 
@@ -135,6 +139,32 @@
       loadData();
     }
     loadData();
+    async function loadSchedulerStatus() {
+      try {
+        const res = await fetch('/api/scheduler');
+        if (res.ok) {
+          const data = await res.json();
+          const valElem = document.getElementById('stat-sched-val');
+          if (valElem) {
+            valElem.textContent = `${data.interval_hours}h` + (data.enabled ? '' : ' (off)');
+          }
+        }
+      } catch (e) {}
+    }
+    loadSchedulerStatus();
+
+    document.getElementById('sched-edit-btn').addEventListener('click', async () => {
+      const current = document.getElementById('stat-sched-val').textContent.replace('h', '').replace(' (off)', '');
+      const newInterval = prompt('Enter autonomous search cycle interval in hours:', current);
+      if (newInterval && !isNaN(parseFloat(newInterval))) {
+        await fetch('/api/scheduler', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ interval_hours: parseFloat(newInterval), enabled: true })
+        });
+        loadSchedulerStatus();
+      }
+    });
   </script>
 </body>
 </html>

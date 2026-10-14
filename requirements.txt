@@ -4,4 +4,9 @@ requests>=2.31.0
 python-jobspy>=1.1.50
 beautifulsoup4>=4.12.0
 flask>=3.0.0
+APScheduler>=3.10.0
+plyer>=2.1.0
+google-api-python-client>=2.100.0
+google-auth-oauthlib>=1.1.0
+pytest>=7.0.0
 

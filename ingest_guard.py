@@ -49,7 +49,7 @@ def extract_job_identifier(url: str) -> str:
     m_li = re.search(r'linkedin\.com/jobs/view/(\d+)', clean_u)
     if m_li:
         return f"li_{m_li.group(1)}"
-    m_builtin = re.search(r'builtin\.com/job/[^/]+/(\d+)', clean_u)
+    m_builtin = re.search(r'builtin\.com/job/(?:.+/)?(\d+)', clean_u)
     if m_builtin:
         return f"builtin_{m_builtin.group(1)}"
     return clean_u.lower()

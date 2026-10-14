@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup Wizard | Autonomous Job Search Agent</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.85);
+      --border: rgba(255, 255, 255, 0.12);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --danger: #ef4444;
+      --success: #22c55e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 32px 16px; min-height: 100vh; display: flex; justify-content: center; }
+    .wizard-container { width: 100%; max-width: 760px; }
+    header { margin-bottom: 28px; text-align: center; }
+    h1 { font-size: 26px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    p.subtitle { color: var(--text-muted); font-size: 14px; }
+    .card { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border); padding: 28px; margin-bottom: 24px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); }
+    .card h2 { font-size: 17px; font-weight: 600; color: var(--accent); margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    .form-group { margin-bottom: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    label { display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+    .hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    input[type="text"], input[type="email"], input[type="tel"], input[type="number"], textarea {
+      width: 100%; background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); padding: 10px 12px; font-size: 14px; outline: none; transition: border-color 0.2s;
+    }
+    input:focus, textarea:focus { border-color: var(--accent); }
+    textarea { resize: vertical; min-height: 80px; }
+    .checkbox-group { display: flex; gap: 20px; align-items: center; margin-top: 6px; }
+    .checkbox-label { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+    .checkbox-label input { width: 16px; height: 16px; accent-color: var(--accent); }
+    .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; display: none; }
+    .alert-danger { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--danger); color: #fca5a5; }
+    .alert-success { background: rgba(34, 197, 94, 0.15); border: 1px solid var(--success); color: #86efac; }
+    .btn-submit {
+      width: 100%; background: var(--accent); color: #0f172a; border: none; padding: 12px 24px;
+      border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s;
+    }
+    .btn-submit:hover { background: var(--accent-hover); }
+  </style>
+</head>
+<body>
+  <div class="wizard-container">
+    <header>
+      <h1>Autonomous Job Search Setup</h1>
+      <p class="subtitle">Configure your candidate identity, compensation targets, and role guardrails</p>
+    </header>
+
+    <div id="alert-box" class="alert"></div>
+
+    <form id="setup-form">
+      <div class="card">
+        <h2>1. Candidate Profile</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="full_name">Full Name *</label>
+            <input type="text" id="full_name" required placeholder="e.g. Jane Doe">
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" required placeholder="e.g. jane@example.com">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">Phone Number *</label>
+            <input type="tel" id="phone" required placeholder="e.g. (555) 123-4567">
+          </div>
+          <div class="form-group">
+            <label for="primary_location">Primary Location *</label>
+            <input type="text" id="primary_location" required placeholder="e.g. New York, NY or Dallas, TX">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="min_salary_floor">Minimum Salary Floor ($ USD) *</label>
+            <input type="number" id="min_salary_floor" required min="0" step="5000" placeholder="180000">
+            <p class="hint">Roles with compensation below this floor are automatically rejected.</p>
+          </div>
+          <div class="form-group">
+            <label for="target_salary_baseline">Target Salary Baseline ($ USD) *</label>
+            <input type="number" id="target_salary_baseline" required min="0" step="5000" placeholder="200000">
+            <p class="hint">Benchmark for scoring compensation headroom (100% score target).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>2. Workplace & Metro Alignment</h2>
+        <div class="form-group">
+          <label>Workplace Preferences *</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label"><input type="checkbox" name="workplace" value="Remote" checked> Remote</label>
+            <label class="checkbox-label"><input type="checkbox" name="workplace" value="Hybrid" checked> Hybrid</label>
+            <label class="checkbox-label"><input type="checkbox" name="workplace" value="Onsite"> Onsite</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="allowed_cities">Allowed Local Metro Cities (for Hybrid/Onsite roles)</label>
+          <input type="text" id="allowed_cities" placeholder="e.g. new york, brooklyn, manhattan, jersey city, queens">
+          <p class="hint">Comma-separated list of approved cities/boroughs for non-remote roles.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>3. Search & Ingestion Matrix</h2>
+        <div class="form-group">
+          <label for="target_titles">Target Job Titles (one per line or comma-separated) *</label>
+          <textarea id="target_titles" required rows="4" placeholder="Director of Engineering&#10;Director of Product Management&#10;VP of Engineering&#10;Head of Digital Strategy"></textarea>
+          <p class="hint">Only opportunities matching these titles or senior leadership tiers enter review queue.</p>
+        </div>
+        <div class="form-group">
+          <label for="excluded_titles">Excluded Job Titles (one per line or comma-separated)</label>
+          <textarea id="excluded_titles" rows="3" placeholder="junior&#10;entry level&#10;intern&#10;assistant&#10;coordinator"></textarea>
+          <p class="hint">Any opportunity matching these titles is strictly disqualified at ingestion.</p>
+        </div>
+      </div>
+
+      <button type="submit" id="submit-btn" class="btn-submit">Save Configuration & Launch Dashboard</button>
+    </form>
+  </div>
+
+  <script>
+    const alertBox = document.getElementById("alert-box");
+    function showAlert(msg, isError = true) {
+      alertBox.textContent = msg;
+      alertBox.className = "alert " + (isError ? "alert-danger" : "alert-success");
+      alertBox.style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // Prefill form if existing config is present
+    fetch("/api/setup")
+      .then(res => res.json())
+      .then(data => {
+        if (!data || !data.candidate) return;
+        const c = data.candidate;
+        if (c.full_name && !c.full_name.includes("{{")) document.getElementById("full_name").value = c.full_name;
+        if (c.email && !c.email.includes("{{")) document.getElementById("email").value = c.email;
+        if (c.phone && !c.phone.includes("{{")) document.getElementById("phone").value = c.phone;
+        if (c.primary_location) document.getElementById("primary_location").value = c.primary_location;
+        if (c.min_salary_floor) document.getElementById("min_salary_floor").value = c.min_salary_floor;
+        if (c.target_salary_baseline) document.getElementById("target_salary_baseline").value = c.target_salary_baseline;
+        if (c.allowed_local_cities) document.getElementById("allowed_cities").value = c.allowed_local_cities.join(", ");
+        if (c.workplace_preferences) {
+          const prefs = c.workplace_preferences.map(p => p.toLowerCase());
+          document.querySelectorAll('input[name="workplace"]').forEach(cb => {
+            cb.checked = prefs.includes(cb.value.toLowerCase());
+          });
+        }
+        if (data.search_matrix) {
+          if (data.search_matrix.target_titles) {
+            document.getElementById("target_titles").value = data.search_matrix.target_titles.join("\n");
+          }
+          if (data.search_matrix.excluded_titles) {
+            document.getElementById("excluded_titles").value = data.search_matrix.excluded_titles.join("\n");
+          }
+        }
+      })
+      .catch(() => {});
+
+    document.getElementById("setup-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      alertBox.style.display = "none";
+
+      const workplaces = Array.from(document.querySelectorAll('input[name="workplace"]:checked')).map(cb => cb.value);
+      if (workplaces.length === 0) {
+        showAlert("Please select at least one workplace preference.");
+        return;
+      }
+
+      function parseList(text) {
+        return text.split(/[\n,]+/).map(s => s.trim()).filter(s => s.length > 0);
+      }
+
+      const payload = {
+        full_name: document.getElementById("full_name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        primary_location: document.getElementById("primary_location").value.trim(),
+        min_salary_floor: parseInt(document.getElementById("min_salary_floor").value, 10) || 0,
+        target_salary_baseline: parseInt(document.getElementById("target_salary_baseline").value, 10) || 0,
+        workplace_preferences: workplaces,
+        allowed_local_cities: parseList(document.getElementById("allowed_cities").value),
+        target_titles: parseList(document.getElementById("target_titles").value),
+        excluded_titles: parseList(document.getElementById("excluded_titles").value)
+      };
+
+      const btn = document.getElementById("submit-btn");
+      btn.disabled = true;
+      btn.textContent = "Saving Configuration...";
+
+      try {
+        const resp = await fetch("/api/setup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const resData = await resp.json();
+        if (resp.ok && resData.success) {
+          showAlert("Configuration saved successfully! Redirecting...", false);
+          setTimeout(() => {
+            window.location.href = resData.redirect || "/";
+          }, 800);
+        } else {
+          showAlert(resData.error || "Failed to save configuration.");
+          btn.disabled = false;
+          btn.textContent = "Save Configuration & Launch Dashboard";
+        }
+      } catch (err) {
+        showAlert("Error connecting to server: " + err.message);
+        btn.disabled = false;
+        btn.textContent = "Save Configuration & Launch Dashboard";
+      }
+    });
+  </script>
+</body>
+</html>

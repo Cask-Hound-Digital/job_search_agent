@@ -14,6 +14,16 @@ def run_unified_search_cycle():
     print("  EXECUTING UNIFIED MULTI-BOARD JOB SEARCH CYCLE")
     print("================================================================================")
 
+    state_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "state.json")
+    initial_urls = set()
+    if os.path.exists(state_file):
+        try:
+            with open(state_file, "r", encoding="utf-8") as f:
+                s = json.load(f)
+                initial_urls = set((item.get("url") or item.get("job_url") or "") for item in s.get("review_queue", []))
+        except Exception:
+            pass
+
     # 1. BuiltIn Scraper
     try:
         import fetch_builtin_roles
@@ -42,12 +52,27 @@ def run_unified_search_cycle():
     except Exception as e:
         print(f"Gmail error: {e}")
 
-    # 5. 404 Dead URL Pruning
+    # 5. 404 Dead URL Pruning & Verification Pass
     try:
         import audit_and_purge_404_urls
         audit_and_purge_404_urls.purge_404_and_history_duplicates()
+        audit_and_purge_404_urls.verify_active_postings()
     except Exception as e:
-        print(f"URL Audit error: {e}")
+        print(f"URL Audit/Verification error: {e}")
+
+    # 6. Desktop Notification Dispatch
+    try:
+        if os.path.exists(state_file):
+            with open(state_file, "r", encoding="utf-8") as f:
+                s = json.load(f)
+                final_queue = s.get("review_queue", [])
+                new_items = [item for item in final_queue if (item.get("url") or item.get("job_url") or "") not in initial_urls]
+                if new_items:
+                    from notifications import notify_new_roles
+                    top_match = f"{new_items[0].get('title')} at {new_items[0].get('company')}"
+                    notify_new_roles(len(new_items), top_role=top_match)
+    except Exception as e:
+        print(f"Notification error: {e}")
 
     print("================================================================================")
     print("  UNIFIED MULTI-BOARD SEARCH COMPLETED")

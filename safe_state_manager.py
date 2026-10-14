@@ -34,11 +34,19 @@ def load_state() -> dict:
     if not os.path.exists(STATE_FILE):
         example_file = os.path.join(BASE_DIR, "state.example.json")
         if os.path.exists(example_file):
-            shutil.copy(example_file, STATE_FILE)
+            try:
+                shutil.copy(example_file, STATE_FILE)
+            except Exception:
+                pass
         else:
             return {"applications": [], "review_queue": [], "archived_queue": []}
-    with open(STATE_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
+
+    try:
+        with open(STATE_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"Warning: Corrupted or unreadable state file ({e}). Returning fallback structure.")
+        return {"applications": [], "review_queue": [], "archived_queue": []}
 
 def save_state_safe(state_data: dict, caller: str = "unknown") -> bool:
     os.makedirs(BACKUP_DIR, exist_ok=True)

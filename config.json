@@ -106,8 +106,13 @@
     ]
   },
   "notifications": {
+    "desktop_enabled": true,
     "telegram_enabled": false,
     "alert_on_raw_ingest": false,
     "alert_only_vetted": true
+  },
+  "scheduler": {
+    "interval_hours": 6.0,
+    "enabled": true
   }
-}
+}
